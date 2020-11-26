@@ -52,9 +52,8 @@ export default class dmEvent extends BaseEvent {
       let fileUrls: string[] = [];
 
       let types: string[] = ['department', 'title', 'description', 'extra'];
-      // todo: replace with custom ones!
-      let emojis: string[] = ['💚', '🧡', '💛', '🖤'];
-      let emojiNames: string[] = ['💚', '🧡', '💛', '🖤'];
+      let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
+      let emojiNames: string[] = ['QD', 'DS', 'GD', 'PRLogo'];
 
       if (this.clean(member)) return dmChannel.send(
         `> 🔨 | You are blacklisted from using the tickets system, you can not open a ticket until you are removed from the blacklist. If you think this is a mistake feel free to DM a staff member about this.`
