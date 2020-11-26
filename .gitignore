@@ -3,3 +3,4 @@ package_lock.json
 slappey.json
 .env
 config_dev.ts
+build/

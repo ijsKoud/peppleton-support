@@ -1,0 +1,1 @@
+worker: node ./build/scr/bot.js
