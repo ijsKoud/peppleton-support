@@ -1,4 +1,4 @@
-import { eventsChannel, eventNotification } from '../../../config/config';
+import { eventsChannel, eventNotification, guildId } from '../../../config/config';
 import BaseEvent from '../../utils/structures/BaseEvent';
 import { Message } from 'discord.js';
 import DiscordClient from '../../client/client';
@@ -11,6 +11,7 @@ export default class MessageEvent extends BaseEvent {
   async run(client: DiscordClient, message: Message) {
     if (message.author.bot) return;
     if (message.channel.type == 'dm' || message.channel.name.endsWith('-ticket')) return client.emit('ticketChat', message);
+    if (message.guild.id !== guildId) return;
     
     if (message.content.includes('[PING]')) this.handlePing(message);
     if (message.mentions.has(client.user) && message.content.trim().split(/\s+/)[0].includes(client.user.id)) return client.emit('dm', message);
