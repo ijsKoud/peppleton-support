@@ -10,11 +10,12 @@ export default class MessageEvent extends BaseEvent {
 
   async run(client: DiscordClient, message: Message) {
     if (message.author.bot) return;
+    
+    if (message.mentions.has(client.user) && message.content.trim().split(/\s+/)[0].includes(client.user.id)) return client.emit('dm', message);
     if (message.channel.type == 'dm' || message.channel.name.endsWith('-ticket')) return client.emit('ticketChat', message);
     if (message.guild.id !== guildId) return;
     
     if (message.content.includes('[PING]')) this.handlePing(message);
-    if (message.mentions.has(client.user) && message.content.trim().split(/\s+/)[0].includes(client.user.id)) return client.emit('dm', message);
 
     if (message.content.startsWith(client.prefix)) {
       const [cmdName, ...cmdArgs] = message.content
