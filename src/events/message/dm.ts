@@ -75,12 +75,12 @@ export default class dmEvent extends BaseEvent {
               `> ${dsEmoji} | **DS Department**`,
               `> ${gdEmoji} | **GD Department**`,
               `> ${prEmoji} | **Any Department** \n`,
-              'React to an emoji below to continue. \n This prompt will close in `30` seconds!'
+              'React to an emoji below to continue. \n This prompt will close in `60` seconds!'
             ]);
 
             const depMsg = await dmChannel.send(embed);
             for (const emoji of emojis) depMsg.react(emoji);
-            const depCollector = await depMsg.awaitReactions(emojiFilter, { time: 3e4, max: 1, errors: ['time'] }).catch(e => new Collection<string, MessageReaction>());
+            const depCollector = await depMsg.awaitReactions(emojiFilter, { time: 6e4, max: 1, errors: ['time'] }).catch(e => new Collection<string, MessageReaction>());
             if (!depCollector.size) {
               cancelled = true;
               depMsg.delete();
