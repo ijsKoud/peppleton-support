@@ -7,7 +7,7 @@ export const reactionEmojiName: string = '🔔';
 export const eventsChannel: string = '751889989171806259';
 
 export const feedbackSheet: string = '1r8a--e9-THYU_w8ql6Qlg_xxVkag_trKL0DhudRonSg';
-export const feedbackMsgId: string = '781131145738846258';
+export const feedbackMsgId: string = '781958013673537537';
 
 export const qdEmoji: string = '<:QD:779801401463275520>';
 export const dsEmoji: string = '<:DS:779801398924673025>';
