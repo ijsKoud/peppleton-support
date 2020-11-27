@@ -27,7 +27,7 @@ export default class MessageReactionAddEvent extends BaseEvent {
       if (user.partial) await user.fetch(true);
       if (user.bot) return;
       
-      if (message.id === feedbackMsgId && reaction.emoji.name === '📋') return this.handleFeedback(client, user, reaction);
+      if (message.id === feedbackMsgId && reaction.emoji.name === '🗒️') return this.handleFeedback(client, user, reaction);
       if (message.id !== reactionRoleMSG) return;
   
       const member = message.guild.members.cache.get(user.id);
