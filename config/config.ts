@@ -1,5 +1,7 @@
 // real config file -> checl config_dev.ts for the dev version
 
+export const eventsVoiceChannel: string =  '748140133827739667';
+export const eventsTextChannel: string = '751893103031615640';
 export const eventNotification: string = '739489234892750919';
 export const reactionRoleMSG: string = '777295875671064577';
 export const reactionEmojiName: string = '🔔';
