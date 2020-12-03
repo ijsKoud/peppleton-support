@@ -3,6 +3,7 @@ import BaseEvent from '../../utils/structures/BaseEvent';
 import { Message, Collection, TextChannel, MessageAttachment } from 'discord.js';
 import DiscordClient from '../../client/client';
 
+const spamFilter = new Map<string, boolean>();
 
 export default class ticketChatEvent extends BaseEvent {
   constructor() {
@@ -16,7 +17,8 @@ export default class ticketChatEvent extends BaseEvent {
     );
     
     if (message.content.startsWith(client.prefix)) return this.handleCommands(client, message);
-    
+    if (spamFilter.has(message.author.id)) return;
+
     if (message.channel.type === 'dm') {
       try {
         const channel = guild.channels.cache.find(c => c.name === `${message.author.id}-ticket`) as TextChannel;
@@ -30,6 +32,10 @@ export default class ticketChatEvent extends BaseEvent {
         channel.send(`> 💬 | Reply from ${message.author.toString()}: \`\`\`${content}\`\`\`\n > ❓ | To reply send a message to ${channel.toString()}. \n > Use \`${client.prefix}\` if you don't want to respond with a message. \n > Check the command list for all the commands available for tickets!`, {
           files
         });
+
+        spamFilter.set(message.author.id, true);
+        setTimeout(() => spamFilter.delete(message.author.id));
+
         return message.react('✅');
       } catch (e) {
         message.react('❌');
@@ -54,6 +60,10 @@ export default class ticketChatEvent extends BaseEvent {
         channel.send(`> 💬 | Reply from **${message.member.nickname || message.author.username}**: \`\`\`${content}\`\`\`\n > ❓ | To reply send a message to me. \n > Use \`${client.prefix}\` if you don't want to respond with a message. \n > Check the command list for all the commands available for tickets!`, {
           files
         });
+
+        spamFilter.set(message.author.id, true);
+        setTimeout(() => spamFilter.delete(message.author.id));
+        
         return message.react('✅');
       } catch (e) {
         message.react('❌');
