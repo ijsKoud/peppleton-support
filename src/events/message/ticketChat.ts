@@ -33,7 +33,7 @@ export default class ticketChatEvent extends BaseEvent {
         });
 
         spamFilter.set(message.author.id, true);
-        setTimeout(() => spamFilter.delete(message.author.id), 6e4);
+        setTimeout(() => spamFilter.delete(message.author.id), 5e3);
 
         return message.react('✅');
       } catch (e) {
@@ -61,7 +61,7 @@ export default class ticketChatEvent extends BaseEvent {
         });
 
         spamFilter.set(message.author.id, true);
-        setTimeout(() => spamFilter.delete(message.author.id), 6e4);
+        setTimeout(() => spamFilter.delete(message.author.id), 5e3);
 
         return message.react('✅');
       } catch (e) {
