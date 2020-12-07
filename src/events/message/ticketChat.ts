@@ -1,9 +1,7 @@
 import { guildId } from '../../../config/config';
 import BaseEvent from '../../utils/structures/BaseEvent';
 import { Message, Collection, TextChannel, MessageAttachment } from 'discord.js';
-import DiscordClient from '../../client/client';
-
-const spamFilter = new Map<string, boolean>();
+import DiscordClient from '../../client/client'; 
 
 export default class ticketChatEvent extends BaseEvent {
   constructor() {
@@ -11,6 +9,7 @@ export default class ticketChatEvent extends BaseEvent {
   }
 
   async run(client: DiscordClient, message: Message) {
+    const spamFilter = client.spamFilter;
     const guild = client.guilds.cache.get(guildId);
     if (!guild.available) return message.author.send(
       `> 🔥 | The server is on fire!!! Not literally but I can not contact it now, please try again later.`
