@@ -6,7 +6,7 @@ import { Buffer } from 'buffer';
 
 export default class EvalCommand extends BaseCommand {
   constructor() {
-    super('eval', 'Dev only', [], {
+    super('eval', 'Dev only', ["e"], {
       description: 'Thonk',
       usage: '<code>',
       ownerOnly: true,

@@ -3,6 +3,8 @@ import BaseEvent from '../../utils/structures/BaseEvent';
 import { Message, Collection, TextChannel, MessageAttachment } from 'discord.js';
 import DiscordClient from '../../client/client'; 
 
+const timeouts = new Map<string, NodeJS.Timeout>();
+
 export default class ticketChatEvent extends BaseEvent {
   constructor() {
     super('ticketChat');
@@ -16,7 +18,18 @@ export default class ticketChatEvent extends BaseEvent {
     );
     
     if (message.content.startsWith(client.prefix)) return this.handleCommands(client, message);
-    if (spamFilter.has(message.author.id)) return;
+    if (spamFilter.has(message.author.id) && spamFilter.get(message.author.id) === 5) return;
+
+    if (!timeouts.has(message.author.id)) timeouts.set(message.author.id, setTimeout(() => spamFilter.delete(message.author.id), 3e3));
+
+    spamFilter.has(message.author.id) 
+      ? spamFilter.set(message.author.id, spamFilter.get(message.author.id) + 1) 
+      : spamFilter.set(message.author.id, 1);
+
+    if (spamFilter.get(message.author.id) - 1 >= 5) {
+      setTimeout(() => spamFilter.delete(message.author.id), 1e4);
+      timeouts.delete(message.author.id);
+    };
 
     if (message.channel.type === 'dm') {
       try {
@@ -31,9 +44,6 @@ export default class ticketChatEvent extends BaseEvent {
         channel.send(`> 💬 | Reply from ${message.author.toString()}: \`\`\`${content}\`\`\`\n > ❓ | To reply send a message to ${channel.toString()}. \n > Use \`${client.prefix}\` if you don't want to respond with a message. \n > Check the command list for all the commands available for tickets!`, {
           files
         });
-
-        spamFilter.set(message.author.id, true);
-        setTimeout(() => spamFilter.delete(message.author.id), 5e3);
 
         return message.react('✅');
       } catch (e) {
@@ -60,8 +70,8 @@ export default class ticketChatEvent extends BaseEvent {
           files
         });
 
-        spamFilter.set(message.author.id, true);
-        setTimeout(() => spamFilter.delete(message.author.id), 5e3);
+        // spamFilter.set(message.author.id, 1);
+        // setTimeout(() => spamFilter.delete(message.author.id), 5e3);
 
         return message.react('✅');
       } catch (e) {

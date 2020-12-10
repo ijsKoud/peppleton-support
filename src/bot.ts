@@ -6,7 +6,7 @@ import DiscordClient from './client/client';
 const client = new DiscordClient({ disableMentions: 'everyone', partials: ['MESSAGE', 'REACTION', 'USER', 'CHANNEL', 'GUILD_MEMBER'] });
 
 (async () => {
-  client.spamFilter = new Map<string, boolean>();
+  client.spamFilter = new Map<string, number>();
   client.prefix = process.env.DISCORD_BOT_PREFIX || client.prefix;
   client.openTickets = new Map<string, boolean>();
   client.utils = new utils();
@@ -22,7 +22,7 @@ declare module 'discord.js' {
     utils: utils;
     tickets: boolean;
     openTickets: Map<string, boolean>;
-    spamFilter: Map<string, boolean>;
+    spamFilter: Map<string, number>;
   }
 }
 
