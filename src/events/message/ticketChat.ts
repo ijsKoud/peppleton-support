@@ -3,14 +3,13 @@ import BaseEvent from '../../utils/structures/BaseEvent';
 import { Message, Collection, TextChannel, MessageAttachment } from 'discord.js';
 import DiscordClient from '../../client/client'; 
 
-const timeouts = new Map<string, NodeJS.Timeout>();
-
 export default class ticketChatEvent extends BaseEvent {
   constructor() {
     super('ticketChat');
   }
 
   async run(client: DiscordClient, message: Message) {
+    const timeouts = client.timeouts;
     const spamFilter = client.spamFilter;
     const guild = client.guilds.cache.get(guildId);
     if (!guild.available) return message.author.send(
@@ -20,13 +19,13 @@ export default class ticketChatEvent extends BaseEvent {
     if (message.content.startsWith(client.prefix)) return this.handleCommands(client, message);
     if (spamFilter.has(message.author.id) && spamFilter.get(message.author.id) === 5) return;
 
-    if (!timeouts.has(message.author.id)) timeouts.set(message.author.id, setTimeout(() => spamFilter.delete(message.author.id), 3e3));
+    if (!timeouts.has(message.author.id)) timeouts.set(message.author.id, setTimeout(() => spamFilter.delete(message.author.id), 4e3));
 
     spamFilter.has(message.author.id) 
       ? spamFilter.set(message.author.id, spamFilter.get(message.author.id) + 1) 
       : spamFilter.set(message.author.id, 1);
 
-    if (spamFilter.get(message.author.id) - 1 >= 5) {
+    if (spamFilter.get(message.author.id) >= 5) {
       setTimeout(() => spamFilter.delete(message.author.id), 1e4);
       timeouts.delete(message.author.id);
     };
