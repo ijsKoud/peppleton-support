@@ -1,9 +1,10 @@
 import { config } from 'dotenv';
 config();
 import { registerCommands, registerEvents } from './utils/registry';
+import { eventNotification } from "../config/config";
 import utils from './utils/functions/utils';
 import DiscordClient from './client/client';
-const client = new DiscordClient({ disableMentions: 'everyone', partials: ['MESSAGE', 'REACTION', 'USER', 'CHANNEL', 'GUILD_MEMBER'] });
+const client = new DiscordClient({ allowedMentions: { roles: [eventNotification] }, partials: ['MESSAGE', 'REACTION', 'USER', 'CHANNEL', 'GUILD_MEMBER'] });
 
 (async () => {
   client.timeouts = new Map<string, NodeJS.Timeout>();
