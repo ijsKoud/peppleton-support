@@ -1,6 +1,6 @@
 import { guildId } from '../../../config/config';
 import BaseEvent from '../../utils/structures/BaseEvent';
-import { Message, Collection, TextChannel, MessageAttachment } from 'discord.js';
+import { Message, Collection, TextChannel, MessageAttachment, Util } from 'discord.js';
 import DiscordClient from '../../client/client'; 
 
 export default class ticketChatEvent extends BaseEvent {
@@ -36,9 +36,13 @@ export default class ticketChatEvent extends BaseEvent {
         if (!channel) return;
 
         const files = this.getAttachments(message.attachments);
-        const content = message.content.length
-        ? message.content.length > 1500 ? message.content.substr(0, 1500 -3) + '...' : message.content
-        : 'No message content.';
+        const content = this.clean(
+          message.content.length
+          ? message.content.length > 1500 
+            ? message.content.substr(0, 1500 -3) + '...' 
+            : message.content
+          : 'No message content.'
+        );
 
         channel.send(`> 💬 | Reply from ${message.author.toString()}: \`\`\`${content}\`\`\`\n > ❓ | To reply send a message to ${channel.toString()}. \n > Use \`${client.prefix}\` if you don't want to respond with a message. \n > Check the command list for all the commands available for tickets!`, {
           files
@@ -61,16 +65,17 @@ export default class ticketChatEvent extends BaseEvent {
         
         if (!message.channel.topic.includes(message.author.id)) return;
         const files = this.getAttachments(message.attachments);
-        const content = message.content.length
-        ? message.content.length > 1500 ? message.content.substr(0, 1500 -3) + '...' : message.content
-        : 'No message content.';
+        const content = this.clean(
+          message.content.length
+          ? message.content.length > 1500 
+            ? message.content.substr(0, 1500 -3) + '...' 
+            : message.content
+          : 'No message content.'
+        );
 
         channel.send(`> 💬 | Reply from **${message.member.nickname || message.author.username}**: \`\`\`${content}\`\`\`\n > ❓ | To reply send a message to me. \n > Use \`${client.prefix}\` if you don't want to respond with a message. \n > Check the command list for all the commands available for tickets!`, {
           files
         });
-
-        // spamFilter.set(message.author.id, 1);
-        // setTimeout(() => spamFilter.delete(message.author.id), 5e3);
 
         return message.react('✅');
       } catch (e) {
@@ -97,5 +102,9 @@ export default class ticketChatEvent extends BaseEvent {
     if (command) {
       command.run(client, message, cmdArgs);
     }
+  }
+
+  clean(text: string): string {
+    return text.replace(/\`/g, "");
   }
 }
