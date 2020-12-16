@@ -7,6 +7,7 @@ import {
 import { Message, TextChannel, MessageReaction, User, Collection } from 'discord.js';
 import BaseCommand from '../../utils/structures/BaseCommand';
 import DiscordClient from '../../client/client';
+import { GuildMember } from 'discord.js';
 
 export default class TransferCommand extends BaseCommand {
   constructor() {
@@ -45,6 +46,8 @@ export default class TransferCommand extends BaseCommand {
           `> 🔎 | Unkown user, please check if you copied the right ID or if you spelled their name correctly.`
         );
 
+        if (!this.clean(user)) return message.react("❌");
+
         try {
           await message.channel.setTopic(`${user.id}| Do not edit this channel. If you edit it you might break the system!`, `Ticket transfered to ${user.user.tag} from ${message.author.tag}`);
           await message.channel.updateOverwrite(message.author, { SEND_MESSAGES: false, VIEW_CHANNEL: false });
@@ -59,6 +62,8 @@ export default class TransferCommand extends BaseCommand {
         } catch (e) {
           return message.channel.deleted ? '' : message.channel.send(`> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\``);
         }
+      default:
+        return message.react("❌");
     }
   }
 
@@ -112,5 +117,13 @@ export default class TransferCommand extends BaseCommand {
       message.channel.send(`> 👋 | ${claimer.toString()}, send messages to this channel to talk to the ticket opener.`);
       return opener.send(`> 📨 | Your ticket is transferred to the **${type}**, your new claimer is ${claimer.toString()}!`);
     } catch (e) { return message.channel.send(`> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\``) };
+  }
+
+  clean(member: GuildMember): boolean {
+    const roles = member.roles.cache;
+    let boolean: boolean = false;
+
+    ["742790430034362440", "742791627495571596", "742790053998362768"].forEach(r => !boolean ? roles.has(r) ? boolean = true : boolean = false : "");
+    return boolean;
   }
 }
