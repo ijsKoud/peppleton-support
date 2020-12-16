@@ -9,7 +9,8 @@ import {
   qdDepChannel, 
   dsDepChannel, 
   gdDepChannel, 
-  anyDepChannel 
+  anyDepChannel,
+  suggestionsChannel,
 } from '../../../config/config';
 import BaseEvent from '../../utils/structures/BaseEvent';
 import { Message, GuildMember, MessageEmbed,MessageReaction, User, Collection } from 'discord.js';
@@ -42,6 +43,10 @@ export default class dmEvent extends BaseEvent {
         return m.author.id === message.author.id;
       };
 
+      const selectorFilter = (reaction: MessageReaction, user: User) => {
+        return user.id === message.author.id && ["1️⃣", "2️⃣"].includes(reaction.emoji.name);
+      };
+
       const member = guild.members.cache.get(message.author.id).partial ? await guild.members.fetch(message.author.id) : guild.members.cache.get(message.author.id);
       const dmChannel = await member.createDM();
       let cancelled: boolean = false;
@@ -55,9 +60,36 @@ export default class dmEvent extends BaseEvent {
       let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
       let emojiNames: string[] = ['QD', 'DS', 'GD', 'PRLogo'];
 
-      if (this.clean(member)) return dmChannel.send(
+      if (!this.clean(member)) return dmChannel.send(
         `> 🔨 | You are blacklisted from using the tickets system, you can not open a ticket until you are removed from the blacklist. If you think this is a mistake feel free to DM a staff member about this.`
       );
+
+      try {
+        const msg = await dmChannel.send(`> ${prEmoji} | **Peppleton Support**: \n Please select one of the options above to continue! \n\n 1️⃣ Open a ticket \n 2️⃣ Make a suggestion`);
+        ["1️⃣", "2️⃣"].forEach(emoji => msg.react(emoji));
+
+        const collector = await msg.awaitReactions(selectorFilter, { time: 6e4, max: 1, errors: ["time"] }).catch(e => new Collection<string, MessageReaction>());
+        if (!collector.size || !["1️⃣", "2️⃣"].includes(collector.first().emoji.name)) return msg.edit("> ❌ | Prompt cancelled");
+
+        if (collector.first().emoji.name === "2️⃣") {
+          const sgMsg = await dmChannel.send(`> ❓ | What is your suggestion? Please give as much detail as possible.`);
+          ["1️⃣", "2️⃣"].forEach(emoji => msg.react(emoji));
+  
+          const collector = await sgMsg.channel.awaitMessages(filter, { time: 12e4, max: 1, errors: ["time"] }).catch(e => new Collection<string, Message>());
+          if (!collector.size) return msg.edit("> ❌ | Prompt cancelled");
+
+          const suggestions = (guild.channels.cache.get(suggestionsChannel) || await client.channels.fetch(suggestionsChannel, true)) as TextChannel;
+          //suggestions.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\``, { split: true });
+          dmChannel.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\` \n > ❗ | Misusing will result in a suggestion blacklist.`, { split: true });
+
+          return collector.first().react("✅");
+        };
+      } catch (e) {
+        console.log(e);
+        return message.channel.send(e);
+      }
+
+
       if (!client.tickets) return dmChannel.send(
         `> 🔒 | Sorry, the tickets are currently closed. Come back later to see if they are opened again.`
       );
@@ -181,8 +213,8 @@ export default class dmEvent extends BaseEvent {
 
   clean(member: GuildMember): boolean {
     return member.roles.cache.has(blacklistRole)
-    ? true
-    : false;
+    ? false
+    : true;
   };
 
   getAttachments(attachments: Collection<string, MessageAttachment>): string[] {

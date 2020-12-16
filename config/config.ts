@@ -25,3 +25,5 @@ export const qdDepChannel: string = '780500433504043039';
 export const dsDepChannel: string = '780500462218379304';
 export const gdDepChannel: string = '780500873544597534';
 export const anyDepChannel: string = '780500364448235530';
+
+export const suggestionsChannel: string = "788811272899919872";

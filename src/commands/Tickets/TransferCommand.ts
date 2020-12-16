@@ -22,14 +22,7 @@ export default class TransferCommand extends BaseCommand {
       `> ❌ | This command is only usable in a ticket channel. If you wish to transfer a ticket to a different department, ask the ticket claimer to transfer it.`
     );
 
-    const type: string = args[0];
-    if (!type) return message.channel.send(
-      `> ❗ | Incorrect usage: \`<type: department/user>\` \`<department name/user mention/name/id/tag>\`` 
-    );
-
-    if (!['user', 'department'].includes(type.toLowerCase())) return message.channel.send(
-      `> ❗ | Invalid type. Types: \`user\`, \`department\`.`
-    );
+    const type: string = isNaN(parseInt(args[0])) ? "department" : "user";
 
     if (!message.channel.name.endsWith('-ticket') || message.channel.topic.split('|')[0] !== message.author.id) return message.channel.send(
       `> ❌ | This is not your ticket, ticket claimers are the only one that can do this.`
@@ -37,7 +30,7 @@ export default class TransferCommand extends BaseCommand {
 
     switch (type) {
       case 'department':
-        const dep = this.department((args[1] || '').toLowerCase());
+        const dep = this.department((args[0] || '').toLowerCase());
         if (!dep) return message.channel.send(
           `> ❗ | Unkown department. Valid departments: \`QD\`, \`DS\`, \`GD\`, \`any\`.`
         );
@@ -46,7 +39,7 @@ export default class TransferCommand extends BaseCommand {
           `> ✅ | Ticket is transferred to a different department, you will remain as claimer until someone from a different department claims this ticket.`
         ); 
       case 'user':
-        const user = client.utils.filterMember(message, args[1]);
+        const user = client.utils.filterMember(message, args[0]);
         const opener = message.guild.members.cache.get(message.channel.name.slice(0, -7));
         if (!user) return message.channel.send(
           `> 🔎 | Unkown user, please check if you copied the right ID or if you spelled their name correctly.`
