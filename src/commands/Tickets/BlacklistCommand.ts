@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, GuildMember } from 'discord.js';
 import BaseCommand from '../../utils/structures/BaseCommand';
 import { blacklistRole } from "../../../config/config";
 import DiscordClient from '../../client/client';
@@ -20,6 +20,8 @@ export default class BlacklistCommand extends BaseCommand {
     const reason = args.slice(2).join(" ");
     let dmed: boolean = true;
 
+    if (!this.clean(message.member)) return;
+
     if (!user || !duration || isNaN(duration)) 
       return message.channel.send("> ❌ | Unkown user or incorrect duration. example: `=blacklist DaanGamesDG 2m abusing ticket system`.");
     
@@ -30,5 +32,13 @@ export default class BlacklistCommand extends BaseCommand {
     setTimeout(() => user.roles.remove(blacklistRole), duration);
 
     return message.channel.send(`> ✅ | Successfully blacklisted ${user.toString()} for **${ms(duration)}**. ${dmed ? "" : "I was not able to DM this user."}`);
+  }
+
+  clean(member: GuildMember): boolean {
+    const roles = member.roles.cache;
+    let boolean: boolean = false;
+
+    ["742790430034362440", "742791627495571596", "742790053998362768"].forEach(r => !boolean ? roles.has(r) ? boolean = true : boolean = false : "");
+    return boolean;
   }
 }
