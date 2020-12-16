@@ -30,10 +30,6 @@ export default class dmEvent extends BaseEvent {
     if (!guild.available) return message.author.send(
       `> 🔥 | The server is on fire!!! Not literally but I can not contact it now, please try again later.`
     );
-    
-    if (client.openTickets.has(message.author.id)) return message.author.send(
-      `> ❗ | A ticket is already opened for you, please wait until the ticket is closed!`
-    );
 
     try {
       const emojiFilter = (reaction: MessageReaction, user: User) => {
@@ -66,14 +62,15 @@ export default class dmEvent extends BaseEvent {
 
       try {
         const embed = new MessageEmbed()
-        .setAuthor(client.user.username, client.user.displayAvatarURL({ dynamic: true, size: 4096 }))
-        .setDescription("Please select one of the options above to continue! \n\n 1️⃣ Open a ticket. \n 2️⃣ Make a suggestion.")
-        .setFooter("This prompt will close in `60` seconds.")
+        .setAuthor("Select one of the options to continue", client.user.displayAvatarURL({ dynamic: true, size: 4096 }))
+        .setDescription("1️⃣ Open a ticket. \n 2️⃣ Make a suggestion.")
+        .setFooter("This prompt will close in 60 seconds")
+        .setColor("#061A29")
         const msg = await dmChannel.send(embed);
         ["1️⃣", "2️⃣"].forEach(emoji => msg.react(emoji));
 
         const collector = await msg.awaitReactions(selectorFilter, { time: 6e4, max: 1, errors: ["time"] }).catch(e => new Collection<string, MessageReaction>());
-        if (!collector.size || !["1️⃣", "2️⃣"].includes(collector.first().emoji.name)) return msg.edit("> ❌ | Prompt cancelled");
+        if (!collector.size || !["1️⃣", "2️⃣"].includes(collector.first().emoji.name)) return msg.edit("> ❌ | Prompt cancelled", { embed: null });
 
         if (collector.first().emoji.name === "2️⃣") {
           const sgMsg = await dmChannel.send(`> ❓ | What is your suggestion? Please give as much detail as possible.`);
@@ -95,7 +92,10 @@ export default class dmEvent extends BaseEvent {
       if (!client.tickets) return dmChannel.send(
         `> 🔒 | Sorry, the tickets are currently closed. Come back later to see if they are opened again.`
       );
-      
+      if (client.openTickets.has(message.author.id)) return message.author.send(
+        `> ❗ | A ticket is already opened for you, please wait until the ticket is closed!`
+      );
+
       for await (const type of types) {
         if (cancelled) return;
         switch (type) {
