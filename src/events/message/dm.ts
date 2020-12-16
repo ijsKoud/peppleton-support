@@ -19,6 +19,7 @@ import { MessageAttachment } from 'discord.js';
 import { Guild } from 'discord.js';
 import { TextChannel } from 'discord.js';
 
+const timeouts = new Map<string, boolean>();
 
 export default class dmEvent extends BaseEvent {
   constructor() {
@@ -73,6 +74,8 @@ export default class dmEvent extends BaseEvent {
         if (!collector.size || !["1️⃣", "2️⃣"].includes(collector.first().emoji.name)) return msg.edit("> ❌ | Prompt cancelled", { embed: null });
 
         if (collector.first().emoji.name === "2️⃣") {
+          if (timeouts.has(message.author.id)) return message.channel.send("> ❌ | There is a `5` seconds cooldown on this action. Please try again later.");
+
           const sgMsg = await dmChannel.send(`> ❓ | What is your suggestion? Please give as much detail as possible.`);
           ["1️⃣", "2️⃣"].forEach(emoji => msg.react(emoji));
   
@@ -81,13 +84,16 @@ export default class dmEvent extends BaseEvent {
 
           const suggestions = (guild.channels.cache.get(suggestionsChannel) || await client.channels.fetch(suggestionsChannel, true)) as TextChannel;
           suggestions.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\``, { split: true });
+
+          timeouts.set(message.author.id, true);
+          setTimeout(() => timeouts.delete(message.author.id), 5e3);
+          
           return dmChannel.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\` \n > ❗ | Misusing will result in a suggestion blacklist.`, { split: true });
         };
       } catch (e) {
         console.log(e);
         return message.channel.send(e);
       }
-
 
       if (!client.tickets) return dmChannel.send(
         `> 🔒 | Sorry, the tickets are currently closed. Come back later to see if they are opened again.`
