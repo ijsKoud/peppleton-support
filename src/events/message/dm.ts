@@ -65,7 +65,11 @@ export default class dmEvent extends BaseEvent {
       );
 
       try {
-        const msg = await dmChannel.send(`> ${prEmoji} | **Peppleton Support**: \n Please select one of the options above to continue! \n\n 1️⃣ Open a ticket \n 2️⃣ Make a suggestion`);
+        const embed = new MessageEmbed()
+        .setAuthor(client.user.username, client.user.displayAvatarURL({ dynamic: true, size: 4096 }))
+        .setDescription("Please select one of the options above to continue! \n\n 1️⃣ Open a ticket. \n 2️⃣ Make a suggestion.")
+        .setFooter("This prompt will close in `60` seconds.")
+        const msg = await dmChannel.send(embed);
         ["1️⃣", "2️⃣"].forEach(emoji => msg.react(emoji));
 
         const collector = await msg.awaitReactions(selectorFilter, { time: 6e4, max: 1, errors: ["time"] }).catch(e => new Collection<string, MessageReaction>());
@@ -79,10 +83,8 @@ export default class dmEvent extends BaseEvent {
           if (!collector.size) return msg.edit("> ❌ | Prompt cancelled");
 
           const suggestions = (guild.channels.cache.get(suggestionsChannel) || await client.channels.fetch(suggestionsChannel, true)) as TextChannel;
-          //suggestions.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\``, { split: true });
-          dmChannel.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\` \n > ❗ | Misusing will result in a suggestion blacklist.`, { split: true });
-
-          return collector.first().react("✅");
+          suggestions.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\``, { split: true });
+          return dmChannel.send(`> ${prEmoji} | New suggestion - **${message.author.tag}**: \`\`\` ${collector.first().content.replace(/\`/g, "")} \`\`\` \n > ❗ | Misusing will result in a suggestion blacklist.`, { split: true });
         };
       } catch (e) {
         console.log(e);

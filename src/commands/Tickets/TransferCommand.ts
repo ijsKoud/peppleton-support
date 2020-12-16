@@ -12,7 +12,7 @@ export default class TransferCommand extends BaseCommand {
   constructor() {
     super('transfer', 'Tickets', [], {
       description: 'Transfers a ticket to a different department/user.',
-      usage: '<type: user/department> <user name/id/tag/mention | department name>',
+      usage: '<user id | department name>',
       ownerOnly: false,
     });
   }

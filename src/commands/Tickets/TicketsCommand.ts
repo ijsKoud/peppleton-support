@@ -12,6 +12,7 @@ export default class TicketsCommand extends BaseCommand {
   }
 
   async run(client: DiscordClient, message: Message, args: Array<string>) {
+    if (!message.member || !message.member.hasPermission("MANAGE_GUILD")) return;
     client.tickets = !client.tickets;
     return message.channel.send(`> ✅ | Tickets are now turned \`${client.tickets ? "on" : "off"}\`!`);
   }
