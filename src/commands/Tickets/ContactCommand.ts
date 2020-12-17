@@ -36,6 +36,7 @@ export default class ContactCommand extends BaseCommand {
         parent: categoryId,
       });
 
+      await ticketChannel.updateOverwrite(message.guild.id, { SEND_MESSAGES: false, VIEW_CHANNEL: false });
       await ticketChannel.updateOverwrite(message.author, { SEND_MESSAGES: false, VIEW_CHANNEL: false });
       await ticketChannel.updateOverwrite(user, { SEND_MESSAGES: true, VIEW_CHANNEL: true, ATTACH_FILES: true });
       await ticketChannel.updateOverwrite('304986851310043136', { SEND_MESSAGES: true, VIEW_CHANNEL: true, ATTACH_FILES: true });
