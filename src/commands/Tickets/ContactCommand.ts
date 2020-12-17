@@ -41,6 +41,8 @@ export default class ContactCommand extends BaseCommand {
       await ticketChannel.updateOverwrite(user, { SEND_MESSAGES: true, VIEW_CHANNEL: true, ATTACH_FILES: true });
       await ticketChannel.updateOverwrite('304986851310043136', { SEND_MESSAGES: true, VIEW_CHANNEL: true, ATTACH_FILES: true });
 
+      ticketChannel.send(`> ℹ | This ticket was opened by ${message.author.toString()} for ${user.user.toString()} about **${reason.replace(/\`/g, "").replace(/\*/g, "")}**.`);
+
       return message.react("✅");
     } catch (e) {
       return message.channel.deleted ? "" : message.channel.send(`> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\`\n This is 9/10 times because the user closed their DMs.`);
