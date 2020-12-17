@@ -11,8 +11,11 @@ export default class ReadyEvent extends BaseEvent {
     const guild = await client.guilds.fetch(guildId);
     const valid = guild.channels.cache.filter(c => c.name.endsWith('-ticket'));
     valid.forEach(c => client.openTickets.set(c.name.slice(0, -7), true));
-    valid.forEach(c => 
-      client.activeTickets.set(c.id, { reason: "", lastMsg: (c as TextChannel).lastMessage.createdTimestamp })
+    valid.forEach(async c => 
+      client.activeTickets.set(c.id, { 
+        reason: "", 
+        lastMsg: (await (c as TextChannel).messages.fetch({ limit: 100 })).sort((m1, m2) => m2.createdTimestamp - m1.createdTimestamp).first().createdTimestamp
+      })
     );
 
     setInterval(() => {
