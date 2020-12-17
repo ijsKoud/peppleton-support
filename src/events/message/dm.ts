@@ -215,7 +215,7 @@ export default class dmEvent extends BaseEvent {
       console.log(e);
       return message.channel.send(
         `> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\``
-      );
+      ).catch(e => null);
     }
   };
 
