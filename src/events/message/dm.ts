@@ -92,7 +92,9 @@ export default class dmEvent extends BaseEvent {
         };
       } catch (e) {
         console.log(e);
-        return message.channel.send("> ⚠ | Oops, It looks like your DMs are not open. Enable them so I can send you a DM. \n > ℹ | If you think I am wrong, please ping DaanGamesDG and he will help you.");
+        return message.channel.send(
+          "> ⚠ | Oops, It looks like your DMs are not open. Enable them so I can send you a DM. \n > ℹ | If you think I am wrong, please ping **DaanGamesDG** and he will help you."
+        );
       }
 
       if (!client.tickets) return dmChannel.send(
