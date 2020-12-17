@@ -48,6 +48,8 @@ export default class ticketChatEvent extends BaseEvent {
           files
         });
 
+        client.activeTickets.set(channel.id, { reason: "", lastMsg: Date.now() });
+
         return message.react('✅');
       } catch (e) {
         message.react('❌');
@@ -76,6 +78,8 @@ export default class ticketChatEvent extends BaseEvent {
         channel.send(`> 💬 | Reply from **${message.member.nickname || message.author.username}**: \`\`\`${content}\`\`\`\n > ❓ | To reply send a message to me. \n > Use \`${client.prefix}\` if you don't want to respond with a message. \n > Check the command list for all the commands available for tickets!`, {
           files
         });
+
+        client.activeTickets.set(message.channel.id, { reason: "", lastMsg: Date.now() });
 
         return message.react('✅');
       } catch (e) {

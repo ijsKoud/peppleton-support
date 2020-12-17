@@ -10,6 +10,7 @@ const client = new DiscordClient({ allowedMentions: { roles: [eventNotification]
   client.timeouts = new Map<string, NodeJS.Timeout>();
   client.spamFilter = new Map<string, number>();
   client.openTickets = new Map<string, boolean>();
+  client.activeTickets = new Map<string, { reason: string, lastMsg: number }>();
 
   client.prefix = process.env.DISCORD_BOT_PREFIX || client.prefix;
 
@@ -28,6 +29,7 @@ declare module 'discord.js' {
     openTickets: Map<string, boolean>;
     spamFilter: Map<string, number>;
     timeouts: Map<string, NodeJS.Timeout>;
+    activeTickets: Map<string, { reason: string, lastMsg: number }>;
   }
 }
 

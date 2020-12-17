@@ -11,6 +11,15 @@ export default class ReadyEvent extends BaseEvent {
     const valid = guild.channels.cache.filter(c => c.name.endsWith('-ticket'));
     valid.forEach(c => client.openTickets.set(c.name.slice(0, -7), true));
 
+    setInterval(() => {
+      client.activeTickets.forEach(async (v, k) => {
+        (Date.now() - v.lastMsg) >= 864e5 /* 5e3 */
+        ? client.activeTickets.set(k, { reason: "inactive", lastMsg: v.lastMsg }) 
+          && (client.channels.cache.get(k) || await client.channels.fetch(k)).delete()
+        : "";
+      })
+    }, 1e3);
+
     console.log(`${client.user.tag} has logged in!`);
     client.user.setActivity('your support tickets!', { type: 'LISTENING' });
   }
