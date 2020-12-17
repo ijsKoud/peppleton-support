@@ -71,7 +71,7 @@ export default class dmEvent extends BaseEvent {
         ["1️⃣", "2️⃣"].forEach(emoji => msg.react(emoji));
 
         const collector = await msg.awaitReactions(selectorFilter, { time: 6e4, max: 1, errors: ["time"] }).catch(e => new Collection<string, MessageReaction>());
-        if (!collector.size || !["1️⃣", "2️⃣"].includes(collector.first().emoji.name)) return msg.edit("> ❌ | Prompt cancelled", { embed: null });
+        if (!collector.size || !["1️⃣", "2️⃣"].includes(collector.first().emoji.name)) return msg.delete();
 
         if (collector.first().emoji.name === "2️⃣") {
           if (timeouts.has(message.author.id)) return message.channel.send("> ❌ | There is a `5` seconds cooldown on this action. Please try again later.");
@@ -92,7 +92,7 @@ export default class dmEvent extends BaseEvent {
         };
       } catch (e) {
         console.log(e);
-        return message.channel.send(e);
+        return message.channel.send("> ⚠ | Oops, It looks like your DMs are not open. Enable them so I can send you a DM. \n > ℹ | If you think I am wrong, please ping DaanGamesDG and he will help you.");
       }
 
       if (!client.tickets) return dmChannel.send(
