@@ -16,7 +16,7 @@ export default class ticketChatEvent extends BaseEvent {
       `> 🔥 | The server is on fire!!! Not literally but I can not contact it now, please try again later.`
     );
     
-    if (message.content.startsWith(client.prefix)) return this.handleCommands(client, message);
+    if (message.content.startsWith(client.prefix) && !message.content.slice(client.prefix.length).startsWith("message")) return this.handleCommands(client, message);
     if (spamFilter.has(message.author.id) && spamFilter.get(message.author.id) === 5) return;
 
     if (!timeouts.has(message.author.id)) timeouts.set(message.author.id, setTimeout(() => spamFilter.delete(message.author.id), 4e3));
@@ -57,6 +57,7 @@ export default class ticketChatEvent extends BaseEvent {
       }
     } else if (message.channel.type === 'text') {
       try {
+        if (!message.content.startsWith(client.prefix + "message")) return;
         const userId = message.channel.name.slice(0, -7);
         const user = client.users.cache.get(userId) ? (client.users.cache.get(userId).partial ? await client.users.fetch(userId) : client.users.cache.get(userId)) : undefined;
         if (!user) return message.channel.send(
@@ -70,8 +71,8 @@ export default class ticketChatEvent extends BaseEvent {
         const content = this.clean(
           message.content.length
           ? message.content.length > 1500 
-            ? message.content.substr(0, 1500 -3) + '...' 
-            : message.content
+            ? message.content.slice(client.prefix.length + "message ".length).substr(0, 1500 -3) + '...'
+            : message.content.slice(client.prefix.length + "message ".length)
           : 'No message content.'
         );
 
