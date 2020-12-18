@@ -27,7 +27,7 @@ export default class ChannelDeleteEvent extends BaseEvent {
     } catch (e) { }
 
     try {
-      ticketTimeout.findOneAndDelete({ channelId: ticketChannel.id });
+      (await ticketTimeout.findOne({ channelId: ticketChannel.id })).delete();
     } catch (e) {
       console.log(e);
     }
