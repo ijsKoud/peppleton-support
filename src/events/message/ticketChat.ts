@@ -76,7 +76,7 @@ export default class ticketChatEvent extends BaseEvent {
           : ''
         );
 
-        if (content.length < 0 && !files.length) return;
+        if (message.content.split(/\s+/).slice(1).length <= 0 && !files.length) return;
 
         channel.send(`> 💬 | Reply from **${message.member.nickname || message.author.username}**: \`\`\`${content || "No message content"}\`\`\`\n > ❓ | To reply send a message to me. \n > Use \`${client.prefix}\` if you don't want to respond with a message. \n > Check the command list for all the commands available for tickets!`, {
           files
