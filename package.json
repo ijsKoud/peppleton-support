@@ -19,6 +19,7 @@
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "google-spreadsheet": "^3.0.13",
+    "mongoose": "^5.11.8",
     "ms": "^2.1.2"
   },
   "devDependencies": {

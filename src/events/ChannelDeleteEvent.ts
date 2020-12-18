@@ -1,6 +1,7 @@
 import { DMChannel, GuildChannel, TextChannel, User } from 'discord.js';
 import BaseEvent from '../utils/structures/BaseEvent';
 import DiscordClient from '../client/client';
+import { ticketTimeout } from "../utils/database/schemas";
 
 export default class ChannelDeleteEvent extends BaseEvent {
   constructor() {
@@ -24,6 +25,12 @@ export default class ChannelDeleteEvent extends BaseEvent {
       ? user.send("> 🕐 | Your ticket has been closed automatically for being inactive for 24 hours. \n > ❓ | Need more support? Open another ticket!")
       : user.send(`> 👍 | Your ticket is now closed, thanks for getting in touch! \n > ❓ | Questions? Don't hesitate to contact us again, we are always happy to help!`);
     } catch (e) { }
+
+    try {
+      ticketTimeout.findOneAndDelete({ channelId: ticketChannel.id });
+    } catch (e) {
+      console.log(e);
+    }
     
     client.activeTickets.delete(ticketChannel.id);
     return client.openTickets.delete(userId);

@@ -1,7 +1,7 @@
 import { guildId } from '../../../config/config';
 import BaseEvent from '../../utils/structures/BaseEvent';
 import DiscordClient from '../../client/client';
-import { TextChannel } from "discord.js";
+import { ticketTimeout } from "../../utils/database/schemas";
 
 export default class ReadyEvent extends BaseEvent {
   constructor() {
@@ -11,12 +11,20 @@ export default class ReadyEvent extends BaseEvent {
     const guild = await client.guilds.fetch(guildId);
     const valid = guild.channels.cache.filter(c => c.name.endsWith('-ticket'));
     valid.forEach(c => client.openTickets.set(c.name.slice(0, -7), true));
-    valid.forEach(async c => 
+    valid.forEach(async c => {
+      const data = await ticketTimeout.findOne({ channelId: c.id });
       client.activeTickets.set(c.id, { 
         reason: "", 
-        lastMsg: (await (c as TextChannel).messages.fetch({ limit: 100 })).sort((m1, m2) => m2.createdTimestamp - m1.createdTimestamp).first().createdTimestamp
-      })
-    );
+        lastMsg: data.get("lastMsg"),
+      });
+    });
+
+    setInterval(() => {
+      client.activeTickets.forEach((v, k) => 
+        ticketTimeout.findOneAndUpdate({ channelId: k }, { channelId: k, lastMsg: v.lastMsg }, { upsert: true })
+          .catch(e => console.log(e))
+      );
+    }, 6e4);
 
     setInterval(() => {
       client.activeTickets.forEach(async (v, k) => {

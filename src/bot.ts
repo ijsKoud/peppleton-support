@@ -4,7 +4,13 @@ import { registerCommands, registerEvents } from './utils/registry';
 import { eventNotification } from "../config/config";
 import utils from './utils/functions/utils';
 import DiscordClient from './client/client';
-const client = new DiscordClient({ allowedMentions: { roles: [eventNotification] }, partials: ['MESSAGE', 'REACTION', 'USER', 'CHANNEL', 'GUILD_MEMBER'] });
+import mongoose from "mongoose";
+
+const client = new DiscordClient({ 
+  allowedMentions: { 
+    roles: [eventNotification] 
+  }, partials: ['MESSAGE', 'REACTION', 'USER', 'CHANNEL', 'GUILD_MEMBER'],
+});
 
 (async () => {
   client.timeouts = new Map<string, NodeJS.Timeout>();
@@ -19,7 +25,19 @@ const client = new DiscordClient({ allowedMentions: { roles: [eventNotification]
 
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
-  await client.login(process.env.DISCORD_BOT_TOKEN);
+
+  mongoose.connect(process.env.DB_URL, { 
+    useUnifiedTopology: true, 
+    useNewUrlParser: true, 
+    useFindAndModify: false,
+    useCreateIndex: true,
+  });
+  
+  client.login(process.env.DISCORD_BOT_TOKEN);
+
+  mongoose.connection.on("connected" , () => console.log("connected to database!"));
+  mongoose.connection.on("err" , (err: Error) => console.error(`Mongoose Error:\n ${err.stack ? err.stack : err.name} | ${err.message}`));
+  mongoose.connection.on("disconnected" , () => console.warn("Database connection lost!"));
 })();
 
 declare module 'discord.js' {
