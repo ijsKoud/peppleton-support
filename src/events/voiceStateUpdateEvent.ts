@@ -9,24 +9,15 @@ export default class voiceStateUpdateEvent extends BaseEvent {
   }
   
   async run(client: DiscordClient, oldState: VoiceState, newState: VoiceState) {
-    if (
-      (oldState.channel && !newState.channel) 
-      && (oldState.channelID === eventsVoiceChannel 
-        && newState.channelID !== eventsVoiceChannel)
-    ) {
+    if (oldState.channel && oldState.channelID === eventsVoiceChannel)
       !client.channels.cache.has(eventsTextChannel) ? 
       (await client.channels.fetch(eventsTextChannel, true, true) as TextChannel).updateOverwrite(oldState.member, { VIEW_CHANNEL: false })
       : (client.channels.cache.get(eventsTextChannel) as TextChannel).updateOverwrite(oldState.member, { VIEW_CHANNEL: false });
-    }
 
-    if (
-      (!oldState.channel && newState.channel) 
-      && (oldState.channelID !== eventsVoiceChannel 
-        && newState.channelID == eventsVoiceChannel)
-    ) {
+    else if (newState.channel && newState.channelID === eventsVoiceChannel)
       !client.channels.cache.has(eventsTextChannel) ? 
       (await client.channels.fetch(eventsTextChannel, true, true) as TextChannel).updateOverwrite(oldState.member, { VIEW_CHANNEL: true })
       : (client.channels.cache.get(eventsTextChannel) as TextChannel).updateOverwrite(oldState.member, { VIEW_CHANNEL: true });
-    }
+
   }
 }
