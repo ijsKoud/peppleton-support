@@ -38,7 +38,6 @@ export default class ContactCommand extends BaseCommand {
 
       await ticketChannel.updateOverwrite(message.guild.id, { SEND_MESSAGES: false, VIEW_CHANNEL: false });
       await ticketChannel.updateOverwrite(message.author, { SEND_MESSAGES: false, VIEW_CHANNEL: false });
-      await ticketChannel.updateOverwrite(user, { SEND_MESSAGES: true, VIEW_CHANNEL: true, ATTACH_FILES: true });
       await ticketChannel.updateOverwrite('304986851310043136', { SEND_MESSAGES: true, VIEW_CHANNEL: true, ATTACH_FILES: true });
 
       ticketChannel.send(`> ℹ | This ticket was opened by ${message.author.toString()} for ${user.user.toString()} about **${reason.replace(/\`/g, "").replace(/\*/g, "")}**.`);
