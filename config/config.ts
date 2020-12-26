@@ -11,9 +11,9 @@ export const eventsChannel: string = '751889989171806259';
 export const feedbackSheet: string = '1r8a--e9-THYU_w8ql6Qlg_xxVkag_trKL0DhudRonSg';
 export const feedbackMsgId: string = '786684201247571978';
 
-export const qdEmoji: string = '<:QD:779801401463275520>';
-export const dsEmoji: string = '<:DS:779801398924673025>';
-export const gdEmoji: string = '<:GD:779801398992437249>';
+export const qdEmoji: string = '<:QD:792118596347756604>';
+export const dsEmoji: string = '<:DS:792118595068231701>';
+export const gdEmoji: string = '<:GD:792118596205412392>';
 export const prEmoji: string = '<:PRLogo:771799330516107265>';
 
 export const blacklistRole: string = '781589052197568512';
