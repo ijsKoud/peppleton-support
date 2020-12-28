@@ -33,3 +33,4 @@ export const devChannel: string = "792914883284172841";
 export const dirChannel: string = "792914904784175185";
 
 export const suggestionsChannel: string = "788811272899919872";
+export const transcriptionsChannel: string = "793203715154378752";

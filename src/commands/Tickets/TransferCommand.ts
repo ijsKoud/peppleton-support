@@ -6,6 +6,7 @@ import {
 	managerChannel,
 	devChannel,
 	dirChannel,
+	mRole,
 } from "../../../config/config";
 import {
 	Message,
@@ -114,7 +115,7 @@ export default class TransferCommand extends BaseCommand {
 	department(type: string): string {
 		type = type.toLowerCase();
 		return type == "manager"
-			? "Managers Department"
+			? "Manager Department"
 			: type == "dev"
 			? "Developers Department"
 			: type == "directors"
@@ -206,11 +207,13 @@ export default class TransferCommand extends BaseCommand {
 				VIEW_CHANNEL: true,
 				ATTACH_FILES: true,
 			});
-			ticketChannel.updateOverwrite(message.author, {
-				SEND_MESSAGES: false,
-				VIEW_CHANNEL: false,
-				ATTACH_FILES: false,
-			});
+			message.member.roles.cache.has(mRole)
+				? ticketChannel.updateOverwrite(message.author, {
+						SEND_MESSAGES: false,
+						VIEW_CHANNEL: false,
+						ATTACH_FILES: false,
+				  })
+				: null;
 			ticketChannel.updateOverwrite("304986851310043136", {
 				SEND_MESSAGES: true,
 				VIEW_CHANNEL: true,
