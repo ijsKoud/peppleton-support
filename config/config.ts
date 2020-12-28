@@ -18,6 +18,8 @@ export const gdEmoji: string = "<:GD:792118596205412392>";
 export const prEmoji: string = "<:PRLogo:771799330516107265>";
 
 export const blacklistRole: string = "781589052197568512";
+export const svRole: string = "742790430034362440";
+export const mRole: string = "742791627495571596";
 
 export const guildId: string = "705523495563427872";
 export const categoryId: string = "754266502638600233";
@@ -26,5 +28,8 @@ export const qdDepChannel: string = "780500433504043039";
 export const dsDepChannel: string = "780500462218379304";
 export const gdDepChannel: string = "780500873544597534";
 export const anyDepChannel: string = "780500364448235530";
+export const managerChannel: string = "792914866574589952";
+export const devChannel: string = "792914883284172841";
+export const dirChannel: string = "792914904784175185";
 
 export const suggestionsChannel: string = "788811272899919872";

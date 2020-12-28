@@ -11,6 +11,8 @@ import {
 	gdDepChannel,
 	anyDepChannel,
 	suggestionsChannel,
+	svRole,
+	mRole,
 } from "../../../config/config";
 import BaseEvent from "../../utils/structures/BaseEvent";
 import {
@@ -439,10 +441,19 @@ export default class dmEvent extends BaseEvent {
 					parent: categoryId,
 				}
 			);
+
 			ticketChannel.updateOverwrite(claimer, {
 				SEND_MESSAGES: true,
 				VIEW_CHANNEL: true,
 				ATTACH_FILES: true,
+			});
+			ticketChannel.updateOverwrite(svRole, {
+				SEND_MESSAGES: false,
+				VIEW_CHANNEL: false,
+			});
+			ticketChannel.updateOverwrite(mRole, {
+				SEND_MESSAGES: false,
+				VIEW_CHANNEL: false,
 			});
 			ticketChannel.updateOverwrite(guild.me, {
 				SEND_MESSAGES: true,
@@ -458,6 +469,7 @@ export default class dmEvent extends BaseEvent {
 				VIEW_CHANNEL: true,
 				ATTACH_FILES: true,
 			});
+
 			embed.setDescription([
 				`> ${prEmoji} | **Department**: ${dep}`,
 				`> 🏷 | **Title/topic**: ${
