@@ -68,11 +68,6 @@ export default class ContactCommand extends BaseCommand {
 				SEND_MESSAGES: true,
 				VIEW_CHANNEL: true,
 			});
-			await ticketChannel.updateOverwrite("304986851310043136", {
-				SEND_MESSAGES: true,
-				VIEW_CHANNEL: true,
-				ATTACH_FILES: true,
-			});
 			ticketChannel.updateOverwrite(svRole, {
 				SEND_MESSAGES: false,
 				VIEW_CHANNEL: false,
@@ -82,6 +77,11 @@ export default class ContactCommand extends BaseCommand {
 				VIEW_CHANNEL: false,
 			});
 			ticketChannel.updateOverwrite(message.guild.me, {
+				SEND_MESSAGES: true,
+				VIEW_CHANNEL: true,
+				ATTACH_FILES: true,
+			});
+			await ticketChannel.updateOverwrite("304986851310043136", {
 				SEND_MESSAGES: true,
 				VIEW_CHANNEL: true,
 				ATTACH_FILES: true,
