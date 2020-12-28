@@ -452,8 +452,8 @@ export default class dmEvent extends BaseEvent {
 				VIEW_CHANNEL: false,
 			});
 			ticketChannel.updateOverwrite(mRole, {
-				SEND_MESSAGES: false,
-				VIEW_CHANNEL: false,
+				SEND_MESSAGES: true,
+				VIEW_CHANNEL: true,
 			});
 			ticketChannel.updateOverwrite(guild.me, {
 				SEND_MESSAGES: true,
