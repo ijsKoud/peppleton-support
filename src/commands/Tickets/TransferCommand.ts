@@ -34,6 +34,7 @@ export default class TransferCommand extends BaseCommand {
 			);
 
 		const type: string = isNaN(parseInt(args[0])) ? "department" : "user";
+		if (!this.clean(message.member)) return message.react("❌");
 
 		if (
 			!message.channel.name.endsWith("-ticket") ||
