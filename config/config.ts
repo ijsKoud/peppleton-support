@@ -12,9 +12,9 @@ export const feedbackSheet: string =
 	"1r8a--e9-THYU_w8ql6Qlg_xxVkag_trKL0DhudRonSg";
 export const feedbackMsgId: string = "786684201247571978";
 
-export const qdEmoji: string = "<:QD:792118596347756604>";
-export const dsEmoji: string = "<:DP:792499533384384522>";
-export const gdEmoji: string = "<:GD:792118596205412392>";
+export const qdEmoji: string = "<:Driver:793907766476668938>";
+export const dsEmoji: string = "<:Dispatcher:793907746390933534>";
+export const gdEmoji: string = "<:Guard:793907789349126214>";
 export const prEmoji: string = "<:PRLogo:771799330516107265>";
 
 export const blacklistRole: string = "781589052197568512";
