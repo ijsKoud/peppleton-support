@@ -1,4 +1,3 @@
-// https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelCreate
 import { DMChannel, GuildChannel, TextChannel } from "discord.js";
 import BaseEvent from "../../utils/structures/BaseEvent";
 import DiscordClient from "../../client/client";
