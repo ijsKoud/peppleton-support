@@ -176,9 +176,9 @@ export default class dmEvent extends BaseEvent {
 							.setColor("#061A29")
 							.setDescription([
 								"Is your question related to a **role**? \n If not, select `any department`! \n",
-								`> ${qdEmoji} | **QD Department**`,
-								`> ${dsEmoji} | **DP Department**`,
-								`> ${gdEmoji} | **GD Department**`,
+								`> ${qdEmoji} | **Driver Department**`,
+								`> ${dsEmoji} | **Dispatch Department**`,
+								`> ${gdEmoji} | **Guard Department**`,
 								`> ${prEmoji} | **Any Department** \n`,
 								"React to an emoji below to continue. \n This prompt will close in `60` seconds!",
 							]);
