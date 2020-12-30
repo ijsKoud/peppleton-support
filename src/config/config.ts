@@ -13,7 +13,7 @@ export const feedbackSheet: string =
 	"1r8a--e9-THYU_w8ql6Qlg_xxVkag_trKL0DhudRonSg";
 export const feedbackMsgId: string = "786684201247571978";
 
-// tickets
+// emojis
 export const qdEmoji: string = "<:Driver:793907766476668938>";
 export const dsEmoji: string = "<:Dispatcher:793907746390933534>";
 export const gdEmoji: string = "<:Guard:793907789349126214>";
@@ -42,25 +42,33 @@ export const suggestionsChannel: string = "788811272899919872";
 export const transcriptionsChannel: string = "793203715154378752";
 
 // dev config file
+
+// events
 // export const eventNotification: string = '739544442540654722';
 // export const reactionRoleMSG: string = '781131081503211520';
 // export const reactionEmojiName: string = 'Bell';
-
 // export const eventsChannel: string = '780142013294444604';
 
+// feedback
 // export const feedbackSheet: string = '1vYYqgAWYJgyH9WH7ohrR4r8PtR8nuZGdc9KtkctFICY';
 // export const feedbackMsgId: string = '781131145738846258';
 
-// export const qdEmoji: string = '<:QD:779801401463275520>';
-// export const dsEmoji: string = '<:DS:779801398924673025>';
-// export const gdEmoji: string = '<:GD:779801398992437249>';
-// export const prEmoji: string = '<:PRLogo:771799330516107265>';
+// emojis
+// export const qdEmoji: string = "<:Driver:793907766476668938>";
+// export const dsEmoji: string = "<:Dispatcher:793907746390933534>";
+// export const gdEmoji: string = "<:Guard:793907789349126214>";
+// export const prEmoji: string = "<:PRLogo:771799330516107265>";
 
+// roles
 // export const blacklistRole: string = '739546067984580639';
+// export const svRole: string = "742790430034362440";
+// export const mRole: string = "742791627495571596";
 
+// ids
 // export const guildId: string = '739540180700102799';
 // export const categoryId: string = '780519119119581234';
 
+// channels - ticket
 // export const qdDepChannel: string = '780519162497335357';
 // export const dsDepChannel: string = '780519185909284874';
 // export const gdDepChannel: string = '780519217946558494';
@@ -69,5 +77,6 @@ export const transcriptionsChannel: string = "793203715154378752";
 // export const devChannel: string = "";
 // export const dirChannel: string = "";
 
+// channels - other
 // export const suggestionsChannel: string = "";
 // export const transcriptionsChannel: string = "";
