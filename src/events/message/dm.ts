@@ -73,7 +73,7 @@ export default class dmEvent extends BaseEvent {
 
 			let types: string[] = ["department", "title", "description", "extra"];
 			let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
-			let emojiNames: string[] = ["QD", "DP", "GD", "PRLogo"];
+			let emojiNames: string[] = ["Driver", "Dispatcher", "Guard", "PRLogo"];
 
 			if (!this.clean(member))
 				return dmChannel.send(
