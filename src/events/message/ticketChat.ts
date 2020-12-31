@@ -5,7 +5,6 @@ import {
 	Collection,
 	TextChannel,
 	MessageAttachment,
-	Util,
 } from "discord.js";
 import DiscordClient from "../../client/client";
 

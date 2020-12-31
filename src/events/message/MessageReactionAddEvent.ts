@@ -65,6 +65,7 @@ export default class MessageReactionAddEvent extends BaseEvent {
 			const rows = await sheet.getRows();
 			const data = rows.find((r) => r.discordID == user.id);
 			const state = rows.find((r) => r.discordID == user.id);
+
 			const feedback = data
 				? `> ${prEmoji} | You **${
 						state.passed
@@ -76,8 +77,11 @@ export default class MessageReactionAddEvent extends BaseEvent {
 				: "> 👤 | Sorry I didn't find your user id in the database, if you think I am wrong, please open a ticket and the staff team is happy to help!";
 
 			check.set(user.id, true);
+			setTimeout(() => check.delete(user.id), 5e3);
+
 			return msg.edit(feedback);
 		} catch (e) {
+			check.delete(user.id);
 			return console.log(e);
 		}
 	}

@@ -27,6 +27,7 @@ import DiscordClient from "../../client/client";
 import { MessageAttachment } from "discord.js";
 import { Guild } from "discord.js";
 import { TextChannel } from "discord.js";
+import { blacklist } from "../../utils/database/schemas";
 
 const timeouts = new Map<string, boolean>();
 
@@ -64,6 +65,7 @@ export default class dmEvent extends BaseEvent {
 				? await guild.members.fetch(message.author.id)
 				: guild.members.cache.get(message.author.id);
 			const dmChannel = await member.createDM();
+
 			let cancelled: boolean = false;
 			let department: string = "";
 			let title: string = "";
@@ -75,7 +77,7 @@ export default class dmEvent extends BaseEvent {
 			let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
 			let emojiNames: string[] = ["Driver", "Dispatcher", "Guard", "PRLogo"];
 
-			if (!this.clean(member))
+			if (await this.blacklisted(member))
 				return dmChannel.send(
 					`> 🔨 | You are blacklisted from using the tickets system, you can not open a ticket until you are removed from the blacklist. If you think this is a mistake feel free to DM a staff member about this.`
 				);
@@ -159,6 +161,7 @@ export default class dmEvent extends BaseEvent {
 				return dmChannel.send(
 					`> 🔒 | Sorry, the tickets are currently closed. Come back later to see if they are opened again.`
 				);
+
 			if (client.openTickets.has(message.author.id))
 				return message.author.send(
 					`> ❗ | A ticket is already opened for you, please wait until the ticket is closed!`
@@ -344,8 +347,8 @@ export default class dmEvent extends BaseEvent {
 		}
 	}
 
-	clean(member: GuildMember): boolean {
-		return member.roles.cache.has(blacklistRole) ? false : true;
+	async blacklisted(member: GuildMember): Promise<boolean> {
+		return (await blacklist.findOne({ userId: member.id })) ? true : false;
 	}
 
 	getAttachments(attachments: Collection<string, MessageAttachment>): string[] {
