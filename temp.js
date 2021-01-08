@@ -21,15 +21,10 @@ module.exports = async function timeout(client) {
 		if (count == 0) setTimeout(() => map.delete(m.channel.id), 6e5);
 		map.set(m.channel.id, count + 1);
 
-		if (count > 250 && !rateLimited) {
-			c.setRateLimitPerUser(10);
-			ratelimited.set(m.channel.id, true);
-		} else if (count > 125 && !rateLimited) {
-			c.setRateLimitPerUser(10);
-			ratelimited.set(m.channel.id, true);
-		}
+		if (!ratelimited.has(m.channel.id) && count >= 125) {
+			const ratelimit = count >= 125 ? 5 : 10;
+			m.channel.setRateLimitPerUser(ratelimit);
 
-		if (rateLimited) {
 			const embed = new MessageEmbed()
 				.setTitle("Channel ratelimit changed")
 				.setColor("#d17804")
@@ -40,6 +35,7 @@ module.exports = async function timeout(client) {
 				]);
 
 			modlog.send(embed).catch((e) => console.log(e));
+			ratelimited.set(m.channel.id, true);
 
 			setTimeout(() => {
 				c.setRateLimitPerUser(0);
