@@ -31,8 +31,8 @@ module.exports = async function timeout(client) {
 				.setTitle("Channel ratelimit changed")
 				.setColor("#d17804")
 				.setDescription([
-					`> 🏷 | **Channel**: ${c.toString()}`,
-					`> ⏳ | **RateLimit**: \`${c.rateLimitPerUser}s\``,
+					`> 🏷 | **Channel**: ${m.channel.toString()}`,
+					`> ⏳ | **RateLimit**: \`${m.channel.rateLimitPerUser}s\``,
 					`> ⌚ | **Duration**: \`30m\``,
 				]);
 
@@ -40,7 +40,7 @@ module.exports = async function timeout(client) {
 			ratelimited.set(m.channel.id, true);
 
 			setTimeout(() => {
-				c.setRateLimitPerUser(0);
+				m.channel.setRateLimitPerUser(0);
 				ratelimited.delete(m.channel.id);
 			}, 18e5);
 		}
