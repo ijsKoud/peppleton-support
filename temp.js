@@ -14,6 +14,8 @@ module.exports = async function timeout(client) {
 		"705523496159281166",
 	];
 
+	const modlog = await client.channels.fetch("797076233912713236");
+
 	client.on("message", async (m) => {
 		if (ratelimited.has(m.channel.id) || !ids.includes(m.channel.id)) return;
 
