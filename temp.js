@@ -35,6 +35,7 @@ module.exports = async function timeout(client) {
 					? 3
 					: 0;
 			if (ratelimit === ratelimited.get(m.channel.id)) return;
+			ratelimited.set(m.channel.id, ratelimit);
 			m.channel.setRateLimitPerUser(ratelimit);
 
 			const embed = new MessageEmbed()
@@ -48,7 +49,7 @@ module.exports = async function timeout(client) {
 
 			modlog.send(embed).catch((e) => console.log(e));
 			m.channel.send(
-				`Slowmode has been enabled for \`${ratelimit}seconds\` due to: **A high load of messages**.`
+				`Slowmode has been enabled for \`${ratelimit} seconds\` due to: **A high load of messages**.`
 			);
 
 			setTimeout(async () => {
