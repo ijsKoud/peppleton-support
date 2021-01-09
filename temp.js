@@ -23,8 +23,17 @@ module.exports = async function timeout(client) {
 		if (count == 0) setTimeout(() => map.delete(m.channel.id), 6e5);
 		map.set(m.channel.id, count + 1);
 
-		if (!ratelimited.has(m.channel.id) && count >= 125) {
-			const ratelimit = count >= 125 ? 5 : 10;
+		if (!ratelimited.has(m.channel.id) && count >= 60) {
+			const ratelimit =
+				count >= 200
+					? 15
+					: count >= 150
+					? 10
+					: count >= 120
+					? 5
+					: count >= 60
+					? 3
+					: 0;
 			m.channel.setRateLimitPerUser(ratelimit);
 
 			const embed = new MessageEmbed()
@@ -32,11 +41,14 @@ module.exports = async function timeout(client) {
 				.setColor("#d17804")
 				.setDescription([
 					`> 🏷 | **Channel**: ${m.channel.toString()}`,
-					`> ⏳ | **RateLimit**: \`${m.channel.rateLimitPerUser}s\``,
+					`> ⏳ | **RateLimit**: \`${ratelimit}s\``,
 					`> ⌚ | **Duration**: \`30m\``,
 				]);
 
 			modlog.send(embed).catch((e) => console.log(e));
+			m.channel.send(
+				`Slowmode has been enabled for \`${ratelimit}seconds\` due to: **A high load of messages**.`
+			);
 			ratelimited.set(m.channel.id, true);
 
 			setTimeout(() => {
