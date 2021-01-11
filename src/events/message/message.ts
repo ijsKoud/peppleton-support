@@ -50,7 +50,7 @@ export default class MessageEvent extends BaseEvent {
 				);
 			case QOTDChannel:
 				return message.channel.send(
-					`> <@&${QOTDNotifications}>, new events notification 🔼`
+					`> <@&${QOTDNotifications}>, new QOTD notification 🔼`
 				);
 		}
 	}
