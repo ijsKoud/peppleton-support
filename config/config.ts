@@ -5,7 +5,7 @@ export const eventsTextChannel: string = "751893103031615640";
 export const eventNotification: string = "739489234892750919";
 export const reactionRoleMSG: string = "797903530672783401";
 export const reactionEmojiName: string = "🔔";
-export const reactionEmojiName2: string = "📅";
+export const reactionEmojiName2: string = "🗓";
 
 export const QOTDChannel: string = "797618660188880927";
 export const QOTDNotifications: string = "797902390208364594";
