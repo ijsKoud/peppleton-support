@@ -12,12 +12,16 @@ import {
 import {
 	anyDepChannel,
 	categoryId,
+	DispatchReports,
+	DrivingReports,
 	dsDepChannel,
 	dsEmoji,
 	gdDepChannel,
 	gdEmoji,
+	guardReports,
 	guildId,
 	mRole,
+	otherReports,
 	prefix,
 	prEmoji,
 	qdDepChannel,
@@ -39,11 +43,7 @@ export default class ready extends Listener {
 
 	async exec(message: Message): Promise<void> {
 		if (message.system || message.author.bot) return;
-		if (
-			message.mentions.has(this.client.user) &&
-			!(await ticket.findOne({ userId: message.author.id }))
-		)
-			return this.createTicket(message);
+		if (message.mentions.has(this.client.user)) return this.createTicket(message);
 
 		switch (message.channel.type) {
 			case "dm":
@@ -130,7 +130,7 @@ export default class ready extends Listener {
 			};
 
 			const selectorFilter = (reaction: MessageReaction, user: User) => {
-				return user.id === message.author.id && ["1️⃣", "2️⃣"].includes(reaction.emoji.name);
+				return user.id === message.author.id && ["1️⃣", "2️⃣", "3️⃣"].includes(reaction.emoji.name);
 			};
 
 			const member = guild.members.cache.get(message.author.id).partial
@@ -207,7 +207,7 @@ export default class ready extends Listener {
 						{ split: true }
 					);
 				} else if (collector.first().emoji.name === "3️⃣") {
-					return message.channel.send("comming soon");
+					return this.report(message);
 				}
 			} catch (e) {
 				console.log(e);
@@ -215,6 +215,9 @@ export default class ready extends Listener {
 					"> ⚠ | Oops, It looks like your DMs are not open. Enable them so I can send you a DM. \n > ℹ | If you think I am wrong, please ping **DaanGamesDG#7621** and he will help you."
 				);
 			}
+
+			const schema = await ticket.findOne({ userId: message.author.id });
+			if (!schema) return;
 
 			if (!this.client.tickets)
 				return dmChannel.send(
@@ -504,6 +507,188 @@ export default class ready extends Listener {
 			this.client.openTickets.delete(message.author.id);
 			message.author.send(`> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\``);
 		}
+	}
+
+	// report system
+	async report(message: Message) {
+		const guild = this.client.guilds.cache.get(guildId);
+		const emojiFilter = (reaction: MessageReaction, user: User) => {
+			return user.id === message.author.id && emojiNames.includes(reaction.emoji.name);
+		};
+		const filter = (m: Message) => {
+			return m.author.id === message.author.id;
+		};
+
+		const member = guild.members.cache.get(message.author.id).partial
+			? await guild.members.fetch(message.author.id)
+			: guild.members.cache.get(message.author.id);
+
+		const dmChannel = await member.createDM();
+		let cancelled: boolean = false;
+		let department: string = "";
+		let title: string = "";
+		let description: string = "";
+		let extra: string = "";
+		let fileUrls: string[] = [];
+
+		let types: string[] = ["department", "title", "description", "extra"];
+		let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
+		let emojiNames: string[] = ["Driver", "Dispatcher", "Guard", "PRLogo"];
+
+		for await (const type of types) {
+			if (cancelled) return;
+			switch (type) {
+				case "department":
+					const embed = new MessageEmbed()
+						.setAuthor(
+							"Select a department to continue:",
+							this.client.user.displayAvatarURL({ dynamic: true, size: 4096 })
+						)
+						.setColor("#061A29")
+						.setDescription([
+							"Is your question related to a **role**? \n If not, select `any department`! \n",
+							`> ${qdEmoji} | **Driver Department**`,
+							`> ${dsEmoji} | **Dispatch Department**`,
+							`> ${gdEmoji} | **Guard Department**`,
+							`> ${prEmoji} | **Any Department** \n`,
+							"React to an emoji below to continue. \n This prompt will close in `60` seconds!",
+						]);
+
+					const depMsg = await dmChannel.send(embed);
+					for (const emoji of emojis) depMsg.react(emoji);
+					const depCollector = await depMsg
+						.awaitReactions(emojiFilter, {
+							time: 6e4,
+							max: 1,
+							errors: ["time"],
+						})
+						.catch((e) => new Collection<string, MessageReaction>());
+					if (!depCollector.size) {
+						cancelled = true;
+						depMsg.delete();
+						return dmChannel.send(`> ❌ | The prompt is cancelled.`);
+					}
+
+					switch (depCollector.first().emoji.name) {
+						case emojiNames[0]:
+							department = "Driver Department";
+							depMsg.delete();
+							dmChannel.send(`> ${qdEmoji} | You selected the **${department}**.`);
+							break;
+						case emojiNames[1]:
+							department = "Dispatch Department";
+							depMsg.delete();
+							dmChannel.send(`> ${dsEmoji} | You selected the **${department}**.`);
+							break;
+						case emojiNames[2]:
+							department = "Guard Department";
+							depMsg.delete();
+							dmChannel.send(`> ${gdEmoji} | You selected the **${department}**.`);
+							break;
+						case emojiNames[3]:
+							department = "Any Department";
+							depMsg.delete();
+							dmChannel.send(`> ${prEmoji} | You selected the **${department}**.`);
+							break;
+					}
+					break;
+				case "title":
+					const titleMsg = await dmChannel.send(
+						`> 📝 | Why are you reporting this user? (short reason)`
+					);
+					const titleCollector = await dmChannel
+						.awaitMessages(filter, { time: 6e4, max: 1, errors: ["time"] })
+						.catch((e) => new Collection<string, Message>());
+					if (!titleCollector.size) {
+						cancelled = true;
+						return titleMsg.edit(`> ❌ | The prompt is cancelled.`);
+					}
+					title = titleCollector.first().content;
+					titleMsg.edit(
+						`> 📁 | You answered: \`${
+							title.length > 1800 ? title.substr(0, 1800 - 3) + "..." : title
+						}\`.`
+					);
+					break;
+				case "description":
+					const descMsg = await dmChannel.send(
+						`> 📝 | Give us as much detail as possible why you report this user (screenshots can be added in the next step).`
+					);
+					const descCollector = await dmChannel
+						.awaitMessages(filter, { time: 12e4, max: 1, errors: ["time"] })
+						.catch((e) => new Collection<string, Message>());
+					if (!descCollector.size) {
+						cancelled = true;
+						return titleMsg.edit(`> ❌ | The prompt is cancelled.`);
+					}
+					description = descCollector.first().content;
+					descMsg.edit(
+						`> 📁 | You answered: \`${
+							description.length > 1800 ? description.substr(0, 1800 - 3) + "..." : description
+						}\`.`
+					);
+					break;
+				case "extra":
+					const extraMsg = await dmChannel.send(
+						`> 📝 | Please attach a full, uncropped screenshot as evidence. (at least 1)`
+					);
+					const extraCollector = await dmChannel
+						.awaitMessages(filter, { time: 6e4, max: 1, errors: ["time"] })
+						.catch((e) => new Collection<string, Message>());
+					if (extraCollector.size < 0 || extraCollector.first().attachments.size < 0) {
+						cancelled = true;
+						return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
+					}
+					const files = this.getAttachments(extraCollector.first().attachments);
+					extra = extraCollector.first().content;
+					await dmChannel.send(
+						`> 📁 | You answered: \`${
+							extra.length > 1800 ? extra.substr(0, 1800 - 3) + "..." : extra
+						}\`.`,
+						{
+							files,
+						}
+					);
+					extra = extraCollector.first().content;
+					fileUrls = files;
+					break;
+			}
+		}
+
+		let channel: TextChannel;
+		switch (department) {
+			case "Driver Department":
+				channel = await this.getChannel(DrivingReports);
+				break;
+			case "Dispatch Department":
+				channel = await this.getChannel(DispatchReports);
+				break;
+			case "Guard Department":
+				channel = await this.getChannel(guardReports);
+				break;
+			case "Any Department":
+				channel = await this.getChannel(otherReports);
+				break;
+		}
+
+		channel.send(
+			new MessageEmbed()
+				.setDescription([
+					`>>> ${prEmoji} | **Department**: ${department}`,
+					`🏷 | **Reason**: ${title.length > 200 ? title.substr(0, 200 - 3) + "..." : title}`,
+					`📄 | **Description**: ${
+						description.length > 200 ? description.substr(0, 200 - 3) + "..." : description
+					}`,
+					`📂 | **Extra**: ${extra.length > 400 ? extra.substr(0, 400 - 3) + "..." : extra}`,
+				])
+				.setTitle(`New Report from ${message.author.tag}`)
+				.attachFiles(fileUrls)
+				.setColor("#061A29")
+		);
+
+		return message.author.send(
+			`>>> 👍 | We received your report. If you want to report more users, don't hesitate to use the report function again!`
+		);
 	}
 
 	// chat system functions

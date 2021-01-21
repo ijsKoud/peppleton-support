@@ -3,7 +3,7 @@ export const prefix: string = "=";
 
 export const token: string = "NzExNDY4ODkzNDU3MDg4NTUz.XsDdCg.1pPxf6o6m4pR-bcklXsCUnXrChg";
 export const db: string =
-	"mongodb+srv://peppleton-support:Tvvq9tUSoFbLmRL4@peppleton-support.ipvxi.mongodb.net/data?retryWrites=true&w=majority";
+	"mongodb+srv://peppleton-support:Tvvq9tUSoFbLmRL4@peppleton-support.ipvxi.mongodb.net/peppleton?retryWrites=true&w=majority";
 export const googleApi: string = "AIzaSyDNMlSnrN6G6_DxQwbZgvuWq9wHNPkMwwM";
 
 export const wbId: string = "791646258515148801";
@@ -41,3 +41,8 @@ export const dirChannel: string = "792914904784175185";
 
 export const suggestionsChannel: string = "788811272899919872";
 export const transcriptionsChannel: string = "793203715154378752";
+
+export const DrivingReports: string = "798639223817109525";
+export const DispatchReports: string = "798639351012655124";
+export const guardReports: string = "798639473373085758";
+export const otherReports: string = "781841366795288576";
