@@ -21,7 +21,7 @@ export default class transferCommand extends Command {
 				usage: "transfer <department/user id>",
 			},
 			ratelimit: 1,
-			cooldown: 1e3,
+			cooldown: 3e3,
 			args: [
 				{
 					id: "location",
