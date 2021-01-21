@@ -18,6 +18,7 @@ import {
 	gdEmoji,
 	guildId,
 	mRole,
+	prefix,
 	prEmoji,
 	qdDepChannel,
 	qdEmoji,
@@ -48,7 +49,7 @@ export default class ready extends Listener {
 			case "dm":
 				let channelId: string;
 				if (map.has(message.author.id)) channelId = map.get(message.author.id);
-
+				if (message.content.startsWith(prefix)) return;
 				const schema = await ticket.findOne({ userId: message.author.id });
 				if (!schema) return;
 
@@ -60,7 +61,7 @@ export default class ready extends Listener {
 				channel.send(
 					`>>> 💬 | Reply from **${message.author.username}**: \`\`\`${this.filter(
 						message.content || "No message content."
-					)}\`\`\``,
+					)}\`\`\`\n❓ | Use \`${prefix}message <message>\` to respond. Check the command list for all the commands available for tickets!`,
 					{ files }
 				);
 				message.react("✅");
@@ -70,14 +71,18 @@ export default class ready extends Listener {
 				this.updateLastMSG(message.author.id);
 				break;
 			case "text":
-				if (!message.channel.name.endsWith("-ticket")) return;
+				if (
+					!message.channel.name.endsWith("-ticket") ||
+					!message.content.startsWith(prefix + "message")
+				)
+					return;
 				let userId: string;
 				if (map.has(message.channel.id)) userId = map.get(message.channel.id);
 
 				const scheme = await ticket.findOne({ channelId: message.channel.id });
 				if (!scheme) return;
 
-				userId = schema.get("userId") as string;
+				userId = scheme.get("userId") as string;
 				const user = await this.getUser(userId);
 				if (!user) return;
 
@@ -86,7 +91,11 @@ export default class ready extends Listener {
 					.send(
 						`>>> 💬 | Reply from **${
 							message.member.nickname || message.author.username
-						}**: \`\`\`${this.filter(message.content || "No message content.")}\`\`\``,
+						}**: \`\`\`${this.filter(
+							message.content.slice((prefix + "message").length) || "No message content."
+						)}\`\`\`\n❓ | Want to close this ticket? Ask **${
+							message.member.nickname || message.author.username
+						}** to close it for you.`,
 						{ files: attachments }
 					)
 					.catch((e) => {
@@ -402,7 +411,6 @@ export default class ready extends Listener {
 						description.length > 200 ? description.substr(0, 200 - 3) + "..." : description
 					}`,
 					`> 📂 | **Extra**: ${extra.length > 400 ? extra.substr(0, 400 - 3) + "..." : extra}`,
-					`> 📞 | **Claimed by**: unclaimed`,
 					`> 👤 | **User**: ${message.author.toString()}`,
 				])
 				.addField(
@@ -486,11 +494,11 @@ export default class ready extends Listener {
 				}**, you should receive a response shortly.`
 			);
 
-			ticket.findOneAndUpdate(
-				{ userId: message.author.id },
-				{ userId: message.author.id, channelId: claimer.id, lastMessage: Date.now() },
-				{ upsert: true }
-			);
+			ticket.create({
+				userId: message.author.id,
+				channelId: ticketChannel.id,
+				lastMessage: Date.now(),
+			});
 			this.client.openTickets.delete(message.author.id);
 		} catch (e) {
 			this.client.openTickets.delete(message.author.id);
