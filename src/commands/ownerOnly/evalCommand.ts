@@ -1,6 +1,7 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, MessageAttachment } from "discord.js";
 import { inspect } from "util";
+import { db, wbToken, wbId, feedbackSheet, googleApi } from "../../client/config";
 
 export default class evalCommand extends Command {
 	constructor() {
@@ -63,7 +64,12 @@ export default class evalCommand extends Command {
 			return text
 				.replace(/`/g, `\`${String.fromCharCode(8203)}`)
 				.replace(/@/g, `@${String.fromCharCode(8203)}`)
-				.replace(new RegExp(token, "gi"), `****`);
+				.replace(new RegExp(token, "gi"), `****`)
+				.replace(new RegExp(db, "gi"), `****`)
+				.replace(new RegExp(wbId, "gi"), `****`)
+				.replace(new RegExp(wbToken, "gi"), `****`)
+				.replace(new RegExp(googleApi, "gi"), `****`)
+				.replace(new RegExp(feedbackSheet, "gi"), `****`);
 		}
 	}
 }

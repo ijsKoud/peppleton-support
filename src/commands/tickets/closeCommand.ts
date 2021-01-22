@@ -20,7 +20,7 @@ export default class closeCommand extends Command {
 		if (message.channel.type !== "text" || !message.channel.name.endsWith("-ticket")) return;
 		if (
 			!this.client.isOwner(message.author) &&
-			(!message.member.hasPermission("MANAGE_GUILD", { checkAdmin: true, checkOwner: true }) ||
+			(!message.member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }) ||
 				!message.channel.topic.includes(message.author.id))
 		)
 			return message.react("❌");
