@@ -3,7 +3,7 @@ export const owners: string[] = ["304986851310043136", "698564108844400694", "51
 export const prefix: string = "=";
 
 // tokens
-export const token: string = "NzExNDY4ODkzNDU3MDg4NTUz.XsDdCg.1pPxf6o6m4pR-bcklXsCUnXrChg";
+export const token: string = "NzgwNTA3NDY4MDU2MTAwODg2.X7wGOQ.VEb_LZdd8JHlWsbNVLBrqBHccyg";
 export const db: string =
 	"mongodb+srv://peppleton-support:Tvvq9tUSoFbLmRL4@peppleton-support.ipvxi.mongodb.net/peppleton?retryWrites=true&w=majority";
 export const googleApi: string = "AIzaSyDNMlSnrN6G6_DxQwbZgvuWq9wHNPkMwwM";
