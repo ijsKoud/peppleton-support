@@ -7,6 +7,7 @@ export default class contactCommand extends Command {
 	constructor() {
 		super("contact", {
 			aliases: ["contact"],
+			category: "tickets",
 			description: {
 				content: "Contact a user using the tickets system",
 				usage: "tickets",
@@ -34,11 +35,11 @@ export default class contactCommand extends Command {
 		if (!message.guild) return;
 
 		if (!user)
-			return message.channel.send(
+			return message.util.send(
 				`> 🔎 | Unkown user, please check if you copied the right ID or if you spelled their name correctly.`
 			);
 		if (!reason)
-			return message.channel.send(
+			return message.util.send(
 				"> ❌ | No reason specified. Please provide a reason why you want to contact this user."
 			);
 
@@ -106,7 +107,7 @@ export default class contactCommand extends Command {
 		} catch (e) {
 			return message.channel.deleted
 				? ""
-				: message.channel.send(
+				: message.util.send(
 						`> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\`\n This is 9/10 times because the user closed their DMs.`
 				  );
 		}

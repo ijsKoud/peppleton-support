@@ -16,6 +16,7 @@ export default class transferCommand extends Command {
 	constructor() {
 		super("transfer", {
 			aliases: ["transfer"],
+			category: "tickets",
 			description: {
 				content: "Transfer a ticket to a different department or user.",
 				usage: "transfer <department/user id>",
@@ -47,11 +48,11 @@ export default class transferCommand extends Command {
 		if (isNaN(Number(location))) {
 			const dep = this.department(location).toLowerCase();
 			if (!dep)
-				return message.channel.send(
+				return message.util.send(
 					`> ❗ | Unkown department. Valid departments: \`manager\`, \`dev\`, \`directors\`.`
 				);
 			this.handleDepartment(message, dep);
-			return message.channel.send(
+			return message.util.send(
 				`> ✅ | Ticket is transferred to a different department, you will remain as claimer until someone from a different department claims this ticket.`
 			);
 		} else if (!isNaN(Number(location))) {
@@ -82,7 +83,7 @@ export default class transferCommand extends Command {
 			const owner = await this.getUser(message.channel.name.slice(0, -7));
 			owner.send(`>>> 📨 | Your ticket has been transfered to **${user.tag}**!`);
 
-			return message.channel.send(
+			return message.util.send(
 				`>>> 👋 | ${user.toString()}, **${
 					message.author.tag
 				}** transferred this ticket to you, use \`${prefix}message <message>\` to reply.`,
@@ -192,7 +193,7 @@ export default class transferCommand extends Command {
 			});
 
 			message.author.send(`> ✅ | Your ticket is transferred to ${claimer.toString()}!`);
-			message.channel.send(
+			message.util.send(
 				`> 👋 | ${claimer.toString()}, send messages to this channel to talk to the ticket opener.`,
 				{ allowedMentions: { users: [claimerId] } }
 			);
@@ -200,7 +201,7 @@ export default class transferCommand extends Command {
 				`> 📨 | Your ticket is transferred to the **${type}**, your new claimer is ${claimer.toString()}!`
 			);
 		} catch (e) {
-			return message.channel.send(`> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\``);
+			return message.util.send(`> ❗ | Oh no, this shouldn't happen: \n\`\`\`\n${e}\n\`\`\``);
 		}
 	}
 

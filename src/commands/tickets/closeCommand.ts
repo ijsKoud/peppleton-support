@@ -5,7 +5,7 @@ export default class closeCommand extends Command {
 	public constructor() {
 		super("close", {
 			aliases: ["close"],
-			category: "Tickets",
+			category: "tickets",
 			description: {
 				content: "Closes a ticket, admins can force close a ticket.",
 				usage: "close",
@@ -25,7 +25,7 @@ export default class closeCommand extends Command {
 		)
 			return message.react("❌");
 
-		message.channel.send(`>>> 🗑 | Deleting the channel in **5 seconds**...`);
+		message.util.send(`>>> 🗑 | Deleting the channel in **5 seconds**...`);
 		setTimeout(() => message.channel.delete("closed by claimer"), 5e3);
 	}
 }

@@ -7,6 +7,7 @@ export default class evalCommand extends Command {
 	constructor() {
 		super("eval", {
 			aliases: ["eval", "e", "evaluate"],
+			category: "ownerOnly",
 			description: {
 				content: "Private command for owners only (only developers know what this does)",
 				usage: "eval <code>",
@@ -41,7 +42,7 @@ export default class evalCommand extends Command {
 
 			if (input.length > 1024 || output.length > 1024 || timeTaken.toString().length > 1024) {
 				const total = [input, output, timeTaken].join("\n");
-				return message.channel.send(new MessageAttachment(Buffer.from(total), "evaluated.txt"));
+				return message.util.send(new MessageAttachment(Buffer.from(total), "evaluated.txt"));
 			} else {
 				const embed: MessageEmbed = new MessageEmbed()
 					.setTitle(`Evaluated code | ${message.author.tag}`)
@@ -50,10 +51,10 @@ export default class evalCommand extends Command {
 					.addField("**❯ Time Taken**:", `\`\`\`${timeTaken}ms \`\`\``)
 					.setColor(message.member.displayHexColor || "BLUE");
 
-				return message.channel.send(embed);
+				return message.util.send(embed);
 			}
 		} catch (e) {
-			return message.channel.send(
+			return message.util.send(
 				`> ❌ | Error:  \n\`\`\`xl\n${this.clean(e.message, this.client.token)}\n\`\`\``
 			);
 		}

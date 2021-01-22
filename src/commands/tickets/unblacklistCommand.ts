@@ -6,6 +6,7 @@ export default class unblacklistCommand extends Command {
 	constructor() {
 		super("unblacklist", {
 			aliases: ["unblacklist"],
+			category: "tickets",
 			description: {
 				content: "unblacklist someone, add the permission to create tickets.",
 				usage: "unblacklist <user> <reason>",

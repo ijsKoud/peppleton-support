@@ -5,6 +5,7 @@ export default class ticketCommand extends Command {
 	constructor() {
 		super("ticket", {
 			aliases: ["ticket"],
+			category: "tickets",
 			description: {
 				content: "Turns tickets on or off",
 				usage: "tickets",
@@ -18,7 +19,7 @@ export default class ticketCommand extends Command {
 
 	async exec(message: Message) {
 		this.client.tickets = !this.client.tickets;
-		return message.channel.send(
+		return message.util.send(
 			`> ✅ | Tickets are now turned \`${this.client.tickets ? "on" : "off"}\`!`
 		);
 	}
