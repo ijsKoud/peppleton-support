@@ -9,3 +9,4 @@
 [ x ] - ping system
 [ ] - reaction roles
 [ ] - transcriptions
+[ x ] - feedback msg command
