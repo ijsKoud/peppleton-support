@@ -16,6 +16,9 @@ export const reactionEmojiName: string = "Bell";
 
 export const eventsChannel: string = "780142013294444604";
 
+export const QOTDChannel: string = "797618660188880927";
+export const QOTDNotifications: string = "797902390208364594";
+
 export const feedbackSheet: string = "1vYYqgAWYJgyH9WH7ohrR4r8PtR8nuZGdc9KtkctFICY";
 export const feedbackMsgId: string = "781131145738846258";
 

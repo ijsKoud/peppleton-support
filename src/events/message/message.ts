@@ -16,6 +16,10 @@ import {
 	DrivingReports,
 	dsDepChannel,
 	dsEmoji,
+	eventNotification,
+	QOTDNotifications,
+	QOTDChannel,
+	eventsChannel,
 	gdDepChannel,
 	gdEmoji,
 	guardReports,
@@ -43,7 +47,9 @@ export default class ready extends Listener {
 
 	async exec(message: Message): Promise<void> {
 		if (message.system || message.author.bot) return;
-		if (message.mentions.has(this.client.user)) return this.createTicket(message);
+		if (message.mentions.has(this.client.user) && message.content.startsWith("<@"))
+			return this.createTicket(message);
+		if (message.content.includes("[PING]")) return this.ping(message);
 
 		switch (message.channel.type) {
 			case "dm":
@@ -107,6 +113,20 @@ export default class ready extends Listener {
 				map.set(message.channel.id, userId);
 				setTimeout(() => map.delete(message.channel.id), 5e3);
 				this.updateLastMSG(userId);
+				break;
+			default:
+				break;
+		}
+	}
+
+	// ping system
+	ping(message: Message) {
+		switch (message.channel.id) {
+			case eventsChannel:
+				message.channel.send(`> <@&${eventNotification}>, new events notification 🔼`);
+				break;
+			case QOTDChannel:
+				message.channel.send(`> <@&${QOTDNotifications}>, new QOTD notification 🔼`);
 				break;
 			default:
 				break;

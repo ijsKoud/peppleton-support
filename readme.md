@@ -6,6 +6,6 @@
 [ x ] - ticket commands
 [ x ] - report system
 [ ] - blacklist command
-[ ] - ping system
+[ x ] - ping system
 [ ] - reaction roles
 [ ] - transcriptions
