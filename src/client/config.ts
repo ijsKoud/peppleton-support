@@ -1,4 +1,4 @@
-export const owners: string[] = ["304986851310043136"];
+export const owners: string[] = ["304986851310043136", "698564108844400694", "517069063701266474"];
 export const prefix: string = "=";
 
 export const token: string = "NzExNDY4ODkzNDU3MDg4NTUz.XsDdCg.1pPxf6o6m4pR-bcklXsCUnXrChg";

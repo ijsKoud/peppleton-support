@@ -25,7 +25,7 @@ export default class evalCommand extends Command {
 	}
 
 	async exec(message: Message, { code }: { code: string }) {
-		if (!code) return message.channel.send("> ❌ | I can not evaluate your code without any.");
+		if (!code) return message.react("❌");
 		code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 
 		let evaled: string;
