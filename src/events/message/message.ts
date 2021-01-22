@@ -341,7 +341,7 @@ export default class ready extends Listener {
 							.catch((e) => new Collection<string, Message>());
 						if (!descCollector.size) {
 							cancelled = true;
-							return titleMsg.edit(`> ❌ | The prompt is cancelled.`);
+							return descMsg.edit(`> ❌ | The prompt is cancelled.`);
 						}
 						description = descCollector.first().content;
 						descMsg.edit(
@@ -578,7 +578,7 @@ export default class ready extends Listener {
 						)
 						.setColor("#061A29")
 						.setDescription([
-							"Is your question related to a **role**? \n If not, select `any department`! \n",
+							"Is your report related to a **role**? \n If not, select `any department`! \n",
 							`> ${qdEmoji} | **Driver Department**`,
 							`> ${dsEmoji} | **Dispatch Department**`,
 							`> ${gdEmoji} | **Guard Department**`,
@@ -626,7 +626,7 @@ export default class ready extends Listener {
 					break;
 				case "title":
 					const titleMsg = await dmChannel.send(
-						`> 📝 | Why are you reporting this user? (short reason)`
+						`> 📝 | Who are you reporting? (Roblox username, at least 1)`
 					);
 					const titleCollector = await dmChannel
 						.awaitMessages(filter, { time: 6e4, max: 1, errors: ["time"] })
@@ -667,7 +667,17 @@ export default class ready extends Listener {
 					const extraCollector = await dmChannel
 						.awaitMessages(filter, { time: 6e4, max: 1, errors: ["time"] })
 						.catch((e) => new Collection<string, Message>());
-					if (extraCollector.size === 0 || extraCollector.first().attachments.size === 0) {
+					if (extraCollector.size === 0) {
+						cancelled = true;
+						return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
+					}
+					if (
+						extraCollector.first().attachments.size === 0 &&
+						!(
+							extraCollector.first().content.includes(".png") ||
+							extraCollector.first().content.includes(".jpg")
+						)
+					) {
 						cancelled = true;
 						return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
 					}
