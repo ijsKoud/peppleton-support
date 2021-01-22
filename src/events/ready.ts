@@ -13,12 +13,9 @@ export default class ready extends Listener {
 	}
 
 	async exec(): Promise<void> {
-		// client stuff
-		this.client.log(`✅ | **${this.client.user.tag}** has logged in!`);
-		this.client.user.setActivity("your support tickets!", { type: "LISTENING" });
-
 		// blacklist timeout resume
 		const blacklisted = await blacklist.find();
+		this.client.log(`⏲ | **${blacklisted.length}** blacklisted users, resuming their timeout...`);
 		blacklisted.forEach((b) =>
 			setTimeout(() => b.delete(), (Date.now() - b.get("endDate")) as number)
 		);
@@ -36,6 +33,10 @@ export default class ready extends Listener {
 
 			arr.forEach(async (c) => (await this.getChannel(c)).delete());
 		}, 6e5);
+
+		// client stuff
+		this.client.log(`✅ | **${this.client.user.tag}** has logged in!`);
+		this.client.user.setActivity("your support tickets!", { type: "LISTENING" });
 	}
 
 	async getChannel(id: string): Promise<TextChannel> {
