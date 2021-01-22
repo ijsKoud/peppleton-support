@@ -34,6 +34,7 @@ import {
 	suggestionsChannel,
 	svRole,
 } from "../../client/config";
+import blacklist from "../../models/blacklist";
 import ticket from "../../models/ticket";
 
 const map = new Map<string, string>();
@@ -179,10 +180,10 @@ export default class ready extends Listener {
 			let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
 			let emojiNames: string[] = ["Driver", "Dispatcher", "Guard", "PRLogo"];
 
-			// if (!this.clean(member))
-			// 	return dmChannel.send(
-			// 		`> 🔨 | You are blacklisted from using the tickets system, you can not open a ticket until you are removed from the blacklist. If you think this is a mistake feel free to DM a staff member about this.`
-			// 	);
+			if (await blacklist.findOne({ id: message.author.id }))
+				return dmChannel.send(
+					`> 🔨 | You are blacklisted from using the tickets system, you can not open a ticket until you are removed from the blacklist. If you think this is a mistake feel free to DM a staff member about this.`
+				);
 
 			try {
 				const embed = new MessageEmbed()

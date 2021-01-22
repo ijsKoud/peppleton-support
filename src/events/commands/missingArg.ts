@@ -10,6 +10,6 @@ export default class missingArg extends Listener {
 	}
 
 	exec(message: Message, args: string[]) {
-		message.channel.send(`>>> ❗ | You forgot some arguments: \`${args.join("`, ")}\`!`);
+		message.channel.send(`>>> ❗ | You forgot some arguments: \`${args.join("`, `")}\`!`);
 	}
 }

@@ -5,10 +5,11 @@
 [ x ] - ticket chat
 [ x ] - ticket commands
 [ x ] - report system
-[ ] - blacklist command
+[ x ] - blacklist command
 [ x ] - ping system
 [ x ] - reaction roles
 [ x ] - transcriptions
 [ x ] - feedback msg command
 [ x ] - events channel fix
 [ x ] - reports emoji system -> tick = accepted | cross = declined
+[ ] - help command

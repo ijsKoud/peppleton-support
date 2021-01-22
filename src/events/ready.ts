@@ -15,9 +15,9 @@ export default class ready extends Listener {
 	async exec(): Promise<void> {
 		// blacklist timeout resume
 		const blacklisted = await blacklist.find();
-		this.client.log(`⏲ | **${blacklisted.length}** blacklisted users, resuming their timeout...`);
+		this.client.log(`⏲ | **${blacklisted.length}** blacklisted user(s), resuming their timeout...`);
 		blacklisted.forEach((b) =>
-			setTimeout(() => b.delete(), (Date.now() - b.get("endDate")) as number)
+			setTimeout(() => b.delete(), (b.get("endDate") as number) - Date.now())
 		);
 
 		// 24h inactive check - every 10m

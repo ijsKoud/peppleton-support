@@ -12,15 +12,11 @@ export default class ticketCommand extends Command {
 			ratelimit: 1,
 			cooldown: 3e3,
 			channel: "guild",
+			userPermissions: ["MANAGE_GUILD"],
 		});
 	}
 
 	async exec(message: Message) {
-		if (
-			!message.member ||
-			(!message.member.hasPermission("MANAGE_GUILD") && message.author.id !== "304986851310043136")
-		)
-			return message.react("❌");
 		this.client.tickets = !this.client.tickets;
 		return message.channel.send(
 			`> ✅ | Tickets are now turned \`${this.client.tickets ? "on" : "off"}\`!`
