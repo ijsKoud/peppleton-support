@@ -3,8 +3,12 @@
 export const eventsVoiceChannel: string = "748140133827739667";
 export const eventsTextChannel: string = "751893103031615640";
 export const eventNotification: string = "739489234892750919";
-export const reactionRoleMSG: string = "777295875671064577";
+export const reactionRoleMSG: string = "798112481448034324";
 export const reactionEmojiName: string = "🔔";
+export const reactionEmojiName2: string = "🗓️";
+
+export const QOTDChannel: string = "797618660188880927";
+export const QOTDNotifications: string = "797902390208364594";
 
 export const eventsChannel: string = "751889989171806259";
 
