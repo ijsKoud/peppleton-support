@@ -11,3 +11,4 @@
 [ x ] - transcriptions
 [ x ] - feedback msg command
 [ ] - events channel fix
+[ ] - reports emoji system -> tick = accepted | cross = declined
