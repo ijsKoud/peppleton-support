@@ -10,5 +10,5 @@
 [ x ] - reaction roles
 [ x ] - transcriptions
 [ x ] - feedback msg command
-[ ] - events channel fix
-[ ] - reports emoji system -> tick = accepted | cross = declined
+[ x ] - events channel fix
+[ x ] - reports emoji system -> tick = accepted | cross = declined

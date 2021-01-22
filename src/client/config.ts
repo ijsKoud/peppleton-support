@@ -10,9 +10,10 @@ export const wbId: string = "791646258515148801";
 export const wbToken: string =
 	"fMnLDIjZT-BgWUDnxySPS1nHtS2pfgonKSTzeAfO1XPPcXxZmE1GafBMyDeBPUmN4QBB";
 
-export const eventsVoiceChannel: string = "748140133827739667";
-export const eventsTextChannel: string = "751893103031615640";
+export const eventsVoiceChannel: string = "752026499133079594";
+export const eventsTextChannel: string = "739542502549356571";
 export const eventNotification: string = "739489234892750919";
+export const eventsTeam: string = "751887409255546901";
 export const reactionRoleMSG: string = "798112481448034324";
 export const reactionEmojiName: string = "🔔";
 export const reactionEmojiName2: string = "🗓️";

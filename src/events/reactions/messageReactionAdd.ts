@@ -8,10 +8,15 @@ import {
 	prEmoji,
 	QOTDNotifications,
 	googleApi,
+	DrivingReports,
+	DispatchReports,
+	guardReports,
+	otherReports,
 } from "../../client/config";
 import { MessageReaction, User } from "discord.js";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import feedback from "../../models/feedback";
+import { MessageEmbed } from "discord.js";
 
 export default class messageReactionAdd extends Listener {
 	constructor() {
@@ -31,6 +36,13 @@ export default class messageReactionAdd extends Listener {
 			if (user.partial) await user.fetch(true);
 			if (user.bot) return;
 
+			if (
+				[DrivingReports, DispatchReports, guardReports, otherReports].includes(
+					message.channel.id
+				) &&
+				message.author.id === this.client.user.id
+			)
+				this.handleReports(reaction, user);
 			const feedbackMsgId = (await feedback.findOne({ guild: message.guild.id })).get(
 				"message"
 			) as string;
@@ -80,5 +92,34 @@ export default class messageReactionAdd extends Listener {
 		} catch (e) {
 			return this.client.log(`⚠ | Oops, we ran into an error: \`${e}\``);
 		}
+	}
+
+	async handleReports(reaction: MessageReaction, user: User) {
+		const { message, emoji } = reaction;
+
+		switch (emoji.id) {
+			// tick emoji
+			case "793929362570870794":
+				message.edit(
+					new MessageEmbed(message.embeds[0])
+						.spliceFields(0, message.embeds[0].fields.length)
+						.addField("• Status", `Report accepted by ${user.toString()}`)
+						.setColor("#47B383")
+				);
+				break;
+			// cross emojis
+			case "793939269848399873":
+				message.edit(
+					new MessageEmbed(message.embeds[0])
+						.spliceFields(0, message.embeds[0].fields.length)
+						.addField("• Status", `Report declined by ${user.toString()}`)
+						.setColor("#C24D4F")
+				);
+				break;
+			default:
+				break;
+		}
+
+		message.reactions.removeAll();
 	}
 }

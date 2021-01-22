@@ -666,7 +666,8 @@ export default class ready extends Listener {
 					const extraCollector = await dmChannel
 						.awaitMessages(filter, { time: 6e4, max: 1, errors: ["time"] })
 						.catch((e) => new Collection<string, Message>());
-					if (extraCollector.size < 0 || extraCollector.first().attachments.size < 0) {
+					console.log(extraCollector.first().attachments.size);
+					if (extraCollector.size === 0 || extraCollector.first().attachments.size === 0) {
 						cancelled = true;
 						return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
 					}
@@ -702,7 +703,7 @@ export default class ready extends Listener {
 				break;
 		}
 
-		channel.send(
+		const reportMsg = await channel.send(
 			new MessageEmbed()
 				.setDescription([
 					`>>> ${prEmoji} | **Department**: ${department}`,
@@ -717,6 +718,7 @@ export default class ready extends Listener {
 				.setColor("#061A29")
 		);
 
+		["793929362570870794", "793939269848399873"].forEach((e) => reportMsg.react(e));
 		return message.author.send(
 			`>>> 👍 | We received your report. If you want to report more users, don't hesitate to use the report function again!`
 		);

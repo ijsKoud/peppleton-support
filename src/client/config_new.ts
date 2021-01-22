@@ -14,6 +14,7 @@ export const eventsVoiceChannel: string = "748140133827739667";
 export const eventsTextChannel: string = "751893103031615640";
 export const eventNotification: string = "739489234892750919";
 export const reactionRoleMSG: string = "798112481448034324";
+export const eventsTeam: string = "751887409255546901";
 export const reactionEmojiName: string = "🔔";
 export const reactionEmojiName2: string = "🗓️";
 
