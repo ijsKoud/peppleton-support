@@ -10,9 +10,12 @@ export const wbId: string = "791646258515148801";
 export const wbToken: string =
 	"fMnLDIjZT-BgWUDnxySPS1nHtS2pfgonKSTzeAfO1XPPcXxZmE1GafBMyDeBPUmN4QBB";
 
-export const eventNotification: string = "739544442540654722";
-export const reactionRoleMSG: string = "781131081503211520";
-export const reactionEmojiName: string = "Bell";
+export const eventsVoiceChannel: string = "748140133827739667";
+export const eventsTextChannel: string = "751893103031615640";
+export const eventNotification: string = "739489234892750919";
+export const reactionRoleMSG: string = "798112481448034324";
+export const reactionEmojiName: string = "🔔";
+export const reactionEmojiName2: string = "🗓️";
 
 export const eventsChannel: string = "780142013294444604";
 

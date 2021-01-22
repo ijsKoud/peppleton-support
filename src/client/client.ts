@@ -4,6 +4,7 @@ import { Message } from "discord.js";
 import { join } from "path";
 import { WebhookClient, Collection } from "discord.js";
 import { connect, connection } from "mongoose";
+import { Intents } from "discord.js";
 declare module "discord-akairo" {
 	interface AkairoClient {
 		commandHandler: CommandHandler;
@@ -55,9 +56,15 @@ export default class botClient extends AkairoClient {
 	});
 
 	public constructor(config: botOptions) {
-		super({
-			ownerID: config.owners,
-		});
+		super(
+			{
+				ownerID: config.owners,
+			},
+			{
+				partials: ["REACTION", "USER", "MESSAGE", "CHANNEL", "GUILD_MEMBER"],
+				ws: { intents: Intents.ALL },
+			}
+		);
 
 		this.config = config;
 	}

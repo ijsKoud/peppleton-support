@@ -7,6 +7,7 @@
 [ x ] - report system
 [ ] - blacklist command
 [ x ] - ping system
-[ ] - reaction roles
-[ ] - transcriptions
+[ x ] - reaction roles
+[ x ] - transcriptions
 [ x ] - feedback msg command
+[ ] - events channel fix

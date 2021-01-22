@@ -9,6 +9,7 @@ import {
 	MessageEmbed,
 	Guild,
 } from "discord.js";
+import { appendFile } from "fs/promises";
 import {
 	anyDepChannel,
 	categoryId,
@@ -59,7 +60,7 @@ export default class ready extends Listener {
 				const schema = await ticket.findOne({ userId: message.author.id });
 				if (!schema) return;
 
-				channelId = schema.get("channelId") as string;
+				channelId = channelId || (schema.get("channelId") as string);
 				const channel = await this.getChannel(channelId);
 				if (!channel) return;
 
@@ -72,23 +73,23 @@ export default class ready extends Listener {
 				);
 				message.react("✅");
 
+				this.transcript(message, message.author.id);
 				map.set(message.author.id, channelId);
 				setTimeout(() => map.delete(message.author.id), 5e3);
 				this.updateLastMSG(message.author.id);
 				break;
 			case "text":
-				if (
-					!message.channel.name.endsWith("-ticket") ||
-					!message.content.startsWith(prefix + "message")
-				)
-					return;
+				if (!message.channel.name.endsWith("-ticket")) return;
 				let userId: string;
 				if (map.has(message.channel.id)) userId = map.get(message.channel.id);
 
 				const scheme = await ticket.findOne({ channelId: message.channel.id });
 				if (!scheme) return;
+				userId = userId || (scheme.get("userId") as string);
 
-				userId = scheme.get("userId") as string;
+				this.transcript(message, userId);
+				if (!message.content.startsWith(prefix + "message")) return;
+
 				const user = await this.getUser(userId);
 				if (!user) return;
 
@@ -117,6 +118,16 @@ export default class ready extends Listener {
 			default:
 				break;
 		}
+	}
+
+	async transcript(message: Message, id: string): Promise<void | any> {
+		await appendFile(
+			`./src/transcriptions/${id}-ticket.txt`,
+			`\n${message.author.tag}: ${message.content}`,
+			"utf-8"
+		).catch((e) => {
+			return e;
+		});
 	}
 
 	// ping system
@@ -237,7 +248,7 @@ export default class ready extends Listener {
 			}
 
 			const schema = await ticket.findOne({ userId: message.author.id });
-			if (!schema) return;
+			if (schema) return;
 
 			if (!this.client.tickets)
 				return dmChannel.send(

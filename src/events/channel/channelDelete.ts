@@ -1,5 +1,14 @@
 import { Listener } from "discord-akairo";
-import { DMChannel, GuildChannel, User, TextChannel } from "discord.js";
+import {
+	DMChannel,
+	GuildChannel,
+	User,
+	TextChannel,
+	MessageEmbed,
+	MessageAttachment,
+} from "discord.js";
+import { unlink } from "fs/promises";
+import { transcriptionsChannel } from "../../client/config";
 import ticket from "../../models/ticket";
 
 export default class channelDelete extends Listener {
@@ -40,32 +49,23 @@ export default class channelDelete extends Listener {
 				  );
 		} catch (e) {}
 
-		// try {
-		// 	(await ticketTimeout.findOne({ channelId: ticketChannel.id })).delete();
-		// } catch (e) {}
+		const tsChannel = (await this.client.channels.fetch(transcriptionsChannel)) as TextChannel;
+		const embed = new MessageEmbed()
+			.setTitle(`New ticket transcription`)
+			.setColor("#D0771F")
+			.setDescription([
+				`> 📞 | **Claimer**: <@${ticketChannel.topic.split(/\|/g)[0]}>`,
+				`> 👤 | **Owner**: <@${userId}>`,
+			]);
 
-		// client.activeTickets.delete(ticketChannel.id);
-		// client.openTickets.delete(userId);
+		const attachment = new MessageAttachment(
+			`./src/transcriptions/${userId}-ticket.txt`,
+			`${userId}-ticket.txt`
+		);
 
-		// const tsChannel = (await client.channels.fetch(
-		// 	transcriptionsChannel
-		// )) as TextChannel;
-		// const embed = new MessageEmbed()
-		// 	.setTitle(`New ticket transcription`)
-		// 	.setColor("#D0771F")
-		// 	.setDescription([
-		// 		`> 📞 | **Claimer**: <@${ticketChannel.topic.split(/\|/g)[0]}>`,
-		// 		`> 👤 | **Owner**: <@${userId}>`,
-		// 	]);
+		await tsChannel.send(embed);
+		tsChannel.send(attachment);
 
-		// const attachment = new MessageAttachment(
-		// 	`./src/transcriptions/${userId}-ticket.txt`,
-		// 	`${userId}-ticket.txt`
-		// );
-
-		// await tsChannel.send(embed);
-		// tsChannel.send(attachment);
-
-		// setTimeout(() => unlink(`./src/transcriptions/${userId}-ticket.txt`), 5000);
+		setTimeout(() => unlink(`./src/transcriptions/${userId}-ticket.txt`), 5000);
 	}
 }

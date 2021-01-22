@@ -21,7 +21,7 @@ export default class feedbackCommand extends Command {
 
 	async exec(message: Message, { messageID }: { messageID: string }) {
 		if (!messageID) return this.client.emit("missingArg", message, ["messageID"]);
-		await feedback.findByIdAndUpdate(
+		await feedback.findOneAndUpdate(
 			{ guild: message.guild.id },
 			{ guild: message.guild.id, message: messageID },
 			{ upsert: true }
