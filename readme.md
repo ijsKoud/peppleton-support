@@ -12,4 +12,4 @@
 [ x ] - feedback msg command
 [ x ] - events channel fix
 [ x ] - reports emoji system -> tick = accepted | cross = declined
-[ ] - help command
+[ x ] - help command

@@ -92,13 +92,13 @@ export default class botClient extends AkairoClient {
 		connection
 			.on("connecting", () => this.log(`⏳ | Connecting to **${connection.name}** database...`))
 			.once("connected", () =>
-				this.log(`📁 | Successfully established a connection with **${connection.name}**!`)
+				this.log(`📁 | Successfully conntected to database: **${connection.name}**!`)
 			)
 			.on("reconnected", () =>
-				this.log(`📁 | Successfully re-established a connection with **${connection.name}**!`)
+				this.log(`📁 | Successfully re-connected to database: **${connection.name}**!`)
 			)
 			.on("disconnected", () =>
-				this.log(`❌ | Disconnected from **${connection.name}**! Waiting to reconnect`)
+				this.log(`❌ | Disconnected from **${connection.name}**! Waiting to reconnect...`)
 			)
 			.on("error", (error: Error) =>
 				this.log(`⚠ | New error - **${connection.name}** - Error: \`${error.message}\``)
