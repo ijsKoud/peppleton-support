@@ -667,7 +667,6 @@ export default class ready extends Listener {
 					const extraCollector = await dmChannel
 						.awaitMessages(filter, { time: 6e4, max: 1, errors: ["time"] })
 						.catch((e) => new Collection<string, Message>());
-					console.log(extraCollector.first().attachments.size);
 					if (extraCollector.size === 0 || extraCollector.first().attachments.size === 0) {
 						cancelled = true;
 						return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
