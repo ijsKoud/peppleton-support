@@ -21,7 +21,6 @@ export default class evalCommand extends Command {
 					match: "rest",
 				},
 			],
-			channel: "guild",
 			ownerOnly: true,
 		});
 	}

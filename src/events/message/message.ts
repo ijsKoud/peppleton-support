@@ -671,16 +671,15 @@ export default class ready extends Listener {
 						cancelled = true;
 						return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
 					}
-					if (
-						extraCollector.first().attachments.size === 0 &&
-						!(
-							extraCollector.first().content.includes(".png") ||
-							extraCollector.first().content.includes(".jpg")
-						)
-					) {
-						cancelled = true;
-						return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
-					}
+
+					// if (
+					// 	extraCollector.first().attachments.size === 0 ||
+					// 	!extraCollector.first().content.includes(".png") ||
+					// 	!extraCollector.first().content.includes(".jpg")
+					// ) {
+					// 	cancelled = true;
+					// 	return extraMsg.edit(`> ❌ | The prompt is cancelled.`);
+					// }
 					const files = this.getAttachments(extraCollector.first().attachments);
 					extra = extraCollector.first().content;
 					await dmChannel.send(
