@@ -9,9 +9,9 @@ export const db: string =
 export const googleApi: string = "AIzaSyDNMlSnrN6G6_DxQwbZgvuWq9wHNPkMwwM";
 
 // webhook
-export const wbId: string = "801915879327662120";
+export const wbId: string = "803185896374927361";
 export const wbToken: string =
-	"m03N2FuPBXQiqiwOMmXT9OoCq8v1sGC_7RMaaTeUSHCE4N9gp90b0NjpXvu8c0WYjm3a";
+	"VJR8BOUTLDtMglmJpDPAtk2WUDiPBB7ipK-sovCLnAzT-xr0dTaTKrt7lDEqGdNJtAm9";
 
 // events
 export const eventsVoiceChannel: string = "748140133827739667";

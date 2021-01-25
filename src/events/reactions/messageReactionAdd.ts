@@ -43,11 +43,12 @@ export default class messageReactionAdd extends Listener {
 				message.author.id === this.client.user.id
 			)
 				this.handleReports(reaction, user);
-			const feedbackMsgId = (await feedback.findOne({ guild: message.guild.id })).get(
-				"message"
-			) as string;
+
+			const shema = await feedback.findOne({ guild: message.guild.id });
+			const feedbackMsgId = (shema?.get("message") as string) || "";
 			if (message.id === feedbackMsgId && reaction.emoji.name === "📋")
-				return this.handleFeedback(user, reaction);
+				return this.handleFeedback(user);
+
 			if (message.id !== reactionRoleMSG) return;
 
 			const member = message.guild.members.cache.get(user.id);
@@ -63,11 +64,11 @@ export default class messageReactionAdd extends Listener {
 					return user.send(`> 📅 | I just gave you the **${role2.name}** role!`);
 			}
 		} catch (e) {
-			return;
+			return this.client.log(`⚠ | **Reaction Role Error**: \`${e.stack}\``);
 		}
 	}
 
-	async handleFeedback(user: User, reaction: MessageReaction) {
+	async handleFeedback(user: User) {
 		try {
 			const msg = await user.send(`> ⏳ | Searching for your feedback... please wait.`);
 			const doc = new GoogleSpreadsheet(feedbackSheet);
