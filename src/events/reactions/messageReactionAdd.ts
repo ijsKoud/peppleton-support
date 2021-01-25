@@ -29,12 +29,12 @@ export default class messageReactionAdd extends Listener {
 
 	async exec(reaction: MessageReaction, user: User) {
 		try {
-			if (reaction.partial) await reaction.fetch();
+			if (reaction.partial) reaction = await reaction.fetch();
 
-			const message = reaction.message;
-			if (message.partial) await message.fetch(true);
-			if (user.partial) await user.fetch(true);
-			if (user.bot) return;
+			let message = reaction.message;
+			if (message.partial) message = await message.fetch(true);
+			if (user.partial) user = await user.fetch(true);
+			if (user.bot || user.system) return;
 
 			if (
 				[DrivingReports, DispatchReports, guardReports, otherReports].includes(
@@ -51,7 +51,7 @@ export default class messageReactionAdd extends Listener {
 
 			if (message.id !== reactionRoleMSG) return;
 
-			const member = message.guild.members.cache.get(user.id);
+			const member = message.guild.member(user);
 
 			switch (reaction.emoji.name) {
 				case reactionEmojiName:
