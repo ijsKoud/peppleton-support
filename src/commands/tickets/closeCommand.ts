@@ -18,12 +18,14 @@ export default class closeCommand extends Command {
 
 	public exec(message: Message) {
 		if (message.channel.type !== "text" || !message.channel.name.endsWith("-ticket")) return;
-		if (
-			!this.client.isOwner(message.author) &&
-			(!message.member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }) ||
-				!message.channel.topic.includes(message.author.id))
-		)
-			return message.react("❌");
+
+		let allowed: boolean = false;
+		if (message.channel.topic.includes(message.author.id)) allowed = true;
+		else if (this.client.isOwner(message.author)) allowed = true;
+		else if (message.member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }))
+			allowed = true;
+
+		if (!allowed) return message.react("❌");
 
 		message.util.send(`>>> 🗑 | Deleting the channel in **5 seconds**...`);
 		setTimeout(() => message.channel.delete("closed by claimer"), 5e3);
