@@ -80,7 +80,11 @@ export default class ready extends Listener {
 				this.updateLastMSG(message.author.id);
 				break;
 			case "text":
-				if (!message.channel.name.endsWith("-ticket")) return;
+				if (
+					!message.channel.name.endsWith("-ticket") ||
+					!message.channel.topic.includes(message.author.id)
+				)
+					return;
 				let userId: string;
 				if (map.has(message.channel.id)) userId = map.get(message.channel.id);
 
