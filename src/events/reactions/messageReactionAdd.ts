@@ -44,7 +44,7 @@ export default class messageReactionAdd extends Listener {
 			)
 				this.handleReports(reaction, user);
 
-			const shema = await feedback.findOne({ guild: message.guild.id });
+			const shema = await feedback.findOne({ guild: message.guild?.id || "" });
 			const feedbackMsgId = (shema?.get("message") as string) || "";
 			if (message.id === feedbackMsgId && reaction.emoji.name === "📋")
 				return this.handleFeedback(user);
