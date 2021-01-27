@@ -19,7 +19,6 @@ export default class helpCommand extends Command {
 					default: "",
 				},
 			],
-			userPermissions: ["BAN_MEMBERS", "KICK_MEMBERS"],
 		});
 	}
 
