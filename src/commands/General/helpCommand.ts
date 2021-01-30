@@ -7,7 +7,7 @@ export default class helpCommand extends Command {
 	public constructor() {
 		super("help", {
 			aliases: ["help", "commands", "cmd"],
-			category: "Info",
+			category: "General",
 			description: {
 				content: "Shows you the list of available commands, or more info about a specific one.",
 				usage: "help [command]",
@@ -24,9 +24,9 @@ export default class helpCommand extends Command {
 
 	public exec(message: Message, { command }: { command: Command }) {
 		const embed = new MessageEmbed()
-			.setColor(message.member?.displayHexColor || "#051B29")
+			.setColor(message.member?.displayHexColor || "#9298F4")
 			.setThumbnail(message.guild.iconURL({ dynamic: true, size: 4096 }))
-			.setFooter(`❗ | The prefix for this bot is "${this.handler.prefix}".`)
+			.setFooter(`❗ | The prefix for this bot is "${this.handler.prefix}"`)
 			.setTitle(`Help Command - ${message.author.tag}`);
 
 		if (command) {
@@ -40,11 +40,11 @@ export default class helpCommand extends Command {
 			embed.setDescription([
 				`>>> 🏷 | **Name**: ${command.id}`,
 				`📁 | **Category**: ${command.category}`,
-				`🔖 | **Aliases**: \`${command.aliases.join("`, `")}\`\n`,
-				`📋 | **Usage**: ${command.description.usage || "No usage available"}`,
-				`📘 | **Description**: ${command.description.content || "No usage available"}\n`,
-				`👮‍♂️ | **User Permissions**: ${userPermissions}`,
-				`🤖 | **Client Permissions**: ${clientPermissions}`,
+				`🔖 | **Aliases**: \`${command.aliases.join("`, `") || "-"}\`\n`,
+				`📋 | **Usage**: ${command.description.usage || "-"}`,
+				`📘 | **Description**: ${command.description.content || "-"}\n`,
+				`👮‍♂️ | **User Permissions**: ${userPermissions || "-"}`,
+				`🤖 | **Client Permissions**: ${clientPermissions || "-"}`,
 				`⌚ | **Cooldown**: \`${ms(command.cooldown || 0, { long: false })}\``,
 			]);
 		} else {
@@ -55,11 +55,11 @@ export default class helpCommand extends Command {
 				embed.addField(
 					`• ${category.id}`,
 					"`" +
-						category
+						(category
 							.filter((c) => c.categoryID === category.id && c.aliases.length > 0 && !c.ownerOnly)
 							.map((c) => c.id)
-							.join("`, `") +
-						"`" || "No commands for this category",
+							.join("`, `") || "No commands for this category") +
+						"`",
 					true
 				);
 			}

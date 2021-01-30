@@ -1,7 +1,7 @@
 import { ListenerHandler } from "discord-akairo";
 import { AkairoClient, CommandHandler } from "discord-akairo";
 import { WebhookClient } from "discord.js";
-import { Collection, Message } from "discord.js";
+import { Message } from "discord.js";
 import { connect, connection } from "mongoose";
 import { join } from "path";
 import util from "./util";
@@ -33,7 +33,7 @@ export default class Client extends AkairoClient {
 		commandUtil: true,
 		handleEdits: true,
 		commandUtilLifetime: 3e5,
-		defaultCooldown: 6e4,
+		defaultCooldown: 1e3,
 		argumentDefaults: {
 			prompt: {
 				modifyStart: (_: Message, str: string): string =>
