@@ -6,6 +6,7 @@ export default class docs extends Command {
 	constructor() {
 		super("docs", {
 			aliases: ["docs"],
+			clientPermissions: ["EMBED_LINKS"],
 			category: "ownerOnly",
 			args: [
 				{

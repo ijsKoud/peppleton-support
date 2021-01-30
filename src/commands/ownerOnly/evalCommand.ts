@@ -6,13 +6,12 @@ export default class evalCommand extends Command {
 	constructor() {
 		super("eval", {
 			aliases: ["eval", "e", "evaluate"],
+			clientPermissions: ["EMBED_LINKS"],
 			category: "ownerOnly",
 			description: {
 				content: "Private command for owners only (only developers know what this does)",
 				usage: "eval <code>",
 			},
-			ratelimit: 1,
-			cooldown: 3e3,
 			args: [
 				{
 					id: "code",

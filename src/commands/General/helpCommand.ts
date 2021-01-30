@@ -7,6 +7,7 @@ export default class helpCommand extends Command {
 	public constructor() {
 		super("help", {
 			aliases: ["help", "commands", "cmd"],
+			clientPermissions: ["EMBED_LINKS"],
 			category: "General",
 			description: {
 				content: "Shows you the list of available commands, or more info about a specific one.",
