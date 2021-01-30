@@ -55,20 +55,16 @@ export default class stats extends Command {
 						`Client Version: v${version}`,
 					].join("\n")}\`\`\``
 				)
-				.addField("• Github Info", await this.commits())
+				.addField("• Github Info", (await this.commits()).substr(0, 1024))
 		);
 	}
 
-	async commits() {
-		const repo = repository.url;
-		const json = await (
-			await fetch(
-				`https://api.github.com/repos/${repo.slice("https://github.com/".length)}/commits`
-			)
-		).json();
+	async commits(): Promise<string> {
+		const repo = repository.url.slice("https://github.com/".length);
+		const json = await (await fetch(`https://api.github.com/repos/${repo}/commits`)).json();
 
 		let str = "";
-
+		if (!Array.isArray(json)) return "private repo";
 		for (const { sha, html_url, commit, author } of json.slice(0, 5)) {
 			str += `[\`${sha.slice(0, 7)}\`](${html_url}) ${commit.message
 				.substring(0, 80)
