@@ -17,5 +17,8 @@
 	},
 	"scripts": {
 		"dev": "nodemon --exec ts-node src/bot.ts"
+	},
+	"repository": {
+		"url": "https://github.com/DaanGamesDG/bot-template"
 	}
 }
