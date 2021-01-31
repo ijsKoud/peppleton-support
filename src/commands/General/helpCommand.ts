@@ -60,7 +60,13 @@ export default class helpCommand extends Command {
 					`• ${category.id}`,
 					"`" +
 						(category
-							.filter((c) => c.categoryID === category.id && c.aliases.length > 0 && !c.ownerOnly)
+							.filter((c) =>
+								c.categoryID === category.id &&
+								c.aliases.length > 0 &&
+								this.client.isOwner(message.author.id)
+									? true
+									: !c.ownerOnly
+							)
 							.map((c) => c.id)
 							.join("`, `") || "No commands for this category") +
 						"`",
