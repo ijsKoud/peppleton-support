@@ -49,7 +49,6 @@ export default class closeCommand extends Command {
 								__dirname,
 								"..",
 								"..",
-								"..",
 								"transcriptions",
 								`${message.guild.name} - ${
 									(message.channel as TextChannel).parent?.name || "text"
