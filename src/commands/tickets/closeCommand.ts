@@ -31,7 +31,7 @@ export default class closeCommand extends Command {
 		if (!allowed) return message.react("❌");
 
 		exec(
-			`DiscordChatExporter.Cli.exe export -c ${message.channel.id} -t ${
+			`dotnet DiscordChatExporter.Cli.dll export -c ${message.channel.id} -t ${
 				this.client.token
 			} -o ${join(__dirname, "..", "..", "transcriptions")} -b`,
 			{
