@@ -182,7 +182,7 @@ export default class ready extends Listener {
 
 			let types: string[] = ["department", "title", "description", "extra"];
 			let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
-			let emojiNames: string[] = ["PR_Driver", "PR_Dispatcher", "PR_Guard", "PR_PRLogo"];
+			let emojiNames: string[] = ["PR_Driver", "PR_Dispatcher", "PR_Guard", "PR_Logo"];
 
 			if (await blacklist.findOne({ id: message.author.id }))
 				return dmChannel.send(
