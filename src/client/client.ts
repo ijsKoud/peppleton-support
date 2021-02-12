@@ -21,7 +21,7 @@ export default class Client extends AkairoClient {
 	private wb: WebhookClient = new WebhookClient(process.env.WB_ID, process.env.WB_TOKEN);
 	public utils: util = new util(this);
 
-	public listenHandler: ListenerHandler = new ListenerHandler(this, {
+	public listenerHandler: ListenerHandler = new ListenerHandler(this, {
 		directory: join(__dirname, "..", "events"),
 	});
 	public commandHandler: CommandHandler = new CommandHandler(this, {
@@ -63,15 +63,15 @@ export default class Client extends AkairoClient {
 	}
 
 	private async _init(): Promise<void> {
-		this.commandHandler.useListenerHandler(this.listenHandler);
-		this.listenHandler.setEmitters({
+		this.commandHandler.useListenerHandler(this.listenerHandler);
+		this.listenerHandler.setEmitters({
 			commandHandler: this.commandHandler,
-			listenerHandler: this.listenHandler,
+			listenerHandler: this.listenerHandler,
 			process,
 		});
 
 		this.commandHandler.loadAll();
-		this.listenHandler.loadAll();
+		this.listenerHandler.loadAll();
 	}
 
 	private connect(): void {
