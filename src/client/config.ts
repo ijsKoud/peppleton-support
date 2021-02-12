@@ -34,10 +34,10 @@ export const feedbackSheet: string = "1r8a--e9-THYU_w8ql6Qlg_xxVkag_trKL0DhudRon
 export const feedbackMsgId: string = "786684201247571978";
 
 // emojis
-export const qdEmoji: string = "<:Driver:793907766476668938>";
-export const dsEmoji: string = "<:Dispatcher:793907746390933534>";
-export const gdEmoji: string = "<:Guard:793907789349126214>";
-export const prEmoji: string = "<:PRLogo:771799330516107265>";
+export const qdEmoji: string = "<:PR_Driver:793907766476668938>";
+export const dsEmoji: string = "<:PR_Dispatcher:793907746390933534>";
+export const gdEmoji: string = "<:PR_Guard:793907789349126214>";
+export const prEmoji: string = "<:PR_Logo:771799330516107265>";
 
 // roles
 export const blacklistRole: string = "781589052197568512";

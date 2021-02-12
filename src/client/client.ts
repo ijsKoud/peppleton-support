@@ -26,7 +26,7 @@ export default class botClient extends AkairoClient {
 	public config: botOptions;
 	private wb: WebhookClient = new WebhookClient(wbId, wbToken);
 
-	public listenHandler: ListenerHandler = new ListenerHandler(this, {
+	public listenerHandler: ListenerHandler = new ListenerHandler(this, {
 		directory: join(__dirname, "..", "events"),
 	});
 	public commandHandler: CommandHandler = new CommandHandler(this, {
@@ -70,15 +70,15 @@ export default class botClient extends AkairoClient {
 	}
 
 	private async _init(): Promise<void> {
-		this.commandHandler.useListenerHandler(this.listenHandler);
-		this.listenHandler.setEmitters({
+		this.commandHandler.useListenerHandler(this.listenerHandler);
+		this.listenerHandler.setEmitters({
 			commandHandler: this.commandHandler,
-			listenerHandler: this.listenHandler,
+			listenerHandler: this.listenerHandler,
 			process,
 		});
 
 		this.commandHandler.loadAll();
-		this.listenHandler.loadAll();
+		this.listenerHandler.loadAll();
 	}
 
 	private connect(): void {

@@ -80,7 +80,11 @@ export default class ready extends Listener {
 				this.updateLastMSG(message.author.id);
 				break;
 			case "text":
-				if (!message.channel.name.endsWith("-ticket")) return;
+				if (
+					!message.channel.name.endsWith("-ticket") ||
+					!message.channel.topic.includes(message.author.id)
+				)
+					return;
 				let userId: string;
 				if (map.has(message.channel.id)) userId = map.get(message.channel.id);
 
@@ -178,7 +182,7 @@ export default class ready extends Listener {
 
 			let types: string[] = ["department", "title", "description", "extra"];
 			let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
-			let emojiNames: string[] = ["Driver", "Dispatcher", "Guard", "PRLogo"];
+			let emojiNames: string[] = ["PR_Driver", "PR_Dispatcher", "PR_Guard", "PR_Logo"];
 
 			if (await blacklist.findOne({ id: message.author.id }))
 				return dmChannel.send(
@@ -565,7 +569,7 @@ export default class ready extends Listener {
 
 		let types: string[] = ["department", "title", "description", "extra"];
 		let emojis: string[] = [qdEmoji, dsEmoji, gdEmoji, prEmoji];
-		let emojiNames: string[] = ["Driver", "Dispatcher", "Guard", "PRLogo"];
+		let emojiNames: string[] = ["PR_Driver", "PR_Dispatcher", "PR_Guard", "PR_Logo"];
 
 		for await (const type of types) {
 			if (cancelled) return;

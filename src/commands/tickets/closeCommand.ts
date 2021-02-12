@@ -1,5 +1,8 @@
+import { exec } from "child_process";
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
+import { Message, MessageAttachment, TextChannel } from "discord.js";
+import { join } from "path";
+import { transcriptionsChannel } from "../../client/config";
 
 export default class closeCommand extends Command {
 	public constructor() {
@@ -16,16 +19,51 @@ export default class closeCommand extends Command {
 		});
 	}
 
-	public exec(message: Message) {
+	async exec(message: Message) {
 		if (message.channel.type !== "text" || !message.channel.name.endsWith("-ticket")) return;
-		if (
-			!this.client.isOwner(message.author) &&
-			(!message.member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }) ||
-				!message.channel.topic.includes(message.author.id))
-		)
-			return message.react("❌");
 
-		message.util.send(`>>> 🗑 | Deleting the channel in **5 seconds**...`);
-		setTimeout(() => message.channel.delete("closed by claimer"), 5e3);
+		let allowed: boolean = false;
+		if (message.channel.topic.includes(message.author.id)) allowed = true;
+		else if (this.client.isOwner(message.author)) allowed = true;
+		else if (message.member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }))
+			allowed = true;
+
+		if (!allowed) return message.react("❌");
+
+		exec(
+			`dotnet DiscordChatExporter.Cli.dll export -c ${message.channel.id} -t ${
+				this.client.token
+			} -o ${join(__dirname, "..", "..", "transcriptions")} -b`,
+			{
+				cwd: join(process.cwd(), "transcriptor"),
+			},
+			async (e, m) => {
+				if (e) this.client.log(`Transcript error: ${e}`);
+				try {
+					const tsChannel = (await this.client.channels.fetch(
+						transcriptionsChannel
+					)) as TextChannel;
+					tsChannel.send(
+						new MessageAttachment(
+							join(
+								__dirname,
+								"..",
+								"..",
+								"transcriptions",
+								`${message.guild.name} - ${
+									(message.channel as TextChannel).parent?.name || "text"
+								} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
+							),
+							`${message.channel.id}-ticket.html`
+						)
+					);
+				} catch (e) {
+					this.client.log(`Transcript error: ${e}`);
+				}
+
+				message.util.send(`>>> 🗑 | Deleting the channel in **5 seconds**...`);
+				setTimeout(() => message.channel.delete("closed by claimer"), 5e3);
+			}
+		);
 	}
 }
