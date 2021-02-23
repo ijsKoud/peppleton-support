@@ -27,6 +27,7 @@ export default class prClient extends AkairoClient {
 
 	public listenerHandler: ListenerHandler = new ListenerHandler(this, {
 		directory: join(__dirname, "..", "events"),
+		automateCategories: true,
 	});
 	public commandHandler: CommandHandler = new CommandHandler(this, {
 		directory: join(__dirname, "..", "commands"),
