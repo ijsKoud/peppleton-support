@@ -6,6 +6,9 @@ import { connect, connection } from "mongoose";
 import { join } from "path";
 import util from "./util";
 
+import Logger from "logdown";
+const logger = Logger("", { markdown: true });
+
 // declare
 declare module "discord-akairo" {
 	interface AkairoClient {
@@ -85,13 +88,13 @@ export default class Client extends AkairoClient {
 		connection
 			.on("connecting", () => this.log(`⏳ | Connecting to **${connection.name}** database...`))
 			.once("connected", () =>
-				this.log(`📁 | Successfully conntected to database: **${connection.name}**!`)
+				this.log(`📁 | Successfully connected to database: **${connection.name}**!`)
 			)
 			.on("reconnected", () =>
 				this.log(`📁 | Successfully re-connected to database: **${connection.name}**!`)
 			)
 			.on("disconnected", () =>
-				this.log(`❌ | Disconnected from **${connection.name}**! Waiting to reconnect...`)
+				this.log(`❌ | Disconnected from **${connection.name}**! Reconnecting...`)
 			)
 			.on("error", (error: Error) =>
 				this.log(`⚠ | New error - **${connection.name}** - Error: \`${error.message}\``)
@@ -105,7 +108,7 @@ export default class Client extends AkairoClient {
 	}
 
 	public log(msg: string): void {
-		this.wb.send(">>> " + msg);
-		console.log(msg.replace(/\*/g, "").replace(/`/g, ""));
+		this.wb.send(">>> " + msg.substr(0, 2048 - 4));
+		logger.log(msg.replace(/`/g, ""));
 	}
 }
