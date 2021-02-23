@@ -10,7 +10,6 @@ export default class stats extends Command {
 		super("stats", {
 			aliases: ["stats"],
 			clientPermissions: ["EMBED_LINKS"],
-			category: "General",
 			description: {
 				content: "Some interesting stats.",
 				usage: "stats",

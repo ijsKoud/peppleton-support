@@ -32,6 +32,7 @@ export default class prClient extends AkairoClient {
 		directory: join(__dirname, "..", "commands"),
 		prefix: process.env.PREFIX,
 		allowMention: true,
+		automateCategories: true,
 		blockBots: true,
 		blockClient: true,
 		commandUtil: true,

@@ -5,7 +5,6 @@ export default class reload extends Command {
 	constructor() {
 		super("reload", {
 			aliases: ["reload"],
-			category: "ownerOnly",
 			args: [
 				{
 					id: "command",

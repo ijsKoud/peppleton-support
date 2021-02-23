@@ -7,7 +7,6 @@ export default class docs extends Command {
 		super("docs", {
 			aliases: ["docs"],
 			clientPermissions: ["EMBED_LINKS"],
-			category: "ownerOnly",
 			args: [
 				{
 					id: "query",

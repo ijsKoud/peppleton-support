@@ -6,7 +6,6 @@ export default class execCommand extends Command {
 	constructor() {
 		super("exec", {
 			aliases: ["exec"],
-			category: "ownerOnly",
 			args: [
 				{
 					id: "code",

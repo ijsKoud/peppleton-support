@@ -7,7 +7,6 @@ export default class evalCommand extends Command {
 		super("eval", {
 			aliases: ["eval", "e", "evaluate"],
 			clientPermissions: ["EMBED_LINKS"],
-			category: "ownerOnly",
 			description: {
 				content: "Private command for owners only (only developers know what this does)",
 				usage: "eval <code>",
