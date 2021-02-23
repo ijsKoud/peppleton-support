@@ -117,6 +117,6 @@ export default class prClient extends AkairoClient {
 			}**): ${msg}`,
 			{ split: true }
 		);
-		logger[type.toLowerCase()](msg.replace(/`/g, "").replace(/\*/g, "").slice(4));
+		logger[type.toLowerCase()](msg.replace(/`/g, "").replace(/\*/g, ""));
 	}
 }
