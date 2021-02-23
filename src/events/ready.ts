@@ -10,8 +10,11 @@ export default class ready extends Listener {
 	}
 
 	async exec(): Promise<void> {
-		// client stuff
-		this.client.log("INFO", `✅ | **${this.client.user.tag}** has logged in!`);
-		this.client.user.setActivity("Oslo is ready for testing!", { type: "PLAYING" });
+		this.client.log("INFO", `**${this.client.user.tag}** has logged in!`);
+		this.client.user.setActivity("your support tickets!", { type: "LISTENING" });
+		setInterval(
+			() => this.client.user.setActivity("your support tickets!", { type: "LISTENING" }),
+			864e5
+		);
 	}
 }

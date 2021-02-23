@@ -46,7 +46,7 @@ export default class evalCommand extends Command {
 					.addField("**❯ Input**:", `\`\`\`ts\n${input}\n\`\`\``)
 					.addField("**❯ Output**:", `\`\`\`ts\n${output}\n\`\`\``)
 					.addField("**❯ Time Taken**:", `\`\`\`${timeTaken}ms \`\`\``)
-					.setColor(message.member.displayHexColor || "BLUE");
+					.setColor(message.member?.displayHexColor || "BLUE");
 
 				return message.util.send(embed);
 			}

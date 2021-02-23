@@ -12,7 +12,7 @@ export default class ready extends Listener {
 	async exec(reason: Error, promise: any): Promise<void> {
 		this.client.log(
 			"ERROR",
-			`⚠ | Oops, an unhandled rejection! At: \`${promise}\`, error: \`\`\`${
+			`Oops, an unhandled rejection! At: \`${promise}\`, error: \`\`\`${
 				reason.stack || reason.message
 			}\`\`\``
 		);
