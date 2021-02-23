@@ -6,15 +6,15 @@ import { connect, connection } from "mongoose";
 import { join } from "path";
 import util from "./util";
 
-import Logger from "logdown";
-const logger = Logger("", { markdown: true });
+import { Logger, LogLevel } from "@melike2d/logger";
+const logger = new Logger("project name here");
 
 // declare
 declare module "discord-akairo" {
 	interface AkairoClient {
 		commandHandler: CommandHandler;
 		listenerHandler: ListenerHandler;
-		log(msg: string): void;
+		log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void;
 		utils: util;
 	}
 }
@@ -86,18 +86,26 @@ export default class Client extends AkairoClient {
 		});
 
 		connection
-			.on("connecting", () => this.log(`⏳ | Connecting to **${connection.name}** database...`))
+			.on("connecting", () =>
+				this.log(LogLevel.INFO, `⏳ | Connecting to **${connection.name}** database...`)
+			)
 			.once("connected", () =>
-				this.log(`📁 | Successfully connected to database: **${connection.name}**!`)
+				this.log(LogLevel.INFO, `📁 | Successfully connected to database: **${connection.name}**!`)
 			)
 			.on("reconnected", () =>
-				this.log(`📁 | Successfully re-connected to database: **${connection.name}**!`)
+				this.log(
+					LogLevel.INFO,
+					`📁 | Successfully re-connected to database: **${connection.name}**!`
+				)
 			)
 			.on("disconnected", () =>
-				this.log(`❌ | Disconnected from **${connection.name}**! Reconnecting...`)
+				this.log(LogLevel.WARN, `❌ | Disconnected from **${connection.name}**! Reconnecting...`)
 			)
 			.on("error", (error: Error) =>
-				this.log(`⚠ | New error - **${connection.name}** - Error: \`${error.message}\``)
+				this.log(
+					LogLevel.ERROR,
+					`⚠ | New error - **${connection.name}** - Error: \`${error.message}\``
+				)
 			);
 	}
 
@@ -107,8 +115,8 @@ export default class Client extends AkairoClient {
 		return this.login(process.env.TOKEN);
 	}
 
-	public log(msg: string): void {
+	public log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void {
 		this.wb.send(">>> " + msg.substr(0, 2048 - 4));
-		logger.log(msg.replace(/`/g, ""));
+		logger[type.toLowerCase()](msg.replace(/`/g, "").replace(/\*/g, ""));
 	}
 }

@@ -22,7 +22,7 @@ export default class reload extends Command {
 				`>>> ${this.client.utils.emojiFinder("terminalicon")} | No command found.`
 			);
 		command.reload();
-		this.client.log(`🔄 | **${command.id}** command reloaded!`);
+		this.client.log("INFO", `🔄 | **${command.id}** command reloaded!`);
 		return message.util.send(
 			`>>> ${this.client.utils.emojiFinder("terminalicon")} | **${command.id}** command reloaded!`
 		);
