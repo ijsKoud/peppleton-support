@@ -7,7 +7,6 @@ export default class evalCommand extends Command {
 		super("eval", {
 			aliases: ["eval", "e", "evaluate"],
 			clientPermissions: ["EMBED_LINKS"],
-			category: "ownerOnly",
 			description: {
 				content: "Private command for owners only (only developers know what this does)",
 				usage: "eval <code>",
@@ -46,7 +45,7 @@ export default class evalCommand extends Command {
 					.addField("**❯ Input**:", `\`\`\`ts\n${input}\n\`\`\``)
 					.addField("**❯ Output**:", `\`\`\`ts\n${output}\n\`\`\``)
 					.addField("**❯ Time Taken**:", `\`\`\`${timeTaken}ms \`\`\``)
-					.setColor(message.member.displayHexColor || "BLUE");
+					.setColor(message.member?.displayHexColor || "BLUE");
 
 				return message.util.send(embed);
 			}

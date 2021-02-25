@@ -5,7 +5,6 @@ export default class pingCommand extends Command {
 	public constructor() {
 		super("ping", {
 			aliases: ["ping", "pong"],
-			category: "General",
 			description: {
 				content: "Check the edit and discord connection latency",
 				usage: "ping",

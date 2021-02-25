@@ -1,10 +1,21 @@
-import Client from "./client";
-import { TextChannel, User, Collection, MessageAttachment } from "discord.js";
-import { Guild } from "discord.js";
-import { GuildMember } from "discord.js";
+import prClient from "./client";
+import {
+	TextChannel,
+	User,
+	Collection,
+	MessageAttachment,
+	CollectorFilter,
+	Message,
+	Guild,
+	GuildMember,
+	AwaitMessagesOptions,
+	AwaitReactionsOptions,
+	MessageReaction,
+} from "discord.js";
+import Ticket from "../models/tickets/Ticket";
 
 export default class util {
-	public constructor(private client: Client) {}
+	public constructor(private client: prClient) {}
 
 	// public functions
 	public emojiFinder(name: string): string {
@@ -54,6 +65,31 @@ export default class util {
 		else member = this.client.util.resolveMember(id, guild.members.cache, false, false);
 
 		return member || null;
+	}
+
+	public async awaitReactions(
+		message: Message,
+		filter: CollectorFilter,
+		options: AwaitReactionsOptions = { max: 1, time: 6e4, errors: ["time"] }
+	): Promise<Collection<string, MessageReaction>> {
+		return await message
+			.awaitReactions(filter, options)
+			.catch((e) => new Collection<string, MessageReaction>());
+	}
+
+	public async awaitMessages(
+		message: Message,
+		filter: CollectorFilter,
+		options: AwaitMessagesOptions = { max: 1, time: 6e4, errors: ["time"] }
+	): Promise<Collection<string, Message>> {
+		const coll = await message.channel
+			.awaitMessages(filter, options)
+			.catch((e) => new Collection<string, Message>());
+		return coll;
+	}
+
+	public async checkId(id: string): Promise<boolean> {
+		return (await Ticket.findOne({ caseId: id })) ? true : false;
 	}
 
 	public trimArray(arr: Array<string>, maxLen = 10) {

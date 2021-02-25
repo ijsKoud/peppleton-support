@@ -4,13 +4,13 @@ import { Command } from "discord-akairo";
 import { version, repository } from "../../../package.json";
 import fetch from "node-fetch";
 import os from "os";
+import Ticket from "../../models/tickets/Ticket";
 
 export default class stats extends Command {
 	constructor() {
 		super("stats", {
 			aliases: ["stats"],
 			clientPermissions: ["EMBED_LINKS"],
-			category: "General",
 			description: {
 				content: "Some interesting stats.",
 				usage: "stats",
@@ -25,9 +25,6 @@ export default class stats extends Command {
 			new MessageEmbed()
 				.setColor(message.guild ? message.guild.me.displayHexColor : "BLACK")
 				.setTitle(`Bot Stats - ${this.client.user.tag}`)
-				.setDescription(
-					`This is all the technical information about ${this.client.user.username}. Here you are also able to find the server count, bot uptime & the bot status. The information may not be up to date, it's the most recent information I was able to find in my cache.`
-				)
 				.addField(
 					"• General Information",
 					`\`\`\`${[
@@ -56,6 +53,13 @@ export default class stats extends Command {
 						`Client Version: v${version}`,
 					].join("\n")}\`\`\``
 				)
+				.addField(
+					"• Ticket info",
+					(await Ticket.find())
+						.map(({ caseId, status, userId }) => `\`${caseId}\` - <@${userId}> | Status: ${status}`)
+						.join("\n")
+						.substr(0, 1024)
+				)
 				.addField("• Github Info", (await this.commits()).substr(0, 1024))
 		);
 	}
@@ -65,13 +69,13 @@ export default class stats extends Command {
 		const json = await (await fetch(`https://api.github.com/repos/${repo}/commits`)).json();
 
 		let str = "";
-		if (!Array.isArray(json)) return "private repo";
+		if (!Array.isArray(json)) return `[Private repository](${repository.url})`;
 		for (const { sha, html_url, commit, author } of json.slice(0, 5)) {
 			str += `[\`${sha.slice(0, 7)}\`](${html_url}) ${commit.message
 				.substring(0, 80)
 				.replace(/\/n/g, "")} - **[@${author.login.toLowerCase()}](${author.html_url})**\n`;
 		}
 
-		return str || "No commits found";
+		return str || `No commits found for [${repo}](${repository.url})`;
 	}
 }

@@ -8,7 +8,6 @@ export default class helpCommand extends Command {
 		super("help", {
 			aliases: ["help", "commands", "cmd"],
 			clientPermissions: ["EMBED_LINKS"],
-			category: "General",
 			description: {
 				content: "Shows you the list of available commands, or more info about a specific one.",
 				usage: "help [command]",
@@ -16,8 +15,7 @@ export default class helpCommand extends Command {
 			args: [
 				{
 					id: "command",
-					type: "command",
-					default: "",
+					type: "commandAlias",
 				},
 			],
 		});

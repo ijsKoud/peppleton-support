@@ -5,7 +5,6 @@ export default class reload extends Command {
 	constructor() {
 		super("reload", {
 			aliases: ["reload"],
-			category: "ownerOnly",
 			args: [
 				{
 					id: "command",
@@ -22,7 +21,7 @@ export default class reload extends Command {
 				`>>> ${this.client.utils.emojiFinder("terminalicon")} | No command found.`
 			);
 		command.reload();
-		this.client.log("INFO", `🔄 | **${command.id}** command reloaded!`);
+		this.client.log("INFO", `**${command.id}** command reloaded!`);
 		return message.util.send(
 			`>>> ${this.client.utils.emojiFinder("terminalicon")} | **${command.id}** command reloaded!`
 		);
