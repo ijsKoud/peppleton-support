@@ -25,8 +25,7 @@ export default class closeCommand extends Command {
 		if (!message.channel.name.startsWith("ticket-")) return;
 
 		const ticket = await Ticket.findOne({ channelId: message.channel.id });
-		const user = await this.client.utils.fetchUser(ticket.userId);
-
+		await message.util.send(">>> 📁 | Saving ticket transcript, please wait...");
 		if (
 			!ticket ||
 			(ticket.claimerId !== message.author.id &&
@@ -101,7 +100,7 @@ export default class closeCommand extends Command {
 								)
 							);
 					}, 5e3);
-					message.channel.send(">>> 🗑 | Deleting this ticket in **5 seconds**!");
+					message.util.send(">>> 🗑 | Deleting this ticket in **5 seconds**!");
 				}
 			);
 		} catch (e) {
