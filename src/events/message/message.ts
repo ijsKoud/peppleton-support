@@ -4,7 +4,7 @@ import { Listener } from "discord-akairo";
 import { iDepartment, iTicket } from "../../models/interfaces";
 import Ticket from "../../models/tickets/Ticket";
 import { nanoid } from "nanoid";
-import { greentick, redcross, suggestions } from "../../mocks/general";
+import { greentick, pings, redcross, suggestions } from "../../mocks/general";
 
 const cache = new Collection<string, iTicket>();
 const cooldown = new Collection<string, boolean>();
@@ -22,6 +22,7 @@ export default class MessageEvent extends Listener {
 		if (message.mentions.users.has(this.client.user.id) && message.content.startsWith("<@"))
 			return this.createTicket(message);
 
+		if (message.content.includes("[PING]")) return this.pings(message);
 		if (message.channel.type === "text" && !message.channel.name.startsWith("ticket-")) return;
 
 		switch (message.channel.type) {
@@ -175,7 +176,7 @@ export default class MessageEvent extends Listener {
 					if (cooldown.has(message.author.id))
 						return dm.send(`>>> ⌚ | You can only suggest something every **5 minutes**!`);
 					msg = await dm.send(
-						">>> ❓ | What is your suggestion? You can add attachments as well.\nNote: You can only suggestion once every 5 minutes!"
+						">>> ❓ | What is your suggestion? You can add attachments as well.\nNote: You can only suggest once every 5 minutes!"
 					);
 					const res = (await this.client.utils.awaitMessages(msg, filter)).first();
 					if (!res) return msg.delete();
@@ -323,5 +324,9 @@ export default class MessageEvent extends Listener {
 		} catch (e) {
 			this.client.log("ERROR", `Ticket creation error: \`\`\`${e}\`\`\``);
 		}
+	}
+
+	async pings(message: Message) {
+		if (pings[message.channel.id]) return message.channel.send(pings[message.channel.id]);
 	}
 }
