@@ -18,20 +18,14 @@ export default class channelDelete extends Listener {
 
 		const user = await this.client.utils.fetchUser(ticket.userId);
 		try {
-			switch (Date.now() - ticket.lastMsg > 864e5) {
-				case true:
-					user.send(
-						`>>> 🕐 | Your ticket (\`${ticket.caseId}\`) has been closed automatically for being inactive for 24 hours.\n❓ | Need more support? Open another ticket!`
-					);
-					break;
-				case false:
-					user.send(
-						`>>> 📪 | Your ticket (\`${ticket.caseId}\`) has been closed by the ticket claimer, thanks for getting into touch!\nDon't hesitate to contact us again, we are always happy to help you!`
-					);
-					break;
-				default:
-					break;
-			}
+			if (Date.now() - ticket.lastMsg > 864e5)
+				user.send(
+					`>>> 🕐 | Your ticket (\`${ticket.caseId}\`) has been closed automatically for being inactive for 24 hours.\n❓ | Need more support? Open another ticket!`
+				);
+			else
+				user.send(
+					`>>> 📪 | Your ticket (\`${ticket.caseId}\`) has been closed by the ticket claimer, thanks for getting into touch!\nDon't hesitate to contact us again, we are always happy to help you!`
+				);
 
 			await ticket.deleteOne();
 		} catch (e) {}

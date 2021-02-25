@@ -58,12 +58,6 @@ export const rDepartments: iDepartment[] = [
 		emoji: "771799330516107265",
 		fallback: "4️⃣",
 	},
-	{
-		name: "Test Department",
-		channelId: "805243599104901130",
-		emoji: "749587347372507228",
-		fallback: "5️⃣",
-	},
 ];
 
 export const accessRoles = ["742791627495571596"];
