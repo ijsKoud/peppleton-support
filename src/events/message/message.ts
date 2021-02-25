@@ -288,9 +288,9 @@ export default class MessageEvent extends Listener {
 					return;
 			}
 
-			let id = `[ticket-${nanoid(5)}]`;
+			let id = `[ticket-${nanoid(8)}]`;
 			while (await this.client.utils.checkId(id)) {
-				id = `[ticket-${nanoid(5)}]`;
+				id = `[ticket-${nanoid(8)}]`;
 			}
 
 			embed = new MessageEmbed()
