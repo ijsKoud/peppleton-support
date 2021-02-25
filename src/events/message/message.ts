@@ -4,8 +4,11 @@ import { Listener } from "discord-akairo";
 import { iDepartment, iTicket } from "../../models/interfaces";
 import Ticket from "../../models/tickets/Ticket";
 import { nanoid } from "nanoid";
+import { greentick, redcross, suggestions } from "../../mocks/general";
 
 const cache = new Collection<string, iTicket>();
+const cooldown = new Collection<string, boolean>();
+
 export default class MessageEvent extends Listener {
 	constructor() {
 		super("message", {
@@ -19,7 +22,7 @@ export default class MessageEvent extends Listener {
 		if (message.mentions.users.has(this.client.user.id) && message.content.startsWith("<@"))
 			return this.createTicket(message);
 
-		if (message.channel.type === "text" && !message.channel.name.endsWith("-ticket")) return;
+		if (message.channel.type === "text" && !message.channel.name.startsWith("ticket-")) return;
 
 		switch (message.channel.type) {
 			case "text":
@@ -45,11 +48,17 @@ export default class MessageEvent extends Listener {
 
 					const files = this.client.utils.getAttachments(message.attachments);
 					user.send(
-						`>>> 💬 | Response from ${message.author.toString()}:\n\`\`\`\n${msg.join(
+						`>>> 💬 | Reply from **${
+							message.author.username
+						}** (${message.author.toString()}):\n\`\`\`\n${msg.join(
 							" "
-						)}\n\`\`\``,
-						{ split: true, files }
+						)}\n\`\`\`To reply, send a message to me, you can add \`${
+							this.client.commandHandler.prefix
+						}\` in front of the message to stop this.`,
+						{ split: true, files, allowedMentions: { users: [] } }
 					);
+
+					await Ticket.findOneAndUpdate({ caseId: ticket.caseId }, { lastMsg: Date.now() });
 				}
 				break;
 			case "dm":
@@ -61,7 +70,7 @@ export default class MessageEvent extends Listener {
 						ticket = await Ticket.findOne({ userId: message.author.id });
 						if (!ticket) return;
 
-						const id = `${ticket.caseId.split("-")[1].slice(0, -1)}-ticket`;
+						const id = ticket.caseId.slice(1, -1);
 						cache.set(id, ticket);
 						setTimeout(() => cache.delete(id), 5e3);
 					}
@@ -71,11 +80,17 @@ export default class MessageEvent extends Listener {
 
 					const files = this.client.utils.getAttachments(message.attachments);
 					channel.send(
-						`>>> 💬 | Response from ${message.author.toString()}:\n\`\`\`\n${
+						`>>> 💬 | Reply from  **${
+							message.member?.nickname || message.author.username
+						}** (${message.author.toString()}):\n\`\`\`\n${
 							message.content
-						}\n\`\`\`Use \`${this.client.commandHandler.prefix}message <message>\` to respond.`,
-						{ split: true, files }
+						}\n\`\`\`To reply, use \`${
+							this.client.commandHandler.prefix
+						}message <message>\`, only the ticket claimer is able to do that in this channel.`,
+						{ split: true, files, allowedMentions: { users: [] } }
 					);
+
+					await Ticket.findOneAndUpdate({ caseId: ticket.caseId }, { lastMsg: Date.now() });
 				}
 				break;
 			default:
@@ -138,11 +153,11 @@ export default class MessageEvent extends Listener {
 			};
 
 			option = collector.first()?.emoji?.name || "";
+			msg.delete().catch((e) => null);
 			switch (option) {
 				case "1️⃣":
 				case "2️⃣":
 					{
-						msg.delete().catch((e) => null);
 						if (!this.client.tickets && option === "1️⃣")
 							return message.author.send(
 								">>> 🔒 | Tickets are currently closed, please try again later!"
@@ -156,6 +171,32 @@ export default class MessageEvent extends Listener {
 						emojis.forEach((e) => msg.react(e).catch((e) => null));
 					}
 					break;
+				case "3️⃣":
+					if (cooldown.has(message.author.id))
+						return dm.send(`>>> ⌚ | You can only suggest something every **5 minutes**!`);
+					msg = await dm.send(
+						">>> ❓ | What is your suggestion? You can add attachments as well.\nNote: You can only suggestion once every 5 minutes!"
+					);
+					const res = (await this.client.utils.awaitMessages(msg, filter)).first();
+					if (!res) return msg.delete();
+
+					const channel = await this.client.utils.getChannel(suggestions);
+					channel.send(
+						`>>> 💡 | New suggestion - **${
+							message.author.tag
+						}** (${message.author.toString()}):\n\`\`\`\n${res.content.substr(0, 1900)}\n\`\`\``,
+						{
+							files: this.client.utils.getAttachments(res.attachments),
+							allowedMentions: { users: [] },
+						}
+					);
+
+					dm.send(
+						">>> 👍 | Thanks for your suggestion. If you have a lot of things to suggest, please open a ticket."
+					);
+					cooldown.set(message.author.id, true);
+					setTimeout(() => cooldown.delete(message.author.id), 6e5 / 2);
+					return;
 				default:
 					return;
 			}
@@ -170,34 +211,78 @@ export default class MessageEvent extends Listener {
 
 			switch (option) {
 				case "1️⃣":
-					if (await Ticket.findOne({ userId: message.author.id })) return;
+					{
+						if (await Ticket.findOne({ userId: message.author.id })) return;
 
-					// topic
+						// topic
+						msg = await dm.send(
+							`>>> 🎫 | Ticket creation - **${department.name}**\n\`1\` - What is the topic of your question? Please keep it short, you can explain everything in the next step.`
+						);
+						info[1] = (await this.client.utils.awaitMessages(msg, filter)).first()?.content;
+						if (!info[1]) return msg.delete();
+
+						// description
+						msg = await dm.send(
+							`>>> 🎫 | Ticket creation - **${department.name}**\n\`2\` - Explain in full what your question is. You can add images if necessary in the last step.`
+						);
+						info[2] = (await this.client.utils.awaitMessages(msg, filter)).first()?.content;
+						if (!info[2]) return msg.delete();
+
+						// extra
+						msg = await dm.send(
+							`>>> 🎫 | Ticket creation - **${department.name}**\n\`3\` - Add screenshots / links here, if you don't have any you can say \`no attachments\` to skip this part.`
+						);
+						const res = await this.client.utils.awaitMessages(msg, filter);
+						info[3] = res.first()?.content;
+						if (!info[3]) return msg.delete();
+
+						info["attachments"] = this.client.utils.getAttachments(res.first().attachments);
+					}
+					break;
+				case "2️⃣": {
+					// username(s)
 					msg = await dm.send(
-						`>>> 🎫 | Ticket creation - **${department.name}**\n\`1\` - What is the topic of your question? Please keep it short, you can explain everything in the next step.`
+						`>>> 🎫 | Reporting a user - **${department.name}**\n\`1\` - Who do you want to report? Please give their ROBLOX username, you can provide more than 1 username.`
 					);
 					info[1] = (await this.client.utils.awaitMessages(msg, filter)).first()?.content;
 					if (!info[1]) return msg.delete();
 
 					// description
 					msg = await dm.send(
-						`>>> 🎫 | Ticket creation - **${department.name}**\n\`2\` - Explain in full what your question is. You can add images if necessary in the last step.`
+						`>>> 🎫 | Reporting a user - **${department.name}**\n\`2\` - Why are you reporting them, what are they doing? Explain with as much detail as possible, You can add images if necessary in the last step.`
 					);
 					info[2] = (await this.client.utils.awaitMessages(msg, filter)).first()?.content;
 					if (!info[2]) return msg.delete();
 
 					// extra
 					msg = await dm.send(
-						`>>> 🎫 | Ticket creation - **${department.name}**\n\`3\` - Add screenshots / links here, if you don't have any you can say \`no attachments\` to skip this part.`
+						`>>> 🎫 | Reporting a user - **${department.name}**\n\`3\` - Add screenshots / links here, we want at least **1** screenshot.`
 					);
 					const res = await this.client.utils.awaitMessages(msg, filter);
 					info[3] = res.first()?.content;
 					if (!info[3]) return msg.delete();
 
 					info["attachments"] = this.client.utils.getAttachments(res.first().attachments);
-					break;
-				case "2️⃣":
-					break;
+
+					embed = new MessageEmbed()
+						.setColor(this.client.hex)
+						.setAuthor(
+							`New report - ${message.author.tag}`,
+							message.author.displayAvatarURL({ dynamic: true, size: 4096 })
+						)
+						.addField("• Username(s)", info[1].substr(0, 1024), true)
+						.addField("• Reason", info[2].substr(0, 1024), true)
+						.addField("• Extra", info[3].substr(0, 1024), true)
+						.attachFiles(info["attachments"]);
+
+					const channel = await this.client.utils.getChannel(department.channelId);
+					msg = await channel.send(embed);
+					[greentick, redcross].forEach((e) => msg.react(e).catch((e) => null));
+
+					return dm.send(
+						`>>> 👍 | We received your report. If you want to report more users, don't hesitate to use the report function again!`
+					);
+				}
 				default:
 					return;
 			}
@@ -222,11 +307,12 @@ export default class MessageEvent extends Listener {
 				.attachFiles(info["attachments"]);
 
 			const channel = await this.client.utils.getChannel(department.channelId);
-			channel.send(embed).then((m) => m.react("✅"));
+			msg = await channel.send(embed);
+			msg.react("✅");
+
 			await Ticket.create({
 				status: "unclaimed",
 				userId: message.author.id,
-				lastMsg: Date.now(),
 				caseId: id,
 				messageId: msg.id,
 			});

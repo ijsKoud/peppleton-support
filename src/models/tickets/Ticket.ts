@@ -4,7 +4,7 @@ import { nString, reqString } from "../interfaces";
 interface iTicket extends Document {
 	status: "unclaimed" | "closed" | "open";
 	userId: string;
-	lastMsg: number;
+	lastMsg?: number;
 	caseId: string;
 	channelId?: string;
 	messageId?: string;

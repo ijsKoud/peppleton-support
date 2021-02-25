@@ -69,6 +69,7 @@ export default class prClient extends AkairoClient {
 			messageCacheMaxSize: 100,
 			messageCacheLifetime: 6e4,
 			messageSweepInterval: 6e5,
+			partials: ["CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION", "USER"],
 			ws: {
 				intents: [
 					"DIRECT_MESSAGES",

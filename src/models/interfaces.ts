@@ -11,7 +11,7 @@ export interface iDepartment {
 export interface iTicket {
 	status: "unclaimed" | "closed" | "open";
 	userId: string;
-	lastMsg: number;
+	lastMsg?: number;
 	caseId: string;
 	channelId?: string;
 	messageId?: string;
