@@ -55,10 +55,13 @@ export default class stats extends Command {
 				)
 				.addField(
 					"• Ticket info",
-					(await Ticket.find())
-						.map(({ caseId, status, userId }) => `\`${caseId}\` - <@${userId}> | Status: ${status}`)
-						.join("\n")
-						.substr(0, 1024)
+					(
+						(await Ticket.find())
+							.map(
+								({ caseId, status, userId }) => `\`${caseId}\` - <@${userId}> | Status: ${status}`
+							)
+							.join("\n") || "No tickets found"
+					).substr(0, 1024)
 				)
 				.addField("• Github Info", (await this.commits()).substr(0, 1024))
 		);

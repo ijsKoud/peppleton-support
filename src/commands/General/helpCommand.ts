@@ -23,12 +23,11 @@ export default class helpCommand extends Command {
 
 	public exec(message: Message, { command }: { command: Command }) {
 		const embed = new MessageEmbed()
-			.setColor(message.member?.displayHexColor || "#9298F4")
-			.setThumbnail(
-				message.guild?.iconURL({ dynamic: true, size: 4096 }) ||
-					message.author.displayAvatarURL({ dynamic: true, size: 4096 })
+			.setColor(this.client.hex)
+			.setFooter(
+				`Peppleton Support - Created by DaanGamesDG`,
+				this.client.user.displayAvatarURL({ dynamic: true, size: 4096 })
 			)
-			.setFooter(`❗ | The prefix for this bot is "${this.handler.prefix}"`)
 			.setTitle(`Help Command - ${message.author.tag}`);
 
 		if (command) {
