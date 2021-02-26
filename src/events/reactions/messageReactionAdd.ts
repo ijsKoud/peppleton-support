@@ -1,7 +1,10 @@
 import { Listener } from "discord-akairo";
-import { MessageReaction, User, MessageEmbed } from "discord.js";
+import { MessageReaction, User, MessageEmbed, Message } from "discord.js";
 import { accessRoles, categoryId, rDepartments, tDepartments } from "../../mocks/departments";
+import Feedback from "../../models/guild/Feedback";
 import Ticket from "../../models/tickets/Ticket";
+import { GoogleSpreadsheet } from "google-spreadsheet";
+import { prLogo } from "../../mocks/general";
 
 export default class messageReactionAdd extends Listener {
 	constructor() {
@@ -24,6 +27,7 @@ export default class messageReactionAdd extends Listener {
 			const channelIds = tDepartments.map(({ channelId }) => channelId);
 			const reportChannels = rDepartments.map(({ channelId }) => channelId);
 
+			if (reaction.emoji.name === "📋") return this.feedback(message, user);
 			if (reportChannels.includes(message.channel.id)) return this.handleReports(reaction, user);
 			if (reaction.emoji.name !== "✅" || !channelIds.includes(message.channel.id)) return;
 
@@ -127,5 +131,46 @@ export default class messageReactionAdd extends Listener {
 		}
 
 		message.reactions.removeAll();
+	}
+
+	async feedback(message: Message, user: User) {
+		const config = await Feedback.findOne({ guildId: message.guild.id });
+		if (!config || message.id !== config.messageId) return;
+
+		const msg: Message = await user
+			.send(
+				`>>> ${this.client.utils.emojiFinder(
+					"loading"
+				)} | Searching for your feedback, please wait...`
+			)
+			.catch((e) => null);
+		if (!message) return;
+
+		try {
+			const doc = new GoogleSpreadsheet(process.env.SHEET);
+			doc.useApiKey(process.env.API_KEY);
+			await doc.loadInfo();
+
+			const sheet = doc.sheetsByIndex[0];
+			const rows = await sheet.getRows();
+			const data = rows.find((r) => r.discordID == user.id);
+			const state = rows.find((r) => r.discordID == user.id);
+
+			if (data && (!state || !state.passed || !state.feedback))
+				throw new Error("Missing `state`, `state.data` or `state.feedback` property.");
+			const feedback = data
+				? `>>> ${this.client.emojis.cache.get(prLogo)?.toString() || "📖"} | You **${
+						state.passed
+				  }** this application session, here is your feedback: \`\`\`${
+						(data.feedback as string).length > 850
+							? (data.feedback as string).substr(0, 850 - 3) + "..."
+							: (data.feedback as string)
+				  }\`\`\` ❓ | Questions about the feedback? Open a ticket with the topic \`feedback question\` and a staff member will help you as soon as possible.`
+				: ">>> 👤 | Sorry I didn't find your user id in the database, if you think I am wrong, please open a ticket and the staff team is happy to help!";
+
+			msg.edit(feedback);
+		} catch (e) {
+			this.client.log("ERROR", `Feedback error: \`\`\`${e}\`\`\``);
+		}
 	}
 }

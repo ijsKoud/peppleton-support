@@ -60,5 +60,25 @@ export const rDepartments: iDepartment[] = [
 	},
 ];
 
+export const hDepartments: iDepartment[] = [
+	{
+		name: "Manager Department",
+		channelId: "792914866574589952",
+		emoji: "",
+		fallback: "",
+	},
+	{
+		name: "Developer Department",
+		channelId: "792914883284172841",
+		emoji: "",
+		fallback: "",
+	},
+	{
+		name: "Director Department",
+		channelId: "792914904784175185",
+		emoji: "",
+		fallback: "",
+	},
+];
 export const accessRoles = ["742791627495571596"];
 export const categoryId = "754266502638600233";

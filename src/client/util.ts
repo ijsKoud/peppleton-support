@@ -64,7 +64,8 @@ export default class util {
 	public async fetchMember(id: string, guild: Guild): Promise<GuildMember> {
 		let member: GuildMember = null;
 
-		if (!isNaN(Number(id))) member = await guild.members.fetch(id).catch((e) => null);
+		if (!isNaN(Number(id)))
+			member = guild.members.cache.get(id) || (await guild.members.fetch(id).catch((e) => null));
 		else member = this.client.util.resolveMember(id, guild.members.cache, false, false);
 
 		return member || null;
