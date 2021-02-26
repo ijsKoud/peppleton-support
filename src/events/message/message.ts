@@ -300,7 +300,9 @@ export default class MessageEvent extends Listener {
 					message.author.displayAvatarURL({ dynamic: true, size: 4096 })
 				)
 				.setDescription(
-					`Ticket created by ${message.author.toString()}\nReact with \`✅\` to claim this ticket!`
+					`Ticket (**${
+						department.name
+					}**) created by ${message.author.toString()}\nReact with \`✅\` to claim this ticket!`
 				)
 				.addField("• Topic", info[1].substr(0, 1024), true)
 				.addField("• Description", info[2].substr(0, 1024), true)

@@ -77,7 +77,9 @@ export default class messageReactionAdd extends Listener {
 			channel
 				.send("", {
 					files: this.client.utils.getAttachments(message.attachments),
-					embed: message.embeds[0],
+					embed: new MessageEmbed(message.embeds[0]).setDescription(
+						message.embeds[0].description.replace("React with `✅` to claim this ticket!", "")
+					),
 				})
 				.then((m) => m.pin().catch((e) => null));
 			message.delete();

@@ -23,7 +23,7 @@ export default class stats extends Command {
 
 		message.util.send(
 			new MessageEmbed()
-				.setColor(message.guild ? message.guild.me.displayHexColor : "BLACK")
+				.setColor(this.client.hex)
 				.setTitle(`Bot Stats - ${this.client.user.tag}`)
 				.addField(
 					"• General Information",
