@@ -29,9 +29,14 @@ export default class closeCommand extends Command {
 		if (
 			!ticket ||
 			(ticket.claimerId !== message.author.id &&
-				!message.member.hasPermission("MANAGE_CHANNELS", { checkAdmin: true, checkOwner: true }))
+				!message.member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }) &&
+				!this.client.isOwner(message.author.id))
 		)
-			return;
+			return message.util.send(
+				`>>> ${this.client.utils.emojiFinder(
+					"redtick"
+				)} | Sorry, only ticket claimers, Managers+ and Bot developers are able to use this command in tickets.`
+			);
 
 		const channel = await this.client.utils.getChannel(transcripts);
 		message.channel.startTyping();
