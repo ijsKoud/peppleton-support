@@ -17,3 +17,9 @@ export interface iTicket {
 	messageId?: string;
 	claimerId?: string;
 }
+
+export interface reactionRole {
+	reactionId: string;
+	messageId: string;
+	roleId: string;
+}

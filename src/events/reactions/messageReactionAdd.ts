@@ -1,10 +1,11 @@
-import { Listener } from "discord-akairo";
-import { MessageReaction, User, MessageEmbed, Message } from "discord.js";
 import { accessRoles, categoryId, rDepartments, tDepartments } from "../../mocks/departments";
+import { MessageReaction, User, MessageEmbed, Message, Guild } from "discord.js";
+import reactionRoles from "./../../mocks/reactionRoles";
+import { GoogleSpreadsheet } from "google-spreadsheet";
 import Feedback from "../../models/guild/Feedback";
 import Ticket from "../../models/tickets/Ticket";
-import { GoogleSpreadsheet } from "google-spreadsheet";
 import { prLogo } from "../../mocks/general";
+import { Listener } from "discord-akairo";
 
 export default class messageReactionAdd extends Listener {
 	constructor() {
@@ -26,7 +27,10 @@ export default class messageReactionAdd extends Listener {
 
 			const channelIds = tDepartments.map(({ channelId }) => channelId);
 			const reportChannels = rDepartments.map(({ channelId }) => channelId);
+			const messageIds = reactionRoles.map(({ messageId }) => messageId);
 
+			if (messageIds.includes(message.id))
+				return this.reactionRole(reaction.emoji.name || reaction.emoji.id, message.guild, user);
 			if (reaction.emoji.name === "📋") return this.feedback(message, user);
 			if (reportChannels.includes(message.channel.id)) return this.handleReports(reaction, user);
 			if (reaction.emoji.name !== "✅" || !channelIds.includes(message.channel.id)) return;
@@ -172,5 +176,19 @@ export default class messageReactionAdd extends Listener {
 		} catch (e) {
 			this.client.log("ERROR", `Feedback error: \`\`\`${e}\`\`\``);
 		}
+	}
+
+	async reactionRole(id: string, guild: Guild, user: User) {
+		const reactionRole = reactionRoles.find((r) => r.reactionId === id);
+		if (!reactionRole) return;
+
+		const member = await this.client.utils.fetchMember(user.id, guild);
+		if (!member) return;
+
+		const role = guild.roles.cache.get(reactionRole.roleId);
+		member.roles.add(role);
+		member
+			.send(`>>> ${reactionRole.reactionId} | I just gave you the **${role.name}** role!`)
+			.catch((e) => null);
 	}
 }
