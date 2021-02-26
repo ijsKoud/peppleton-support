@@ -57,10 +57,6 @@ export default class messageReactionAdd extends Listener {
 						],
 					},
 					{
-						id: user.id,
-						allow: ["SEND_MESSAGES", "ATTACH_FILES", "VIEW_CHANNEL"],
-					},
-					{
 						id: message.guild.id,
 						deny: ["VIEW_CHANNEL"],
 					},
@@ -71,6 +67,14 @@ export default class messageReactionAdd extends Listener {
 					VIEW_CHANNEL: false,
 				})
 				.catch((e) => null);
+			await channel
+				.updateOverwrite(user.id, {
+					SEND_MESSAGES: true,
+					ATTACH_FILES: true,
+					VIEW_CHANNEL: true,
+				})
+				.catch((e) => null);
+
 			accessRoles.forEach(
 				async (r) =>
 					await channel
