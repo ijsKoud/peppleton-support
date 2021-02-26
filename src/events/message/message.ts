@@ -51,7 +51,7 @@ export default class MessageEvent extends Listener {
 					const files = this.client.utils.getAttachments(message.attachments);
 					user.send(
 						`>>> 💬 | Reply from **${
-							message.author.username
+							message.member?.nickname || message.author.username
 						}** (${message.author.toString()}):\n\`\`\`\n${msg.join(
 							" "
 						)}\n\`\`\`To reply, send a message to me, you can add \`${
