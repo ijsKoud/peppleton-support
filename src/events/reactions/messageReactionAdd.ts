@@ -4,7 +4,7 @@ import reactionRoles from "./../../mocks/reactionRoles";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import Feedback from "../../models/guild/Feedback";
 import Ticket from "../../models/tickets/Ticket";
-import { prLogo } from "../../mocks/general";
+import { prLogo, sRole } from "../../mocks/general";
 import { Listener } from "discord-akairo";
 
 export default class messageReactionAdd extends Listener {
@@ -66,6 +66,11 @@ export default class messageReactionAdd extends Listener {
 					},
 				],
 			});
+			await channel
+				.updateOverwrite(sRole, {
+					VIEW_CHANNEL: false,
+				})
+				.catch((e) => null);
 			accessRoles.forEach(
 				async (r) =>
 					await channel
