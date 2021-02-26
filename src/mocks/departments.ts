@@ -74,5 +74,5 @@ export const hDepartments: iDepartment[] = [
 		fallback: "",
 	},
 ];
-export const accessRoles = ["742791627495571596", "304986851310043136"];
+export const accessRoles = ["742791627495571596", "304986851310043136", "517069063701266474"];
 export const categoryId = "754266502638600233";

@@ -1,5 +1,5 @@
 export const suggestions = "788811272899919872";
-export const transcripts = "805243752787738714";
+export const transcripts = "793203715154378752";
 
 export const redcross = "793939269848399873";
 export const greentick = "793929362570870794";

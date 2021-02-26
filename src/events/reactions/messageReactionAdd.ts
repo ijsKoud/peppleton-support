@@ -81,7 +81,7 @@ export default class messageReactionAdd extends Listener {
 						.updateOverwrite(r, { VIEW_CHANNEL: true, SEND_MESSAGES: true, ATTACH_FILES: true })
 						.catch((e) => null)
 			);
-			await channel.setParent(categoryId).catch((e) => null);
+			await channel.setParent(categoryId, { lockPermissions: false }).catch((e) => null);
 
 			ticket.channelId = channel.id;
 			ticket.claimerId = user.id;
@@ -94,9 +94,11 @@ export default class messageReactionAdd extends Listener {
 			channel
 				.send("", {
 					files: this.client.utils.getAttachments(message.attachments),
-					embed: new MessageEmbed(message.embeds[0]).setDescription(
-						message.embeds[0].description.replace("React with `✅` to claim this ticket!", "")
-					),
+					embed: new MessageEmbed(message.embeds[0])
+						.setDescription(
+							message.embeds[0].description.replace("React with `✅` to claim this ticket!", "")
+						)
+						.setFooter(`Ticket claimed by ${user.tag}`),
 				})
 				.then((m) => m.pin().catch((e) => null));
 			message.delete();
