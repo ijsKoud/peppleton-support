@@ -5,6 +5,7 @@ import { iDepartment, iTicket } from "../../models/interfaces";
 import Ticket from "../../models/tickets/Ticket";
 import { nanoid } from "nanoid";
 import { greentick, pings, redcross, suggestions } from "../../mocks/general";
+import Blacklist from "../../models/tickets/Blacklist";
 
 const cache = new Collection<string, iTicket>();
 const cooldown = new Collection<string, boolean>();
@@ -139,6 +140,11 @@ export default class MessageEvent extends Listener {
 			if (!msg)
 				return message.channel.send(
 					">>> 🔒 | Oops, It looks like your DMs are not open. Enable them so I can send you a DM.\nℹ | If you think I am wrong, please ping **DaanGamesDG#7621** for help."
+				);
+
+			if (await Blacklist.findOne({ guildId: message.guild.id, userId: message.author.id }))
+				return dm.send(
+					">>> 🔨 | You user id is on the blacklist, you can not open a ticket anymore."
 				);
 
 			["1️⃣", "2️⃣", "3️⃣"].forEach((e) => msg.react(e).catch((e) => null));
