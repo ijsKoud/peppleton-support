@@ -1,7 +1,7 @@
 {
 	"name": "pr-support-v3",
 	"version": "3.0.0",
-	"main": "index.js",
+	"main": "build/src/bot.js",
 	"license": "MIT",
 	"dependencies": {
 		"@melike2d/logger": "^1.0.4",
@@ -28,6 +28,6 @@
 		"dev": "nodemon --exec ts-node src/bot.ts"
 	},
 	"repository": {
-		"url": "https://github.com/DaanGamesDG/bot-template"
+		"url": "https://github.com/DaanGamesDG/peppleton-support"
 	}
 }

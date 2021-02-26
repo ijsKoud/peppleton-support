@@ -1,10 +1,10 @@
-import ms from "ms";
-import { Message, MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
 import { version, repository } from "../../../package.json";
-import fetch from "node-fetch";
-import os from "os";
+import { Message, MessageEmbed } from "discord.js";
 import Ticket from "../../models/tickets/Ticket";
+import { Command } from "discord-akairo";
+import fetch from "node-fetch";
+import ms from "ms";
+import os from "os";
 
 export default class stats extends Command {
 	constructor() {
