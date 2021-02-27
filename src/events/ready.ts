@@ -9,11 +9,14 @@ export default class ready extends Listener {
 		});
 	}
 
-	async exec(): Promise<void> {
+	async exec() {
 		this.client.log("INFO", `**${this.client.user.tag}** has logged in!`);
-		this.client.user.setActivity("your support tickets!", { type: "LISTENING" });
+		this.client.user.setActivity(`${this.client.user.username} is online!`, { type: "PLAYING" });
 		setInterval(
-			() => this.client.user.setActivity("your support tickets!", { type: "LISTENING" }),
+			() =>
+				this.client.user.setActivity(`${this.client.user.username} is online!`, {
+					type: "PLAYING",
+				}),
 			864e5
 		);
 	}

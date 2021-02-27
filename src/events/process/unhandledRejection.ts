@@ -1,6 +1,6 @@
 import { Listener } from "discord-akairo";
 
-export default class ready extends Listener {
+export default class unhandledRejection extends Listener {
 	constructor() {
 		super("unhandledRejection", {
 			emitter: "process",
@@ -9,12 +9,7 @@ export default class ready extends Listener {
 		});
 	}
 
-	async exec(reason: Error, promise: any): Promise<void> {
-		this.client.log(
-			"ERROR",
-			`Oops, an unhandled rejection! At: \`${promise}\`, error: \`\`\`${
-				reason.stack || reason.message
-			}\`\`\``
-		);
+	async exec(reason: Error) {
+		this.client.log("ERROR", `Unhandled rejection: \`\`\`${reason.stack || reason.message}\`\`\``);
 	}
 }
