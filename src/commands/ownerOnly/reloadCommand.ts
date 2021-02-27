@@ -5,6 +5,10 @@ export default class reload extends Command {
 	constructor() {
 		super("reload", {
 			aliases: ["reload"],
+			description: {
+				content: "Reload an event or command",
+				usage: "reload <command/event>",
+			},
 			args: [
 				{
 					id: "file",
