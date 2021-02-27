@@ -31,9 +31,9 @@ export default class messageReactionRemove extends Listener {
 			if (!member) return;
 
 			const role = message.guild.roles.cache.get(reactionRole.roleId);
-			member.roles.add(role);
+			member.roles.remove(role);
 			member
-				.send(`>>> ${reactionRole.reactionId} | I just gave you the **${role.name}** role!`)
+				.send(`>>> ${reactionRole.reactionId} | I took away the **${role.name}** role!`)
 				.catch((e) => null);
 		} catch (e) {
 			return this.client.log("ERROR", `Reaction Role Error: \`\`\`\n${e}\n\`\`\``);
