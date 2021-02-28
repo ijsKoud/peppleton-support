@@ -1,10 +1,11 @@
-import { eventsRole, textChannel, voiceChannel } from "../../mocks/events";
+import { textChannel, voiceChannel } from "../../mocks/voice";
 import { TextChannel, VoiceState } from "discord.js";
 import { Listener } from "discord-akairo";
+import { botDev, mRole } from "../../mocks/general";
 
 export default class voiceStateUpdate extends Listener {
 	constructor() {
-		super("voiceStateUpdate", {
+		super("voiceStateUpdate-lounge", {
 			emitter: "client",
 			event: "voiceStateUpdate",
 		});
@@ -13,7 +14,7 @@ export default class voiceStateUpdate extends Listener {
 	async exec(oldState: VoiceState, newState: VoiceState): Promise<void> {
 		if (oldState.member.partial) await oldState.member.fetch();
 
-		if (oldState.member.roles.cache.has(eventsRole)) return;
+		if (oldState.member.roles.cache.has(botDev) || oldState.member.roles.cache.has(mRole)) return;
 		if (newState.channelID !== voiceChannel && oldState.channelID === voiceChannel)
 			!this.client.channels.cache.has(textChannel)
 				? ((await this.client.channels.fetch(

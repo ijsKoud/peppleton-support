@@ -12,3 +12,4 @@ export const pings = {
 
 export const mRole = "742791627495571596";
 export const sRole = "742790430034362440";
+export const botDev = "773626906800422933";
