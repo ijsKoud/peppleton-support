@@ -142,7 +142,12 @@ export default class MessageEvent extends Listener {
 					">>> 🔒 | Oops, It looks like your DMs are not open. Enable them so I can send you a DM.\nℹ | If you think I am wrong, please ping **DaanGamesDG#7621** for help."
 				);
 
-			if (await Blacklist.findOne({ guildId: message.guild.id, userId: message.author.id }))
+			if (
+				await Blacklist.findOne({
+					guildId: message.guild?.id || process.env.GUILD,
+					userId: message.author.id,
+				})
+			)
 				return dm.send(
 					">>> 🔨 | You user id is on the blacklist, you can not open a ticket anymore."
 				);

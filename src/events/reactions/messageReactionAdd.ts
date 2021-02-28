@@ -106,7 +106,7 @@ export default class messageReactionAdd extends Listener {
 			ticketOwner
 				.send(
 					`>>> 📨 | Your ticket (\`${ticket.caseId}\`) has been claimed by **${
-						user.tag
+						(await this.client.utils.fetchMember(user.id, message.guild))?.nickname || user.username
 					}** (${user.toString()}), Please allow them some time to read your case.`,
 					{ allowedMentions: { users: [] } }
 				)

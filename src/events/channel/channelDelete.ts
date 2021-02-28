@@ -24,7 +24,7 @@ export default class channelDelete extends Listener {
 				);
 			else
 				user.send(
-					`>>> 📪 | Your ticket (\`${ticket.caseId}\`) has been closed by the ticket claimer, thanks for getting into touch!\nDon't hesitate to contact us again, we are always happy to help you!`
+					`>>> 📪 | Your ticket (\`${ticket.caseId}\`) has been closed by the ticket claimer, thanks for getting in touch!\nDon't hesitate to contact us again, we are always happy to help you!`
 				);
 
 			await ticket.deleteOne();

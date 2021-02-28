@@ -7,7 +7,7 @@ const reactionRoles: reactionRole[] = [
 		roleId: "739489234892750919",
 	},
 	{
-		reactionId: "🗓",
+		reactionId: "🗓️",
 		messageId: "798112481448034324",
 		roleId: "797902390208364594",
 	},

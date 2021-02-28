@@ -76,7 +76,7 @@ export default class closeCommand extends Command {
 								.setTitle(`transcript ${ticket.caseId.slice(1, -1)}`)
 								.setDescription(
 									`Ticket claimer: <@${ticket.claimerId}>\nTicket owner: <@${
-										ticket.claimerId
+										ticket.userId
 									}>\nClosed by ${message.author.toString()}`
 								)
 								.setColor(this.client.hex)
