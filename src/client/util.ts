@@ -41,7 +41,10 @@ export default class util {
 	public async fetchUser(id: string): Promise<User> {
 		let user: User = null;
 
-		if (!isNaN(Number(id))) user = await this.client.users.fetch(id, true).catch((e) => null);
+		if (!isNaN(Number(id)))
+			user =
+				this.client.users.cache.get(id) ||
+				(await this.client.users.fetch(id, true).catch((e) => null));
 		else user = this.client.util.resolveUser(id, this.client.users.cache, false, false);
 
 		return user || null;
@@ -50,7 +53,8 @@ export default class util {
 	public async fetchMember(id: string, guild: Guild): Promise<GuildMember> {
 		let member: GuildMember = null;
 
-		if (!isNaN(Number(id))) member = await guild.members.fetch(id).catch((e) => null);
+		if (!isNaN(Number(id)))
+			member = guild.members.cache.get(id) || (await guild.members.fetch(id).catch((e) => null));
 		else member = this.client.util.resolveMember(id, guild.members.cache, false, false);
 
 		return member || null;
