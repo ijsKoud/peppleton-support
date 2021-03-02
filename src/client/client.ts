@@ -1,7 +1,5 @@
-import { ListenerHandler } from "discord-akairo";
-import { AkairoClient, CommandHandler } from "discord-akairo";
-import { WebhookClient } from "discord.js";
-import { Message } from "discord.js";
+import { ListenerHandler, CommandHandler, AkairoClient } from "discord-akairo";
+import { WebhookClient, Message } from "discord.js";
 import { connect, connection } from "mongoose";
 import { join } from "path";
 import util from "./util";
@@ -21,7 +19,7 @@ declare module "discord-akairo" {
 }
 
 // client
-export default class prClient extends AkairoClient {
+export default class Client extends AkairoClient {
 	private wb: WebhookClient = new WebhookClient(process.env.WB_ID, process.env.WB_TOKEN);
 	public utils: util = new util(this);
 
