@@ -271,10 +271,9 @@ export default class MessageEvent extends Listener {
 						`>>> 🎫 | Reporting a user - **${department.name}**\n\`3\` - Add screenshots / links here, we want at least **1** screenshot.`
 					);
 					const res = await this.client.utils.awaitMessages(msg, filter);
-					info[3] = res.first()?.content;
-					if (!info[3]) return msg.delete();
-
-					info["attachments"] = this.client.utils.getAttachments(res.first().attachments);
+					info[3] = res.first()?.content || "-";
+					info["attachments"] = this.client.utils.getAttachments(res.first()?.attachments);
+					if (!info[3] && !info["attachments"]) return msg.delete();
 
 					embed = new MessageEmbed()
 						.setColor(this.client.hex)
