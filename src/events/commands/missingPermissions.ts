@@ -12,9 +12,9 @@ export default class missingPermissionsListener extends Listener {
 
 	exec(message: Message, command: Command, type: "client" | "user", missing: PermissionString[]) {
 		message.util.send(
-			`>>> 👮‍♂️ | Oops, **${type}** is missing the following permissions for \`${
-				command.id
-			}\`: \`${missing.join("`, `")}\`.`
+			`>>> Oops, **${
+				type === "user" ? "you are" : "the bot is"
+			}** missing the following permissions for \`${command.id}\`: \`${missing.join("`, `")}\`.`
 		);
 	}
 }
