@@ -1,4 +1,4 @@
-import { ListenerHandler, CommandHandler, AkairoClient } from "discord-akairo";
+import { ListenerHandler, CommandHandler, AkairoClient, InhibitorHandler } from "discord-akairo";
 import { WebhookClient, Message } from "discord.js";
 import { connect, connection } from "mongoose";
 import { join } from "path";
@@ -11,10 +11,13 @@ const logger = new Logger("project name here");
 // declare
 declare module "discord-akairo" {
 	interface AkairoClient {
+		inhibitorHandler: InhibitorHandler;
 		commandHandler: CommandHandler;
 		listenerHandler: ListenerHandler;
-		log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void;
+
 		utils: util;
+
+		log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void;
 	}
 }
 
@@ -23,6 +26,10 @@ export default class Client extends AkairoClient {
 	private wb: WebhookClient = new WebhookClient(process.env.WB_ID, process.env.WB_TOKEN);
 	public utils: util = new util(this);
 
+	public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
+		directory: join(__dirname, "..", "inhibitors"),
+		automateCategories: true,
+	});
 	public listenerHandler: ListenerHandler = new ListenerHandler(this, {
 		directory: join(__dirname, "..", "events"),
 		automateCategories: true,
@@ -56,26 +63,23 @@ export default class Client extends AkairoClient {
 		ignoreCooldown: this.ownerID,
 	});
 	public constructor({ ownerID }: { ownerID: string[] }) {
-		super(
-			{
-				ownerID,
-			},
-			{
-				disableMentions: "everyone",
-			}
-		);
+		super({
+			ownerID,
+			disableMentions: "everyone",
+		});
 	}
 
 	private async _init(): Promise<void> {
 		this.commandHandler.useListenerHandler(this.listenerHandler);
+		this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
+
 		this.listenerHandler.setEmitters({
 			commandHandler: this.commandHandler,
 			listenerHandler: this.listenerHandler,
 			process,
 		});
 
-		this.commandHandler.loadAll();
-		this.listenerHandler.loadAll();
+		[this.commandHandler, this.listenerHandler, this.inhibitorHandler].forEach((x) => x.loadAll());
 	}
 
 	private connect(): void {
