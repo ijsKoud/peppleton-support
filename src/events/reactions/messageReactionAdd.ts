@@ -96,7 +96,10 @@ export default class messageReactionAdd extends Listener {
 					files: this.client.utils.getAttachments(message.attachments),
 					embed: new MessageEmbed(message.embeds[0])
 						.setDescription(
-							message.embeds[0].description.replace("React with `✅` to claim this ticket!", "")
+							message.embeds[0].description.replace(
+								"React with `✅` to claim this ticket!",
+								"Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>"
+							)
 						)
 						.setFooter(`Ticket claimed by ${user.tag}`),
 				})
