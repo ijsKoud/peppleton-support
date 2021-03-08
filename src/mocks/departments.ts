@@ -47,15 +47,15 @@ export const rDepartments: iDepartment[] = [
 		fallback: "3️⃣",
 	},
 	{
-		name: "Any Department",
-		channelId: "798639622380453929",
-		emoji: "818564584679538708",
-		fallback: "4️⃣",
-	},
-	{
 		name: "Signaller Department",
 		channelId: "807944776204812300",
 		emoji: "818560264990752818",
+		fallback: "4️⃣",
+	},
+	{
+		name: "Any Department",
+		channelId: "798639622380453929",
+		emoji: "818564584679538708",
 		fallback: "5️⃣",
 	},
 ];
