@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import { Command } from "discord-akairo";
 import { hDepartments } from "../../mocks/departments";
 import Ticket from "../../models/tickets/Ticket";
-import { mRole } from "../../mocks/general";
+import { botDev, mRole } from "../../mocks/general";
 
 export default class transferCommand extends Command {
 	constructor() {
@@ -67,7 +67,12 @@ export default class transferCommand extends Command {
 						ATTACH_FILES: true,
 					});
 					message.channel.updateOverwrite(oldUser, {
-						VIEW_CHANNEL: oldUser?.roles.cache.has(mRole) || false ? true : false,
+						VIEW_CHANNEL:
+							oldUser?.roles.cache.has(mRole) || false
+								? true
+								: oldUser?.roles.cache.has(botDev) || false
+								? true
+								: false,
 					});
 					message.channel.updateOverwrite(message.guild.me, {
 						SEND_MESSAGES: true,
