@@ -194,7 +194,6 @@ export default class messageReactionAdd extends Listener {
 
 	async reactionRole(id: string, guild: Guild, user: User) {
 		const reactionRole = reactionRoles.find((r) => r.reactionId === id);
-		console.log(reactionRole);
 		if (!reactionRole) return;
 
 		const member = await this.client.utils.fetchMember(user.id, guild);
