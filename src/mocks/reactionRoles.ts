@@ -22,9 +22,9 @@ const reactionRoles: reactionRole[] = [
 		roleId: "820634588980314112"
 	},
 	{
-		reactionId: "📋",
+		reactionId: "📣",
 		messageId: "818435939026206751",
-		roleId: "820634607576809553"
+		roleId: "820634208899956736"
 	},
 ];
 export default reactionRoles;
