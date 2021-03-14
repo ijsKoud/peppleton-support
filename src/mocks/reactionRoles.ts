@@ -16,5 +16,15 @@ const reactionRoles: reactionRole[] = [
 		messageId: "818435939026206751",
 		roleId: "820634607576809553"
 	},
+	{
+		reactionId: "⚒️",
+		messageId: "818435939026206751",
+		roleId: "820634588980314112"
+	},
+	{
+		reactionId: "📋",
+		messageId: "818435939026206751",
+		roleId: "820634607576809553"
+	},
 ];
 export default reactionRoles;
