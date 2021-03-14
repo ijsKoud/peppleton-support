@@ -23,7 +23,7 @@ export default class messageReactionAdd extends Listener {
 
 			let message = reaction.message;
 			if (message.partial) message = await message.fetch();
-			if (!message.guild || message.system || message.webhookID || user.bot || user.system) return;
+			if (!message.guild || message.system || user.bot || user.system) return;
 
 			const channelIds = tDepartments.map(({ channelId }) => channelId);
 			const reportChannels = rDepartments.map(({ channelId }) => channelId);

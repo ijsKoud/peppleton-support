@@ -110,13 +110,23 @@ export default class MessageEvent extends Listener {
 			return user.id === message.author.id && ["1️⃣", "2️⃣", "3️⃣"].includes(reaction.emoji.name);
 		};
 
-		const emojis = tDepartments.map(
+		const tEmojis = tDepartments.map(
 			({ emoji, fallback }) => this.client.emojis.cache.get(emoji)?.toString() || fallback
 		);
+		const rEmojis = rDepartments.map(
+			({ emoji, fallback }) => this.client.emojis.cache.get(emoji)?.toString() || fallback
+		);
+		const emojiFilter1 = (reaction: MessageReaction, user: User) => {
+			return (
+				user.id === message.author.id &&
+				tEmojis.includes(reaction.emoji.toString() || reaction.emoji.name)
+			);
+		};
+
 		const emojiFilter = (reaction: MessageReaction, user: User) => {
 			return (
 				user.id === message.author.id &&
-				emojis.includes(reaction.emoji.toString() || reaction.emoji.name)
+				rEmojis.includes(reaction.emoji.toString() || reaction.emoji.name)
 			);
 		};
 
@@ -168,9 +178,8 @@ export default class MessageEvent extends Listener {
 			msg.delete().catch((e) => null);
 			switch (option) {
 				case "1️⃣":
-				case "2️⃣":
 					{
-						if (!this.client.tickets && option === "1️⃣")
+						if (!this.client.tickets)
 							return message.author.send(
 								">>> 🔒 | Tickets are currently closed, please try again later!"
 							);
@@ -178,9 +187,24 @@ export default class MessageEvent extends Listener {
 						msg = await dm.send(
 							embed
 								.setAuthor("Please select a department")
-								.setDescription(tDepartments.map(({ name }, i) => `${emojis[i]} - **${name}**`))
+								.setDescription(tDepartments.map(({ name }, i) => `${tEmojis[i]} - **${name}**`))
 						);
-						emojis.forEach((e) => msg.react(e).catch((e) => null));
+						tEmojis.forEach((e) => msg.react(e).catch((e) => null));
+					}
+					break;
+				case "2️⃣":
+					{
+						if (!this.client.tickets)
+							return message.author.send(
+								">>> 🔒 | Tickets are currently closed, please try again later!"
+							);
+
+						msg = await dm.send(
+							embed
+								.setAuthor("Please select a department")
+								.setDescription(rDepartments.map(({ name }, i) => `${rEmojis[i]} - **${name}**`))
+						);
+						rEmojis.forEach((e) => msg.react(e).catch((e) => null));
 					}
 					break;
 				case "3️⃣":
@@ -213,7 +237,10 @@ export default class MessageEvent extends Listener {
 					return;
 			}
 
-			collector = await this.client.utils.awaitReactions(msg, emojiFilter);
+			collector = await this.client.utils.awaitReactions(
+				msg,
+				option === "1️⃣" ? emojiFilter1 : emojiFilter
+			);
 			if (!collector.size) return msg.delete();
 
 			department = (option === "1️⃣" ? tDepartments : rDepartments).find(({ emoji, fallback }) =>
