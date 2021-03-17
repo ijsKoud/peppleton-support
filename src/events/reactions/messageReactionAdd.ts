@@ -4,7 +4,7 @@ import reactionRoles from "./../../mocks/reactionRoles";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import Feedback from "../../models/guild/Feedback";
 import Ticket from "../../models/tickets/Ticket";
-import { prLogo, sRole } from "../../mocks/general";
+import { mRole, prLogo, sRole } from "../../mocks/general";
 import { Listener } from "discord-akairo";
 
 export default class messageReactionAdd extends Listener {
@@ -65,10 +65,14 @@ export default class messageReactionAdd extends Listener {
 						id: sRole,
 						deny: ["VIEW_CHANNEL"],
 					},
+					{
+						id: mRole,
+						allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
+					},
 				],
 			});
 
-			accessRoles.forEach(
+			["304986851310043136", "517069063701266474"].forEach(
 				async (r) =>
 					await channel
 						.updateOverwrite(r, { VIEW_CHANNEL: true, SEND_MESSAGES: true, ATTACH_FILES: true })
