@@ -44,6 +44,7 @@ export default class messageReactionAdd extends Listener {
 
 			const channel = await message.guild.channels.create(ticket.caseId.slice(1, -1), {
 				type: "text",
+				parent: categoryId,
 				permissionOverwrites: [
 					{
 						id: this.client.user.id,
@@ -60,28 +61,19 @@ export default class messageReactionAdd extends Listener {
 						id: message.guild.id,
 						deny: ["VIEW_CHANNEL"],
 					},
+					{
+						id: sRole,
+						deny: ["VIEW_CHANNEL"],
+					},
 				],
 			});
-			await channel
-				.updateOverwrite(sRole, {
-					VIEW_CHANNEL: false,
-				})
-				.catch((e) => null);
-			await channel
-				.updateOverwrite(user.id, {
-					SEND_MESSAGES: true,
-					ATTACH_FILES: true,
-					VIEW_CHANNEL: true,
-				})
-				.catch((e) => null);
 
 			accessRoles.forEach(
 				async (r) =>
 					await channel
 						.updateOverwrite(r, { VIEW_CHANNEL: true, SEND_MESSAGES: true, ATTACH_FILES: true })
-						.catch((e) => null)
+						.catch((e) => this.client.log("WARN", `Unable to update permissions for ${r}`))
 			);
-			await channel.setParent(categoryId, { lockPermissions: false }).catch((e) => null);
 
 			ticket.channelId = channel.id;
 			ticket.claimerId = user.id;
