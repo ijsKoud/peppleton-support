@@ -72,7 +72,12 @@ export default class messageReactionAdd extends Listener {
 				async (r) =>
 					await channel
 						.updateOverwrite(r, { VIEW_CHANNEL: true, SEND_MESSAGES: true, ATTACH_FILES: true })
-						.catch((e) => this.client.log("WARN", `Unable to update permissions for ${r}`))
+						.catch((e) =>
+							this.client.log(
+								"WARN",
+								`Unable to update permissions for ${r}. Error: \`\`\`${e}\`\`\``
+							)
+						)
 			);
 
 			ticket.channelId = channel.id;
