@@ -70,16 +70,11 @@ export default class transferCommand extends Command {
 						VIEW_CHANNEL:
 							oldUser?.roles.cache.has(mRole) || false
 								? true
-								: oldUser?.roles.cache.has(botDev) || false
+								: ["304986851310043136", "517069063701266474"].includes(oldUser?.id) || false
 								? true
 								: false,
 					});
 					message.channel.updateOverwrite(message.guild.me, {
-						SEND_MESSAGES: true,
-						VIEW_CHANNEL: true,
-						ATTACH_FILES: true,
-					});
-					message.channel.updateOverwrite("304986851310043136", {
 						SEND_MESSAGES: true,
 						VIEW_CHANNEL: true,
 						ATTACH_FILES: true,
