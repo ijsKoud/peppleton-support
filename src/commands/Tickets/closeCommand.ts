@@ -20,7 +20,9 @@ export default class closeCommand extends Command {
 			args: [
 				{
 					id: "flag",
-					type: ["true", "false"],
+					type: (_: Message, str: string) =>
+						str ? (["true", "false"].includes(str.toLowerCase()) ? str.toLowerCase() : null) : null,
+					match: "option",
 					flag: ["-force=", "--force="],
 					default: "false",
 				},
@@ -29,6 +31,7 @@ export default class closeCommand extends Command {
 	}
 
 	async exec(message: Message, { flag }: { flag: string }) {
+		console.log(flag);
 		if (message.channel.type !== "text") return;
 		if (!message.channel.name.startsWith("ticket-")) return;
 
@@ -48,7 +51,7 @@ export default class closeCommand extends Command {
 
 		const channel = await this.client.utils.getChannel(transcripts);
 		message.channel.startTyping();
-		if (flag === "true")
+		if (flag === "false")
 			try {
 				exec(
 					`${
