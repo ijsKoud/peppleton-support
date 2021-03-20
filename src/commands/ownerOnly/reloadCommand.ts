@@ -12,7 +12,7 @@ export default class reload extends Command {
 			args: [
 				{
 					id: "file",
-					type: ["commandAlias", "listener"],
+					type: "commandAlias",
 				},
 			],
 			ownerOnly: true,

@@ -4,7 +4,7 @@ import reactionRoles from "./../../mocks/reactionRoles";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import Feedback from "../../models/guild/Feedback";
 import Ticket from "../../models/tickets/Ticket";
-import { prLogo, sRole } from "../../mocks/general";
+import { mRole, prLogo, sRole } from "../../mocks/general";
 import { Listener } from "discord-akairo";
 
 export default class messageReactionAdd extends Listener {
@@ -44,6 +44,7 @@ export default class messageReactionAdd extends Listener {
 
 			const channel = await message.guild.channels.create(ticket.caseId.slice(1, -1), {
 				type: "text",
+				parent: categoryId,
 				permissionOverwrites: [
 					{
 						id: this.client.user.id,
@@ -60,28 +61,32 @@ export default class messageReactionAdd extends Listener {
 						id: message.guild.id,
 						deny: ["VIEW_CHANNEL"],
 					},
+					{
+						id: sRole,
+						deny: ["VIEW_CHANNEL"],
+					},
+					{
+						id: mRole,
+						allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
+					},
+					{
+						id: user.id,
+						allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
+					},
 				],
 			});
-			await channel
-				.updateOverwrite(sRole, {
-					VIEW_CHANNEL: false,
-				})
-				.catch((e) => null);
-			await channel
-				.updateOverwrite(user.id, {
-					SEND_MESSAGES: true,
-					ATTACH_FILES: true,
-					VIEW_CHANNEL: true,
-				})
-				.catch((e) => null);
 
-			accessRoles.forEach(
+			["304986851310043136", "517069063701266474"].forEach(
 				async (r) =>
 					await channel
 						.updateOverwrite(r, { VIEW_CHANNEL: true, SEND_MESSAGES: true, ATTACH_FILES: true })
-						.catch((e) => null)
+						.catch((e) =>
+							this.client.log(
+								"WARN",
+								`Unable to update permissions for ${r}. Error: \`\`\`${e}\`\`\``
+							)
+						)
 			);
-			await channel.setParent(categoryId, { lockPermissions: false }).catch((e) => null);
 
 			ticket.channelId = channel.id;
 			ticket.claimerId = user.id;

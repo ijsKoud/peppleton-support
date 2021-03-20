@@ -17,10 +17,21 @@ export default class closeCommand extends Command {
 				content: "Closes a ticket and transcripts the channel if enabled",
 				usage: "close",
 			},
+			args: [
+				{
+					id: "flag",
+					type: (_: Message, str: string) =>
+						str ? (["true", "false"].includes(str.toLowerCase()) ? str.toLowerCase() : null) : null,
+					match: "option",
+					flag: ["-force=", "--force="],
+					default: "false",
+				},
+			],
 		});
 	}
 
-	async exec(message: Message) {
+	async exec(message: Message, { flag }: { flag: string }) {
+		console.log(flag);
 		if (message.channel.type !== "text") return;
 		if (!message.channel.name.startsWith("ticket-")) return;
 
@@ -40,77 +51,87 @@ export default class closeCommand extends Command {
 
 		const channel = await this.client.utils.getChannel(transcripts);
 		message.channel.startTyping();
-		try {
-			exec(
-				`${
-					process.platform === "win32"
-						? "DiscordChatExporter.Cli.exe"
-						: "dotnet DiscordChatExporter.Cli.dll"
-				} export -c ${message.channel.id} -t ${this.client.token} -o ${join(
-					__dirname,
-					"..",
-					"..",
-					"..",
-					"transcripts"
-				)} -b`,
-				{
-					cwd: join(process.cwd(), "chatExporter"),
-				},
-				async (e, stdout) => {
-					if (e) throw new Error(e.stack || e.message);
-
-					const dir = join(
+		if (flag === "false")
+			try {
+				exec(
+					`${
+						process.platform === "win32"
+							? "DiscordChatExporter.Cli.exe"
+							: "dotnet DiscordChatExporter.Cli.dll"
+					} export -c ${message.channel.id} -t ${this.client.token} -o ${join(
 						__dirname,
 						"..",
 						"..",
 						"..",
-						"transcripts",
-						`${message.guild.name} - ${(message.channel as TextChannel).parent?.name || "text"} - ${
-							(message.channel as TextChannel).name
-						} [${message.channel.id}].html`
-					);
+						"transcripts"
+					)} -b`,
+					{
+						cwd: join(process.cwd(), "chatExporter"),
+					},
+					async (e, stdout) => {
+						if (e) throw new Error(e.stack || e.message);
 
-					await channel
-						.send(
-							new MessageEmbed()
-								.setTitle(`transcript ${ticket.caseId.slice(1, -1)}`)
-								.setDescription(
-									`Ticket claimer: <@${ticket.claimerId}>\nTicket owner: <@${
-										ticket.userId
-									}>\nClosed by ${message.author.toString()}`
-								)
-								.setColor(this.client.hex)
-						)
-						.catch((e) => null);
-					channel.send(new MessageAttachment(dir, `${ticket.caseId}.html`)).catch((e) => null);
+						const dir = join(
+							__dirname,
+							"..",
+							"..",
+							"..",
+							"transcripts",
+							`${message.guild.name} - ${
+								(message.channel as TextChannel).parent?.name || "text"
+							} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
+						);
 
-					ticket.status = "closed";
-					await ticket.save();
+						await channel
+							.send(
+								new MessageEmbed()
+									.setTitle(`transcript ${ticket.caseId.slice(1, -1)}`)
+									.setDescription(
+										`Ticket claimer: <@${ticket.claimerId}>\nTicket owner: <@${
+											ticket.userId
+										}>\nClosed by ${message.author.toString()}`
+									)
+									.setColor(this.client.hex)
+							)
+							.catch((e) => null);
+						channel.send(new MessageAttachment(dir, `${ticket.caseId}.html`)).catch((e) => null);
 
-					message.channel.stopTyping();
+						ticket.status = "closed";
+						await ticket.save();
 
-					setTimeout(() => {
-						message.channel.delete("deleted by user");
-						if (channel)
-							unlink(
-								join(
-									__dirname,
-									"..",
-									"..",
-									"..",
-									"transcripts",
-									`${message.guild.name} - ${
-										(message.channel as TextChannel).parent?.name || "text"
-									} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
-								)
-							);
-					}, 5e3);
-					message.util.send(">>> 🗑 | Deleting this ticket in **5 seconds**!");
-				}
-			);
-		} catch (e) {
-			this.client.log("ERROR", `Transcript error: \`\`\`${e}\`\`\``);
-			message.util.send(">>> 📁 | I was unable to transcript this channel.");
+						message.channel.stopTyping();
+
+						setTimeout(() => {
+							message.channel.delete("deleted by user");
+							if (channel)
+								unlink(
+									join(
+										__dirname,
+										"..",
+										"..",
+										"..",
+										"transcripts",
+										`${message.guild.name} - ${
+											(message.channel as TextChannel).parent?.name || "text"
+										} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
+									)
+								);
+						}, 5e3);
+						message.util.send(">>> 🗑 | Deleting this ticket in **5 seconds**!");
+					}
+				);
+			} catch (e) {
+				this.client.log("ERROR", `Transcript error: \`\`\`${e}\`\`\``);
+				message.util.send(">>> 📁 | I was unable to transcript this channel.");
+			}
+		else {
+			ticket.status = "closed";
+			await ticket.save();
+
+			message.channel.stopTyping();
+
+			setTimeout(() => message.channel.delete("deleted by user"), 5e3);
+			message.util.send(">>> 🗑 | Deleting this ticket in **5 seconds**!");
 		}
 	}
 }
