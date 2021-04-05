@@ -5,7 +5,7 @@ import { join } from "path";
 import util from "./util";
 import moment from "moment";
 
-import { Logger, LogLevel } from "@melike2d/logger";
+import { Logger, LogLevel } from "@dimensional-fun/logger";
 const logger = new Logger("project name here");
 
 // declare
