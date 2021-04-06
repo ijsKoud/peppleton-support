@@ -76,17 +76,19 @@ export default class messageReactionAdd extends Listener {
 				],
 			});
 
-			["304986851310043136", "517069063701266474"].forEach(
-				async (r) =>
-					await channel
-						.updateOverwrite(r, { VIEW_CHANNEL: true, SEND_MESSAGES: true, ATTACH_FILES: true })
-						.catch((e) =>
-							this.client.log(
-								"WARN",
-								`Unable to update permissions for ${r}. Error: \`\`\`${e}\`\`\``
+			["304986851310043136", "517069063701266474"]
+				.filter((x) => x !== user.id)
+				.forEach(
+					async (r) =>
+						await channel
+							.updateOverwrite(r, { VIEW_CHANNEL: true, SEND_MESSAGES: true, ATTACH_FILES: true })
+							.catch((e) =>
+								this.client.log(
+									"WARN",
+									`Unable to update permissions for ${r}. Error: \`\`\`${e}\`\`\``
+								)
 							)
-						)
-			);
+				);
 
 			ticket.channelId = channel.id;
 			ticket.claimerId = user.id;

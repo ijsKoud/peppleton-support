@@ -64,7 +64,7 @@ export default class closeCommand extends Command {
 						"..",
 						"..",
 						"transcripts",
-						`${ticket.caseId}.html`
+						`${ticket.caseId.slice(1, -1)}.html`
 					)} -b`,
 					{
 						cwd: join(process.cwd(), "chatExporter"),
@@ -72,7 +72,14 @@ export default class closeCommand extends Command {
 					async (e, stdout) => {
 						if (e) throw new Error(e.stack || e.message);
 
-						const dir = join(__dirname, "..", "..", "..", "transcripts", `${ticket.caseId}.html`);
+						const dir = join(
+							__dirname,
+							"..",
+							"..",
+							"..",
+							"transcripts",
+							`${ticket.caseId.slice(1, -1)}.html`
+						);
 
 						await channel
 							.send(
@@ -81,12 +88,17 @@ export default class closeCommand extends Command {
 									.setDescription(
 										`Ticket claimer: <@${ticket.claimerId}>\nTicket owner: <@${
 											ticket.userId
-										}>\nClosed by ${message.author.toString()}`
+										}>\nClosed by ${message.author.toString()}\n\n[Direct transcript](https://peppleton.marcusn.ml/${ticket.caseId.slice(
+											1,
+											-1
+										)})`
 									)
 									.setColor(this.client.hex)
 							)
 							.catch((e) => null);
-						channel.send(new MessageAttachment(dir, `${ticket.caseId}.html`)).catch((e) => null);
+						channel
+							.send(new MessageAttachment(dir, `${ticket.caseId.slice(1, -1)}.html`))
+							.catch((e) => null);
 
 						ticket.status = "closed";
 						await ticket.save();
