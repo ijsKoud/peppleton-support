@@ -63,7 +63,8 @@ export default class closeCommand extends Command {
 						"..",
 						"..",
 						"..",
-						"transcripts"
+						"transcripts",
+						`${ticket.caseId.slice(1, -1)}.html`
 					)} -b`,
 					{
 						cwd: join(process.cwd(), "chatExporter"),
@@ -77,9 +78,7 @@ export default class closeCommand extends Command {
 							"..",
 							"..",
 							"transcripts",
-							`${message.guild.name} - ${
-								(message.channel as TextChannel).parent?.name || "text"
-							} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
+							`${ticket.caseId.slice(1, -1)}.html`
 						);
 
 						await channel
@@ -89,12 +88,17 @@ export default class closeCommand extends Command {
 									.setDescription(
 										`Ticket claimer: <@${ticket.claimerId}>\nTicket owner: <@${
 											ticket.userId
-										}>\nClosed by ${message.author.toString()}`
+										}>\nClosed by ${message.author.toString()}\n\n[Direct transcript](https://peppleton.marcusn.ml/${ticket.caseId.slice(
+											1,
+											-1
+										)})`
 									)
 									.setColor(this.client.hex)
 							)
 							.catch((e) => null);
-						channel.send(new MessageAttachment(dir, `${ticket.caseId}.html`)).catch((e) => null);
+						channel
+							.send(new MessageAttachment(dir, `${ticket.caseId.slice(1, -1)}.html`))
+							.catch((e) => null);
 
 						ticket.status = "closed";
 						await ticket.save();
@@ -103,19 +107,6 @@ export default class closeCommand extends Command {
 
 						setTimeout(() => {
 							message.channel.delete("deleted by user");
-							if (channel)
-								unlink(
-									join(
-										__dirname,
-										"..",
-										"..",
-										"..",
-										"transcripts",
-										`${message.guild.name} - ${
-											(message.channel as TextChannel).parent?.name || "text"
-										} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
-									)
-								);
 						}, 5e3);
 						message.util.send(">>> 🗑 | Deleting this ticket in **5 seconds**!");
 					}
