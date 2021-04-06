@@ -63,7 +63,8 @@ export default class closeCommand extends Command {
 						"..",
 						"..",
 						"..",
-						"transcripts"
+						"transcripts",
+						`${ticket.caseId}.html`
 					)} -b`,
 					{
 						cwd: join(process.cwd(), "chatExporter"),
@@ -71,16 +72,7 @@ export default class closeCommand extends Command {
 					async (e, stdout) => {
 						if (e) throw new Error(e.stack || e.message);
 
-						const dir = join(
-							__dirname,
-							"..",
-							"..",
-							"..",
-							"transcripts",
-							`${message.guild.name} - ${
-								(message.channel as TextChannel).parent?.name || "text"
-							} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
-						);
+						const dir = join(__dirname, "..", "..", "..", "transcripts", `${ticket.caseId}.html`);
 
 						await channel
 							.send(
@@ -103,19 +95,6 @@ export default class closeCommand extends Command {
 
 						setTimeout(() => {
 							message.channel.delete("deleted by user");
-							if (channel)
-								unlink(
-									join(
-										__dirname,
-										"..",
-										"..",
-										"..",
-										"transcripts",
-										`${message.guild.name} - ${
-											(message.channel as TextChannel).parent?.name || "text"
-										} - ${(message.channel as TextChannel).name} [${message.channel.id}].html`
-									)
-								);
 						}, 5e3);
 						message.util.send(">>> 🗑 | Deleting this ticket in **5 seconds**!");
 					}

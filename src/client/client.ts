@@ -6,6 +6,7 @@ import { connect, connection } from "mongoose";
 import { join } from "path";
 import util from "./util";
 import moment from "moment";
+import Api from "../api/Api";
 
 import { Logger, LogLevel } from "@melike2d/logger";
 const logger = new Logger("PR-Support v3");
@@ -15,6 +16,8 @@ declare module "discord-akairo" {
 	interface AkairoClient {
 		commandHandler: CommandHandler;
 		listenerHandler: ListenerHandler;
+		Api: Api;
+
 		log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void;
 		utils: util;
 		hex: string;
@@ -30,6 +33,7 @@ export default class prClient extends AkairoClient {
 	public hex = "#061B2B";
 	public tickets = true;
 
+	public Api = new Api(this);
 	public listenerHandler: ListenerHandler = new ListenerHandler(this, {
 		directory: join(__dirname, "..", "events"),
 		automateCategories: true,

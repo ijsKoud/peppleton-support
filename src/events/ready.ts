@@ -13,6 +13,7 @@ export default class ready extends Listener {
 	async exec(): Promise<void> {
 		this.client.log("INFO", `**${this.client.user.tag}** has logged in!`);
 		this.client.user.setActivity("your support tickets!", { type: "LISTENING" });
+		this.client.Api.start();
 
 		setInterval(
 			() => this.client.user.setActivity("your support tickets!", { type: "LISTENING" }),
