@@ -1,8 +1,8 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import botBlacklist from "../../model/bot/botBlacklist";
+import botBlacklist from "../../models/bot/botBlacklist";
 
-export default class bblacklist extends Command {
+export default class bblacklistCommand extends Command {
 	constructor() {
 		super("bblacklist", {
 			aliases: ["bblacklist"],
@@ -18,12 +18,22 @@ export default class bblacklist extends Command {
 
 	async exec(message: Message, { id }: { id: string }) {
 		const user = await this.client.utils.fetchUser(id);
-		if (!user) return message.util.send("No user found.");
+		if (!user) {
+			const guild =
+				this.client.guilds.cache.get(id) || (await this.client.guilds.fetch(id).catch((e) => null));
+			if (!guild) return message.util.send("No user/guild found.");
+
+			const blacklist = await botBlacklist.findOne({ guildId: guild.id });
+			if (blacklist) return message.util.send("Guild is already blacklisted.");
+
+			await botBlacklist.create({ guildId: guild.id });
+			return message.util.send(`Successfully blacklisted **${guild.name}** (${guild.id})`);
+		}
 
 		const blacklist = await botBlacklist.findOne({ userId: user.id });
-		if (blacklist) return message.util.send("User is already blacklisted kek");
+		if (blacklist) return message.util.send("User is already blacklisted.");
 
 		await botBlacklist.create({ userId: user.id });
-		message.util.send("Yay, another user blacklisted!");
+		message.util.send(`Successfully blacklisted **${user.tag}** (${user.toString()})`);
 	}
 }

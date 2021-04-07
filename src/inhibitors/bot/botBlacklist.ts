@@ -1,4 +1,4 @@
-import blacklist from "../../model/bot/botBlacklist";
+import blacklist from "../../models/bot/botBlacklist";
 import { Inhibitor, Command } from "discord-akairo";
 import { Message } from "discord.js";
 
@@ -10,6 +10,9 @@ export default class botBlacklist extends Inhibitor {
 	}
 
 	async exec(message: Message, command: Command) {
-		return (await blacklist.findOne({ userId: message.author.id })) ? true : false;
+		return (await blacklist.findOne({ userId: message.author.id })) ||
+			(await blacklist.findOne({ guildId: message.guild?.id }))
+			? true
+			: false;
 	}
 }
