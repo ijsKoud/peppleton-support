@@ -10,11 +10,20 @@ export default class missingPermissionsListener extends Listener {
 		});
 	}
 
-	exec(message: Message, command: Command, type: "client" | "user", missing: PermissionString[]) {
-		message.util.send(
-			`>>> Oops, **${
-				type === "user" ? "you are" : "the bot is"
-			}** missing the following permissions for \`${command.id}\`: \`${missing.join("`, `")}\`.`
+	async exec(
+		message: Message,
+		command: Command,
+		type: "client" | "user",
+		missing: PermissionString[]
+	) {
+		const users = {
+			client: this.client.user.tag,
+			user: message.author.tag,
+		};
+		await message.util.send(
+			`>>> 👮‍♂️ | Oops, **${users[type]}** missing the following permissions for \`${
+				command.id
+			}\`: \`${this.client.utils.formatPerms(missing)}\`.`
 		);
 	}
 }

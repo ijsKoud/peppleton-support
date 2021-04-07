@@ -21,14 +21,17 @@ export default class helpCommand extends Command {
 		});
 	}
 
-	public exec(message: Message, { command }: { command: Command }) {
+	async exec(message: Message, { command }: { command: Command }) {
 		const embed = new MessageEmbed()
 			.setColor(message.member?.displayHexColor || "#9298F4")
 			.setThumbnail(
 				message.guild?.iconURL({ dynamic: true, size: 4096 }) ||
 					message.author.displayAvatarURL({ dynamic: true, size: 4096 })
 			)
-			.setFooter(`❗ | The prefix for this bot is "${this.handler.prefix}"`)
+			.setFooter(
+				`${this.client.user.username} - created by DaanGamesDG#7621`,
+				this.client.user.displayAvatarURL({ dynamic: true, size: 4096 })
+			)
 			.setTitle(`Help Command - ${message.author.tag}`);
 
 		if (command) {
@@ -51,7 +54,10 @@ export default class helpCommand extends Command {
 			]);
 		} else {
 			for (const category of this.handler.categories.values()) {
-				if (["ownerOnly"].includes(category.id) && !this.client.isOwner(message.author.id))
+				if (
+					["owneronly"].includes(category.id.toLowerCase()) &&
+					!this.client.isOwner(message.author.id)
+				)
 					continue;
 
 				embed.addField(
@@ -73,6 +79,6 @@ export default class helpCommand extends Command {
 			}
 		}
 
-		message.util.send(embed);
+		await message.util.send(embed);
 	}
 }

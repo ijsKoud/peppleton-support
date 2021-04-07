@@ -9,20 +9,27 @@ export default class CommandBlockedListener extends Listener {
 		});
 	}
 
-	exec(message: Message, command: Command, reason: string) {
+	async exec(message: Message, command: Command, reason: string) {
 		switch (reason) {
 			case "guild":
-				message.util.send(`>>> ❗ | You are unable to use the **${command.id}** command in DMs!`);
+				await message.util.send(
+					`>>> ❗ | You are unable to use the **${command.id}** command in DMs!`
+				);
 				break;
 			case "owner":
-				message.util.send(
+				await message.util.send(
 					`>>> ❗ | Only Developers of ${this.client.user.toString()} have access to the **${
 						command.id
 					}** command.`
 				);
 				break;
+			case "blacklisted":
+				await message.util.send(
+					">>> 🔨 | Oh, it looks like you or this server got blacklisted. If you think this is a mistake please contact one of our developers!"
+				);
+				break;
 			default:
-				message.util.send(
+				await message.util.send(
 					`>>> ❗ | You are unable to use the **${command.id}** command. Reason: \`${reason}\`!`
 				);
 				break;

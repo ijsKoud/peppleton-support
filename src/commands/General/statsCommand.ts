@@ -20,9 +20,9 @@ export default class stats extends Command {
 	async exec(message: Message) {
 		const core = os.cpus()[0];
 
-		message.util.send(
+		await message.util.send(
 			new MessageEmbed()
-				.setColor(message.guild ? message.guild.me.displayHexColor : "BLACK")
+				.setColor(message.guild?.me?.displayHexColor || "BLACK")
 				.setTitle(`Bot Stats - ${this.client.user.tag}`)
 				.setDescription(
 					`This is all the technical information about ${this.client.user.username}. Here you are also able to find the server count, bot uptime & the bot status. The information may not be up to date, it's the most recent information I was able to find in my cache.`
