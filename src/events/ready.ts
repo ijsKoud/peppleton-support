@@ -11,12 +11,9 @@ export default class ready extends Listener {
 
 	async exec() {
 		this.client.log("INFO", `**${this.client.user.tag}** has logged in!`);
-		this.client.user.setActivity(`${this.client.user.username} is online!`, { type: "PLAYING" });
+		this.client.user.setActivity("your support tickets", { type: "LISTENING" });
 		setInterval(
-			() =>
-				this.client.user.setActivity(`${this.client.user.username} is online!`, {
-					type: "PLAYING",
-				}),
+			() => this.client.user.setActivity("your support tickets", { type: "LISTENING" }),
 			864e5
 		);
 	}

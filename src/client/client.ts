@@ -6,8 +6,14 @@ import util from "./util";
 import moment from "moment";
 
 import { Logger, LogLevel } from "@dimensional-fun/logger";
-const logger = new Logger("project name here");
+const logger = new Logger("peppleton-support-v3.1");
 
+import supportHandler from "../classes/supportHandler";
+import Api from "../classes/Api";
+
+import "../extensions/prUser";
+
+import * as Mocks from "../mocks";
 // declare
 declare module "discord-akairo" {
 	interface AkairoClient {
@@ -15,17 +21,27 @@ declare module "discord-akairo" {
 		commandHandler: CommandHandler;
 		listenerHandler: ListenerHandler;
 
+		mocks: typeof Mocks;
+		hex: string;
+
+		supportHandler: supportHandler;
 		utils: util;
+		Api: Api;
 
 		log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void;
 	}
 }
 
 // client
-export default class Client extends AkairoClient {
+export default class prClient extends AkairoClient {
 	private wb: WebhookClient = new WebhookClient(process.env.WB_ID, process.env.WB_TOKEN);
 	public utils: util = new util(this);
+	public Api: Api = new Api(this);
 
+	public mocks: typeof Mocks = Mocks;
+	public hex = "#091B2A";
+
+	public supportHandler: supportHandler = new supportHandler(this);
 	public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
 		directory: join(__dirname, "..", "inhibitors"),
 		automateCategories: true,
@@ -66,6 +82,7 @@ export default class Client extends AkairoClient {
 		super({
 			ownerID,
 			disableMentions: "everyone",
+			partials: ["CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION", "USER"],
 		});
 	}
 
@@ -104,7 +121,10 @@ export default class Client extends AkairoClient {
 				this.log(LogLevel.WARN, `Disconnected from **${connection.name}**! Reconnecting...`)
 			)
 			.on("error", (error: Error) =>
-				this.log(LogLevel.ERROR, `New error - **${connection.name}** - Error: \`${error.message}\``)
+				this.log(
+					LogLevel.ERROR,
+					`New error - **${connection.name}** - Error: \`${error.stack || error.message}\``
+				)
 			);
 	}
 

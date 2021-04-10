@@ -21,7 +21,7 @@ export default class errorEvent extends Listener {
 			.send(
 				`>>> ❗ | **${command?.id || "Unkown"} - Command Error**\`\`\`xl\n${
 					error.message
-				}\n\`\`\`\nThis error is most likely on our side- please **screenshot** this error message, as well as your input, and send it to the developer team. If this error persists, please join our support server for help.`
+				}\n\`\`\`\nℹ | This error is most likely on our side- please **screenshot** this error message, as well as your input, and send it to **DaanGamesDG#7621** or **Marcus N#0001**.`
 			)
 			.catch((e) => null);
 	}
