@@ -107,3 +107,4 @@ export const tickets: iDepartment[] = [
 ];
 
 export const category = "754266502638600233";
+export const transcript = "805243752787738714";

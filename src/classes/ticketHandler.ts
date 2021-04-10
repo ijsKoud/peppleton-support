@@ -1,3 +1,4 @@
+import { join } from "path";
 import {
 	Collection,
 	Message,
@@ -13,6 +14,7 @@ import { iDepartment, iTicket } from "../models/interfaces";
 import prClient from "../client/client";
 import Ticket from "../models/tickets/Ticket";
 import { nanoid } from "nanoid";
+import Transcript from "./Transcript";
 
 export default class ticketHandler {
 	public tickets = new Collection<string, iTicket>();
@@ -32,7 +34,7 @@ export default class ticketHandler {
 						if (!ticket) return;
 
 						this.tickets.set(ticket.caseId, ticket);
-						setTimeout(() => this.tickets.delete(ticket.caseId));
+						setTimeout(() => this.tickets.delete(ticket.caseId), 5e3);
 					}
 
 					if (
@@ -52,10 +54,10 @@ export default class ticketHandler {
 						if (!ticket) return;
 
 						this.tickets.set(ticket.caseId, ticket);
-						setTimeout(() => this.tickets.delete(ticket.caseId));
+						setTimeout(() => this.tickets.delete(ticket.caseId), 5e3);
 					}
 
-					if (ticket.status !== "open") return;
+					if (ticket.status !== "open" || ticket.claimerId !== message.author.id) return;
 					const [cmd, ...args] = (message.content || "").trim().split(/ +/g);
 					if (
 						!cmd ||
@@ -113,6 +115,47 @@ export default class ticketHandler {
 			// this.close(ticket);
 			this.client.log("ERROR", `HandleChannel error: \`\`\`${e.stack || e.message}\`\`\``);
 		}
+	}
+
+	public async close(ticket: iTicket, status: "inactive" | "closed" = "closed") {
+		const channel = await this.client.utils.getChannel(ticket.channelId);
+		if (channel && channel.type === "text") {
+			const msg = await channel.send(
+				`>>> ${this.client.mocks.emojis.loading} | Creating ticket transcript, please wait...`
+			);
+			const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
+				join(__dirname, "..", "..", "transcripts")
+			);
+
+			if (!transcript)
+				msg.edit(
+					`>>> ${this.client.mocks.emojis.redcross} | Something went wrong when saving the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+				);
+			else {
+				const transcriptChannel = await this.client.utils.getChannel(
+					this.client.mocks.departments.transcript
+				);
+				await transcriptChannel.send(`// todo: transcript embed with attachment`);
+
+				msg.edit(
+					`>>> ${this.client.mocks.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+				);
+			}
+		}
+
+		ticket.status = "closed";
+		await this.updateTicket({ caseId: ticket.caseId }, ticket);
+
+		const user = await this.client.utils.fetchUser(ticket.userId);
+		if (user)
+			await user
+				.send(`// to do: status === "inactive" ? "inactive_msg" : "closed_by_message"`)
+				.catch((e) => null);
+
+		setTimeout(async () => {
+			await channel?.delete?.();
+			await Ticket.findOneAndDelete({ caseId: ticket.caseId });
+		}, 5e3);
 	}
 
 	public async getTicket(data: {
