@@ -8,7 +8,9 @@ export default class markdownParser {
 
 	public async parse(message: Message) {
 		const html = toHTML(message.content, {
+			embed: true,
 			discordCallback: {
+				guildId: message.guild?.id,
 				user: ({ id }: { id: string }) =>
 					`@${this.client.users.cache.get(id.toString())?.username || "unkown"}`,
 				channel: ({ id }: { id: string }) =>

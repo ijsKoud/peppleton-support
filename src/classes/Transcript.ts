@@ -61,16 +61,20 @@ export default class Transcript {
 
 			messages.push(group);
 
-			await Promise.all(
-				messages.map(async (g) => body.appendChild(await this.getMessageGroup(document, g)))
+			const chatDiv = document.createElement("div");
+			chatDiv.setAttribute("class", "chat");
+			chatDiv.append(
+				...(await Promise.all(messages.map(async (g) => await this.getMessageGroup(document, g))))
 			);
 
-			body.appendChild(this.getPostamble(document, res.size));
+			body.appendChild(chatDiv);
+			body.appendChild(this.getFooter(document, res.size));
 			await writeFile(outdir, this.dom.serialize());
 		} catch (e) {
 			this.client.log("ERROR", `Transcript error: \`\`\`${e.stack || e.message}\`\`\``);
 			return false;
 		}
+
 		return true;
 	}
 
@@ -87,25 +91,25 @@ export default class Transcript {
 		const message = messages[0];
 		// main message group div
 		const groupDiv = document.createElement("div");
-		groupDiv.setAttribute("class", "chatlog__message-group");
+		groupDiv.setAttribute("class", "chat__message-group");
 
 		// avatar div
 		const avatarDiv = this.getAvatar(
 			document,
 			message.system
-				? "https://cdn.discordapp.com/avatars/669627189624307712/8530249cc2b90d3d9d92ae8bd55cbfce.png?size=4096"
+				? "http://cdn.daangamesdg.wtf/discord/wumpus.png"
 				: message.author.displayAvatarURL({ dynamic: true, size: 128 })
 		);
 		groupDiv.appendChild(avatarDiv);
 
 		// main message group div
 		const messagesDiv = document.createElement("div");
-		messagesDiv.setAttribute("class", "chatlog__messages");
+		messagesDiv.setAttribute("class", "chat__messages");
 
 		// username
 		const userSpan = document.createElement("span");
-		userSpan.setAttribute("class", "chatlog__author-name");
-		userSpan.setAttribute("title", message.author.tag);
+		userSpan.setAttribute("class", "chat__author-name");
+		userSpan.setAttribute("title", message.system ? "Wumpus" : message.author.tag);
 		userSpan.setAttribute("data-user-id", message.author.id);
 		userSpan.setAttribute(
 			"style",
@@ -113,9 +117,7 @@ export default class Transcript {
 		);
 		userSpan.appendChild(
 			document.createTextNode(
-				message.system
-					? message.guild?.name || "DISCORD - SYSTEM"
-					: message.member.nickname || message.author.username
+				message.system ? "Wumpus" : message.member.nickname || message.author.username
 			)
 		);
 		messagesDiv.append(userSpan, document.createTextNode("\n"));
@@ -123,16 +125,16 @@ export default class Transcript {
 		// add bot/system tag
 		if (message.author.bot || message.system) {
 			const tag = document.createElement("span");
-			tag.setAttribute("class", "chatlog__bot-tag");
+			tag.setAttribute("class", "chat__bot-tag");
 			tag.appendChild(
-				document.createTextNode(message.author.bot ? "BOT" : message.system ? "SYTEM" : "UNKOWN")
+				document.createTextNode(message.system ? "SYTEM" : message.author.bot ? "BOT" : "UNKOWN")
 			);
 			messagesDiv.append(tag, document.createTextNode("\n"));
 		}
 
 		// timestamp div
 		const timestamp = document.createElement("span");
-		timestamp.setAttribute("class", "chatlog__timestamp");
+		timestamp.setAttribute("class", "chat__timestamp");
 		timestamp.appendChild(
 			document.createTextNode(message.createdAt.toLocaleString("en-GB", { timeZone: "utc" }))
 		);
@@ -147,7 +149,7 @@ export default class Transcript {
 
 	private async getMessage(document: typeof iDocument, message: Message) {
 		const div = document.createElement("div");
-		div.setAttribute("class", "chatlog__message");
+		div.setAttribute("class", "chat__message");
 		div.setAttribute("id", `message-${message.id}`);
 		div.setAttribute("data-message-id", message.id);
 
@@ -155,10 +157,19 @@ export default class Transcript {
 		div.appendChild(await this.toHTML(document, message));
 		if (message.editedTimestamp) {
 			const edited = document.createElement("span");
-			edited.setAttribute("class", "chatlog__edited-timestamp");
+			edited.setAttribute("class", "chat__edited-timestamp");
 			edited.setAttribute("title", message.editedAt.toLocaleString("en-GB", { timeZone: "utc" }));
 			edited.append("(edited)");
 			div.appendChild(edited);
+		}
+		if (message.reference?.messageID) {
+			const reference = document.createElement("span");
+			reference.setAttribute("class", "chat__reference-link");
+			reference.setAttribute("title", "Jump to message");
+			reference.setAttribute("onClick", `messageJump(event, "${message.reference.messageID}")`);
+
+			reference.append("(Jump)");
+			div.appendChild(reference);
 		}
 
 		if (message.embeds.length) div.append(...this.getEmbeds(document, message));
@@ -171,7 +182,7 @@ export default class Transcript {
 	private parseMessage(message: Message): Message {
 		switch (message.type) {
 			case "PINS_ADD":
-				message.content = `Message from ${message.author.toString()} pinned.`;
+				message.content = `Message from ${message.author.toString()} has been pinned.`;
 				break;
 			default:
 				message.content = "System Message";
@@ -191,7 +202,7 @@ export default class Transcript {
 						a.setAttribute("href", embed.url);
 
 						const img = document.createElement("img");
-						img.setAttribute("class", "chatlog__attachment-thumbnail");
+						img.setAttribute("class", "chat__attachment-thumbnail");
 						img.setAttribute("alt", "Image Attachment");
 						img.setAttribute("src", embed.url);
 						a.appendChild(img);
@@ -202,7 +213,7 @@ export default class Transcript {
 				case "video":
 					{
 						const video = document.createElement("video");
-						video.setAttribute("class", "chatlog__attachment-thumbnail");
+						video.setAttribute("class", "chat__attachment-thumbnail");
 						video.setAttribute("controls", "");
 
 						const source = document.createElement("source");
@@ -228,7 +239,7 @@ export default class Transcript {
 
 	private async toHTML(document: typeof iDocument, message: Message) {
 		const contentDiv = document.createElement("div");
-		contentDiv.setAttribute("class", "chatlog__content");
+		contentDiv.setAttribute("class", "chat__content");
 
 		const mdDiv = document.createElement("div");
 		mdDiv.setAttribute("class", "markdown");
@@ -249,27 +260,27 @@ export default class Transcript {
 
 		return urls.map((url) => {
 			const attachmentDiv = document.createElement("div");
-			attachmentDiv.setAttribute("class", "chatlog__attachment");
+			attachmentDiv.setAttribute("class", "chat__attachment");
 
 			const onClickDiv = document.createElement("div");
-			onClickDiv.setAttribute("class", "");
-			onClickDiv.setAttribute("onclick", "");
 
 			const div = document.createElement("div");
-			div.setAttribute("class", "");
 
 			const imgRegex = /^.*(jpg|png|gif|webp|tiff|psd|raw|bmp|heif|indd)$/g;
 			const videoRegex = /^.*(webm|mpg|mp2|mpeg|mpe|mpv|ogg|mp4|m4p|m4v|avi|wmv|mov|qt|flv|swf|avchd)$/g;
 			const audioRegex = /^.*(pcm|wav|aiff|mp3|acc|ogg|wma|flac|alac)$/g;
 
 			const attachment = message.attachments.find((a) => url === a.url);
+
 			if (imgRegex.test(url)) {
 				const a = document.createElement("a");
 				a.setAttribute("href", url);
 
 				const img = document.createElement("img");
-				img.setAttribute("class", "chatlog__attachment-thumbnail");
+				img.setAttribute("class", `chat__attachment-thumbnail`);
 				img.setAttribute("alt", "Image Attachment");
+				if (attachment.height > 300) img.setAttribute("height", "300");
+
 				img.setAttribute("src", url);
 				img.setAttribute(
 					"title",
@@ -280,7 +291,7 @@ export default class Transcript {
 				div.appendChild(a);
 			} else if (videoRegex.test(url)) {
 				const video = document.createElement("video");
-				video.setAttribute("class", "chatlog__attachment-thumbnail");
+				video.setAttribute("class", "chat__attachment-thumbnail");
 				video.setAttribute("controls", "");
 
 				const source = document.createElement("source");
@@ -291,7 +302,7 @@ export default class Transcript {
 				div.appendChild(video);
 			} else if (audioRegex.test(url)) {
 				const audio = document.createElement("audio");
-				audio.setAttribute("class", "chatlog__attachment-thumbnail");
+				audio.setAttribute("class", "chat__attachment-thumbnail");
 				audio.setAttribute("controls", "");
 
 				const source = document.createElement("source");
@@ -302,18 +313,19 @@ export default class Transcript {
 				div.appendChild(audio);
 			} else {
 				const container = document.createElement("div");
-				container.setAttribute("class", "chatlog__attachment-container");
+				container.setAttribute("class", "chat__attachment-container");
 
 				const file = document.createElement("div");
-				file.setAttribute("class", "chatlog__attachment-filename");
+				file.setAttribute("class", "chat__attachment-filename");
 
 				const a = document.createElement("a");
 				a.setAttribute("href", url);
+				a.setAttribute("class", "chat__attachment-link");
 				a.appendChild(document.createTextNode(attachment.name));
 				file.appendChild(a);
 
 				const size = document.createElement("div");
-				size.setAttribute("class", "chatlog__attachment-filesize");
+				size.setAttribute("class", "chat__attachment-filesize");
 				size.appendChild(document.createTextNode(this.client.utils.formatBytes(attachment.size)));
 
 				container.append(file, size);
@@ -329,11 +341,11 @@ export default class Transcript {
 	private getAvatar(document: typeof iDocument, imgUrl: string) {
 		// avatar div
 		const div = document.createElement("div");
-		div.setAttribute("class", "chatlog__author-avatar-container");
+		div.setAttribute("class", "chat__author-avatar-container");
 
 		// image
 		const img = document.createElement("img");
-		img.setAttribute("class", "chatlog__author-avatar");
+		img.setAttribute("class", "chat__author-avatar");
 		img.setAttribute("src", imgUrl);
 		img.setAttribute("alt", "avatar");
 
@@ -344,13 +356,13 @@ export default class Transcript {
 	private getGuildDiv(document: typeof iDocument) {
 		// guild div
 		const guildDiv = document.createElement("div");
-		guildDiv.setAttribute("class", "preamble");
+		guildDiv.setAttribute("class", "top");
 
 		// guild icon div
 		let divContainer = document.createElement("div");
 		const guildImg = document.createElement("img");
-		divContainer.setAttribute("class", "preamble__guild-icon-container");
-		guildImg.setAttribute("class", "preamble__guild-icon");
+		divContainer.setAttribute("class", "top__guild-icon-container");
+		guildImg.setAttribute("class", "top__guild-icon");
 		guildImg.setAttribute("src", this.config.channel.guild.iconURL({ dynamic: true, size: 4096 }));
 		guildImg.setAttribute("alt", this.config.channel.guild.name);
 		divContainer.appendChild(guildImg);
@@ -358,19 +370,19 @@ export default class Transcript {
 
 		// guild channel div
 		divContainer = document.createElement("div");
-		divContainer.setAttribute("class", "preamble__entries-container");
+		divContainer.setAttribute("class", "top__item-container");
 		[`Guild: ${this.config.channel.guild.name}`, `Channel: ${this.config.channel.name}`].forEach(
 			(str) => {
 				const div = document.createElement("div");
-				div.setAttribute("class", "preamble__entry");
+				div.setAttribute("class", "top-item");
 				div.appendChild(document.createTextNode(str));
 				divContainer.appendChild(div);
 			}
 		);
 
 		const div = document.createElement("div");
-		div.setAttribute("class", "preamble__entry--small");
-		div.appendChild(document.createTextNode(this.config.channel.topic || ""));
+		div.setAttribute("class", "top-item top--small");
+		div.appendChild(document.createTextNode(`Description: ${this.config.channel.topic || "-"}`));
 
 		divContainer.appendChild(div);
 		guildDiv.appendChild(divContainer);
@@ -378,20 +390,22 @@ export default class Transcript {
 		return guildDiv;
 	}
 
-	private getPostamble(document: typeof iDocument, amount: number) {
-		// postamble div
+	private getFooter(document: typeof iDocument, amount: number) {
 		const mainDiv = document.createElement("div");
-		mainDiv.setAttribute("class", "postamble");
+		mainDiv.setAttribute("class", "footer");
 
-		[
-			`Exported ${amount} message${amount === 1 ? "" : "s"}`,
-			`${new Date().toLocaleString("en-GB", { timeZone: "utc" })}`,
-		].forEach((str) => {
-			const div = document.createElement("div");
-			div.setAttribute("class", "postamble__entry");
-			div.appendChild(document.createTextNode(str));
-			mainDiv.appendChild(div);
-		});
+		let div = document.createElement("div");
+		div.setAttribute("class", "footer-item");
+
+		const strong = document.createElement("strong");
+		strong.append(this.client.user.tag);
+		div.append(strong, ` exported ${amount} message${amount === 1 ? "" : "s"}`);
+		mainDiv.appendChild(div);
+
+		div = document.createElement("div");
+		div.setAttribute("class", "footer-item");
+		div.append(`Date: ${new Date().toLocaleString("en-GB", { timeZone: "utc" })}`);
+		mainDiv.append(div);
 
 		return mainDiv;
 	}

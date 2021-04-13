@@ -218,9 +218,9 @@ const rulesDiscord = {
 		},
 		html: function (node, output, state) {
 			return htmlTag(
-				"span",
+				"a",
 				state.discordCallback.user(node),
-				{ class: "d-mention d-user" },
+				{ class: "d-mention d-user", href: `https://discord.com/users/${node.id}` },
 				state
 			);
 		},
@@ -235,9 +235,14 @@ const rulesDiscord = {
 		},
 		html: function (node, output, state) {
 			return htmlTag(
-				"span",
+				"a",
 				state.discordCallback.channel(node),
-				{ class: "d-mention d-channel" },
+				{
+					class: "d-mention d-channel",
+					href: `https://discord.com/channels${
+						state.discordCallback.guildId ? `/${state.discordCallback.guildId}` : ""
+					}/${node.id}`,
+				},
 				state
 			);
 		},
@@ -358,6 +363,7 @@ function toHTML(source, options, customParser, customHtmlOutput) {
 	options = Object.assign(
 		{
 			embed: false,
+			guildId: "",
 			escapeHTML: true,
 			discordOnly: false,
 			discordCallback: {},
