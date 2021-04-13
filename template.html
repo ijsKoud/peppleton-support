@@ -687,20 +687,16 @@
 />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
 <script>
-	document.addEventListener("DOMContentLoaded", () => {
-		document.querySelectorAll(".pre--multiline").forEach((block) => hljs.highlightBlock(block));
-	});
+	document.addEventListener("DOMContentLoaded", () => document.querySelectorAll(".pre--multiline").forEach((block) => hljs.highlightBlock(block)));
 </script>
 
 <script>
 	function scrollToMessage(event, id) {
-		var element = document.getElementById("message-" + id);
-
+		event.preventDefault();
+		let element = document.getElementById("message-" + id);
 		if (element) {
-			event.preventDefault();
-
 			element.classList.add("chatlog__message--highlighted");
-
+			
 			window.scrollTo({
 				top:
 					element.getBoundingClientRect().top -
@@ -708,17 +704,12 @@
 					window.innerHeight / 2,
 				behavior: "smooth",
 			});
-
-			window.setTimeout(function () {
-				element.classList.remove("chatlog__message--highlighted");
-			}, 2000);
+			window.setTimeout(() => element.classList.remove("chatlog__message--highlighted"), 2e3);
 		}
 	}
 
 	function showSpoiler(event, element) {
-		if (element && element.classList.contains("spoiler--hidden")) {
-			event.preventDefault();
-			element.classList.remove("spoiler--hidden");
-		}
+		event.preventDefault();
+		if (element && element.classList.contains("spoiler--hidden")) element.classList.remove("spoiler--hidden");
 	}
 </script>
