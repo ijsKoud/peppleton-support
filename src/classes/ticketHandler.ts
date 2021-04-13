@@ -124,7 +124,7 @@ export default class ticketHandler {
 				`>>> ${this.client.mocks.emojis.loading} | Creating ticket transcript, please wait...`
 			);
 			const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
-				join(__dirname, "..", "..", "transcripts")
+				join(__dirname, "..", "..", "transcripts", `${ticket.caseId}.html`)
 			);
 
 			if (!transcript)

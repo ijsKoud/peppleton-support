@@ -112,11 +112,13 @@ export default class util {
 	}
 
 	public getAttachments(attachments: Collection<string, MessageAttachment>) {
-		const valid = /^.*(gif|png|jpg|jpeg|mp4|mp3|pdf|psd)$/g;
+		// const valid = /^.*(gif|png|jpg|jpeg|webp|mp4|mp3|pdf|psd)$/g;
 
-		return attachments
-			.array()
-			.filter((attachment) => valid.test(attachment.url))
-			.map((attachment) => attachment.url);
+		return (
+			attachments
+				.array()
+				// .filter((attachment) => valid.test(attachment.url))
+				.map((attachment) => attachment.url)
+		);
 	}
 }
