@@ -1,7 +1,7 @@
 import { join } from "path";
 import { Command } from "discord-akairo";
 import { Message, TextChannel } from "discord.js";
-import Transcript from "../../classes/Transcript";
+import Transcript from "../../classes/transcript/Transcript";
 import prClient from "../../client/client";
 
 export default class test extends Command {

@@ -14,7 +14,7 @@ import { iDepartment, iTicket } from "../models/interfaces";
 import prClient from "../client/client";
 import Ticket from "../models/tickets/Ticket";
 import { nanoid } from "nanoid";
-import Transcript from "./Transcript";
+import Transcript from "./transcript/Transcript";
 
 export default class ticketHandler {
 	public tickets = new Collection<string, iTicket>();
