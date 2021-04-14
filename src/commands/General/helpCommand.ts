@@ -23,13 +23,9 @@ export default class helpCommand extends Command {
 
 	async exec(message: Message, { command }: { command: Command }) {
 		const embed = new MessageEmbed()
-			.setColor(message.member?.displayHexColor || "#9298F4")
-			.setThumbnail(
-				message.guild?.iconURL({ dynamic: true, size: 4096 }) ||
-					message.author.displayAvatarURL({ dynamic: true, size: 4096 })
-			)
+			.setColor(this.client.hex)
 			.setFooter(
-				`${this.client.user.username} - created by DaanGamesDG#7621`,
+				`Peppleton Support - Created by DaanGamesDG`,
 				this.client.user.displayAvatarURL({ dynamic: true, size: 4096 })
 			)
 			.setTitle(`Help Command - ${message.author.tag}`);
