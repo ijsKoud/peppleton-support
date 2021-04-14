@@ -14,16 +14,20 @@ export default class markdownParser {
 			embed,
 			discordCallback: {
 				guildId: message.guild?.id,
-				user: ({ id }: { id: string }) =>
-					`@${this.client.users.cache.get(id.toString())?.username || "unkown"}`,
-				channel: ({ id }: { id: string }) =>
-					`#${
-						message.mentions.channels.get(id.toString())?.name ||
-						(this.client.channels.cache.get(id) as TextChannel)?.name ||
-						"unkown"
-					}`,
-				role: ({ id }: { id: string }) =>
-					`@${message.guild.roles.cache.get(id.toString())?.name || "unkown"}`,
+				user: ({ id }: { id: string }) => {
+					const user = this.client.users.cache.get(id);
+					return user ? `@${user.username}` : `<@${id}>`;
+				},
+				channel: ({ id }: { id: string }) => {
+					const channel =
+						message.mentions.channels.get(id)?.name ||
+						(this.client.channels.cache.get(id) as TextChannel)?.name;
+					return channel ? `#${channel}` : `<#${id}>`;
+				},
+				role: ({ id }: { id: string }) => {
+					const role = message.guild.roles.cache.get(id);
+					return role ? `@${role.name}` : `<@${id}>`;
+				},
 			},
 		}) as string;
 		const parsed = new JSDOM(

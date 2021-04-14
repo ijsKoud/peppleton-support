@@ -207,7 +207,7 @@ class DiscordMD {
 			match: (source: string) => /^:(\w+):/.exec(source),
 			parse: (capture: string[]) => {
 				return {
-					name: capture[0]?.slice?.(1, -1),
+					name: capture[1],
 				};
 			},
 			html: (node: any, output: Function, state: State) => emojis[node.name] || `:${node.name}:`,
@@ -277,6 +277,9 @@ class DiscordMD {
 
 	constructor() {
 		this.rules = Object.assign(this.rules, this.rulesDiscord);
+		this.rulesEmbed = Object.assign({}, this.rules, {
+			link: markdown.defaultRules.link,
+		});
 
 		this.parser = markdown.parserFor(this.rules);
 		this.htmlOutput = markdown.outputFor(this.rules, "html");
