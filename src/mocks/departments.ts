@@ -106,5 +106,23 @@ export const tickets: iDepartment[] = [
 	},
 ];
 
+export const transfer = [
+	{
+		name: "Managers Department",
+		id: "manager",
+		channelId: "",
+	},
+	{
+		name: "Developers Department",
+		id: "developer",
+		channelId: "",
+	},
+	{
+		name: "Directors Department",
+		id: "director",
+		channelId: "",
+	},
+];
+
 export const category = "754266502638600233";
 export const transcript = "805243752787738714";

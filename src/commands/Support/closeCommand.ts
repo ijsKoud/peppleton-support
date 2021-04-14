@@ -5,13 +5,13 @@ export default class closeCommand extends Command {
 	constructor() {
 		super("close", {
 			aliases: ["close"],
+			userPermissions: ["MANAGE_MESSAGES"],
+			clientPermissions: ["MANAGE_CHANNELS"],
+			description: {
+				content: "close a ticket",
+				usage: "close",
+			},
 			channel: "guild",
-			args: [
-				{
-					id: "id",
-					type: "string",
-				},
-			],
 			ownerOnly: true,
 		});
 	}

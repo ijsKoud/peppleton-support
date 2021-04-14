@@ -9,12 +9,14 @@ import {
 	PermissionString,
 	OverwriteResolvable,
 	TextChannel,
+	GuildMember,
+	MessageAttachment,
 } from "discord.js";
-import { iDepartment, iTicket } from "../models/interfaces";
-import prClient from "../client/client";
-import Ticket from "../models/tickets/Ticket";
+import { iDepartment, iTicket } from "../../models/interfaces";
+import prClient from "../../client/client";
+import Ticket from "../../models/tickets/Ticket";
+import Transcript from "../transcript/Transcript";
 import { nanoid } from "nanoid";
-import Transcript from "./transcript/Transcript";
 
 export default class ticketHandler {
 	public tickets = new Collection<string, iTicket>();
@@ -61,7 +63,7 @@ export default class ticketHandler {
 					const [cmd, ...args] = (message.content || "").trim().split(/ +/g);
 					if (
 						!cmd ||
-						cmd !== `${this.client.commandHandler.prefix}message` ||
+						cmd.toLowerCase() !== `${this.client.commandHandler.prefix}message` ||
 						(!args.length && !message.attachments.size)
 					)
 						return;
@@ -90,7 +92,7 @@ export default class ticketHandler {
 
 			await message.react("✅").catch((e) => null);
 		} catch (e) {
-			// this.close(ticket);
+			this.close(ticket);
 			this.client.log("ERROR", `HandleDM error: \`\`\`${e.stack || e.message}\`\`\``);
 		}
 	}
@@ -112,7 +114,7 @@ export default class ticketHandler {
 
 			await message.react("✅").catch((e) => null);
 		} catch (e) {
-			// this.close(ticket);
+			this.close(ticket);
 			this.client.log("ERROR", `HandleChannel error: \`\`\`${e.stack || e.message}\`\`\``);
 		}
 	}
@@ -123,8 +125,10 @@ export default class ticketHandler {
 			const msg = await channel.send(
 				`>>> ${this.client.mocks.emojis.loading} | Creating ticket transcript, please wait...`
 			);
+
+			const location = join(__dirname, "..", "..", "..", "transcripts", `${ticket.caseId}.html`);
 			const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
-				join(__dirname, "..", "..", "transcripts", `${ticket.caseId}.html`)
+				location
 			);
 
 			if (!transcript)
@@ -135,9 +139,24 @@ export default class ticketHandler {
 				const transcriptChannel = await this.client.utils.getChannel(
 					this.client.mocks.departments.transcript
 				);
-				await transcriptChannel.send(`// todo: transcript embed with attachment`);
+				await transcriptChannel.send(
+					new MessageEmbed()
+						.setColor(this.client.hex)
+						.setTitle(`Ticket: ${ticket.caseId}`)
+						.attachFiles([
+							new MessageAttachment(
+								join(__dirname, "..", "..", "..", "transcripts", `${ticket.caseId}.html`),
+								`${ticket.caseId}.html`
+							),
+						])
+						.setDescription([
+							`Ticket Owner: <@${ticket.userId}>`,
+							`Ticket Claimer: <@${ticket.claimerId}>`,
+							`[direct transcript](https://peppleton-transcript.marcus.ml/${ticket.caseId})`,
+						])
+				);
 
-				msg.edit(
+				await msg.edit(
 					`>>> ${this.client.mocks.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
 				);
 			}
@@ -149,13 +168,57 @@ export default class ticketHandler {
 		const user = await this.client.utils.fetchUser(ticket.userId);
 		if (user)
 			await user
-				.send(`// to do: status === "inactive" ? "inactive_msg" : "closed_by_message"`)
+				.send(
+					`>>> 🔒 | Your ticket (\`${ticket.caseId}\`) has been closed.\nReason: \`${
+						status === "inactive"
+							? "closed automatically for being inactive for 24 hours"
+							: "Closed by the Staff Team"
+					}\`.\n\n❓ | Need more support? Mention me to open a ticket!`
+				)
 				.catch((e) => null);
 
 		setTimeout(async () => {
 			await channel?.delete?.();
 			await Ticket.findOneAndDelete({ caseId: ticket.caseId });
 		}, 5e3);
+	}
+
+	public async transferUser(message: Message, member: GuildMember, ticket: iTicket) {
+		try {
+			message.channel = message.channel as TextChannel;
+
+			await message.channel.updateOverwrite(member, {
+				VIEW_CHANNEL: true,
+				SEND_MESSAGES: true,
+				ATTACH_FILES: true,
+			});
+
+			const claimer = await this.client.utils.fetchMember(ticket.claimerId, message.guild);
+			if (
+				!claimer.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }) &&
+				!this.client.isOwner(claimer)
+			)
+				await message.channel.updateOverwrite(claimer, {
+					VIEW_CHANNEL: false,
+				});
+
+			ticket.claimerId = member.id;
+			await this.updateTicket({ caseId: ticket.caseId }, ticket);
+
+			await message.channel.send(
+				`>>> 👋 | Hey ${member.toString()}, please check the **pins** for more information.`
+			);
+
+			const user = await this.client.utils.fetchUser(ticket.userId);
+			await user.send(
+				`>>> ${this.client.mocks.emojis.transfer} | Your ticket has been transferred to **${
+					member.nickname || member.user.username
+				}** (${member.toString()})`,
+				{ allowedMentions: { users: [] } }
+			);
+		} catch (e) {
+			this.close(ticket);
+		}
 	}
 
 	public async getTicket(data: {
@@ -359,9 +422,9 @@ export default class ticketHandler {
 
 			const roles = (
 				await Promise.all(
-					department.guild.roleIds.map(
-						async (r) => await this.client.utils.getRole(r, member.guild)
-					)
+					department.guild.roleIds
+						.slice(1)
+						.map(async (r) => await this.client.utils.getRole(r, member.guild))
 				)
 			).filter((r) => r);
 			const users = (

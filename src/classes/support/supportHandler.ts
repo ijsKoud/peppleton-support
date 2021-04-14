@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
-import { iDepartment } from "../models/interfaces";
-import prClient from "../client/client";
+import { iDepartment } from "../../models/interfaces";
+import prClient from "../../client/client";
 import ticketHandler from "./ticketHandler";
 
 export default class supportHandler {

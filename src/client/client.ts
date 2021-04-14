@@ -8,12 +8,13 @@ import moment from "moment";
 import { Logger, LogLevel } from "@dimensional-fun/logger";
 const logger = new Logger("peppleton-support-v3.1");
 
-import supportHandler from "../classes/supportHandler";
+import supportHandler from "../classes/support/supportHandler";
 import Api from "../classes/Api";
 
 import "../extensions/prUser";
 
 import * as Mocks from "../mocks";
+
 // declare
 declare module "discord-akairo" {
 	interface AkairoClient {
