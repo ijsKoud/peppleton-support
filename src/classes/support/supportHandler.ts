@@ -1,9 +1,11 @@
+import ms from "ms";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { iDepartment } from "../../models/interfaces";
 import prClient from "../../client/client";
 import ticketHandler from "./ticketHandler";
 import reportHandler from "./reportHandler";
 
+const cooldown = new Map<string, number>();
 export default class supportHandler {
 	public ticketHandler: ticketHandler;
 	public reportHandler: reportHandler;
@@ -65,6 +67,7 @@ export default class supportHandler {
 					break;
 				case "suggestion":
 					{
+						await this.handleSuggestion(message);
 					}
 					break;
 				default:
@@ -81,6 +84,57 @@ export default class supportHandler {
 				`supportHandler#support() error: \`\`\`${e.stack || e.message}\`\`\``
 			);
 		}
+	}
+
+	private async handleSuggestion(message: Message) {
+		if (cooldown.has(message.author.id))
+			return message.author.send(
+				`>>> ⌚ | Please wait \`${ms(
+					cooldown.get(message.author.id) - Date.now()
+				)}\` before suggesting something again.`
+			);
+
+		const filter = (m: Message) => m.author.id === message.author.id;
+		const base = (str: string) =>
+			`>>> ${this.client.mocks.emojis.logo} | **Suggestions**\n${str}\n\nSay \`cancel\` to cancel.`;
+		const dm = await message.author.createDM();
+
+		let msg = await dm.send(
+			base("`1` - What is your suggestion? (You can add more than 1 suggestion)")
+		);
+		const suggestion = (await this.client.utils.awaitMessages(msg, filter)).first();
+		if (
+			!suggestion ||
+			!suggestion.content?.length ||
+			(typeof suggestion.content === "string" &&
+				suggestion.content.toLowerCase().includes("cancel"))
+		) {
+			await msg.edit(`>>> ${this.client.mocks.emojis.logo} | **Suggestions**:\nPrompt cancelled.`);
+			return null;
+		}
+
+		msg = await dm.send(
+			`>>> ${this.client.mocks.emojis.logo} | **Suggestions**\n${this.client.mocks.emojis.loading} Sending your suggestion, please wait...`
+		);
+
+		const channel = await this.client.utils.getChannel(
+			this.client.mocks.departments.suggestions || null
+		);
+		if (!channel)
+			return msg.edit(
+				`>>> ${this.client.mocks.emojis.logo} | **Suggestions**\nI was unable to find the correct suggestions channel, please contact **DaanGamesDG#7621** or **Marcus N#0001** about this.`
+			);
+
+		cooldown.set(message.author.id, Date.now() + 6e4);
+		setTimeout(() => cooldown.delete(message.author.id), 6e4);
+
+		await channel.send(
+			`>>> ${this.client.mocks.emojis.logo} | **Suggestion - ${message.author.tag}**\`\`\`\n${suggestion.content}\`\`\``,
+			{ split: true }
+		);
+		await msg.edit(
+			`>>> ${this.client.mocks.emojis.logo} | **Suggestions**\nWe received your suggestion.`
+		);
 	}
 
 	private async getDepartment(message: Message): Promise<iDepartment> {
@@ -117,31 +171,42 @@ export default class supportHandler {
 	}
 
 	private async getOption(message: Message): Promise<"ticket" | "report" | "suggestion"> {
-		const emojis = ["1️⃣", "2️⃣", "3️⃣"];
+		try {
+			const emojis = ["1️⃣", "2️⃣", "3️⃣"];
 
-		const filter = (reaction: MessageReaction, user: User) =>
-			user.id === message.author.id && emojis.includes(reaction.emoji.id || reaction.emoji.name);
+			const filter = (reaction: MessageReaction, user: User) =>
+				user.id === message.author.id && emojis.includes(reaction.emoji.id || reaction.emoji.name);
 
-		const msg = await message.author.send(
-			new MessageEmbed()
-				.setColor(this.client.hex)
-				.setTitle("Please select an option to continue")
-				.setFooter(
-					"This prompt will close in 60s",
-					this.client.user.displayAvatarURL({ size: 4096 })
+			const msg = await message.author.send(
+				new MessageEmbed()
+					.setColor(this.client.hex)
+					.setTitle("Please select an option to continue")
+					.setFooter(
+						"This prompt will close in 60s",
+						this.client.user.displayAvatarURL({ size: 4096 })
+					)
+					.setDescription([
+						`1️⃣ - **I want to open a ticket**`,
+						`2️⃣ - **I want to report a user**`,
+						`3️⃣ - **I want make a suggestion**`,
+					])
+			);
+
+			await Promise.all(emojis.map(async (x) => await msg.react(x).catch((e) => null)));
+			const res = (await this.client.utils.awaitReactions(msg, filter)).first();
+			await msg.delete();
+
+			// @ts-expect-error
+			return { "1️⃣": "ticket", "2️⃣": "report", "3️⃣": "suggestion" }[res?.emoji?.name];
+		} catch (e) {
+			await message.channel
+				.send(
+					`>>> ${
+						this.client.mocks.emojis.redcross
+					} | ${message.author.toString()}, I am unable to DM you, make sure your DMs are **open**.`
 				)
-				.setDescription([
-					`1️⃣ - **I want to open a ticket**`,
-					`2️⃣ - **I want to report a user**`,
-					`3️⃣ - **I want make a suggestion**`,
-				])
-		);
-
-		await Promise.all(emojis.map(async (x) => await msg.react(x).catch((e) => null)));
-		const res = (await this.client.utils.awaitReactions(msg, filter)).first();
-		await msg.delete();
-
-		// @ts-expect-error
-		return { "1️⃣": "ticket", "2️⃣": "report", "3️⃣": "suggestion" }[res?.emoji?.name];
+				.catch((e) => null);
+			return null;
+		}
 	}
 }
