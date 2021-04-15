@@ -29,6 +29,15 @@ export default class transferCommand extends Command {
 		});
 		if (!ticket) return;
 
+		if (
+			ticket.claimerId !== message.author.id &&
+			!message.member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }) &&
+			!this.client.isOwner(message.author)
+		)
+			return message.util.send(
+				`>>> ${this.client.mocks.emojis.redcross} | Sorry, only ticket claimers, Bot developers and Managers+ are able to use this command in tickets.`
+			);
+
 		// if (["manager", "developer", "director"].includes(id)) return this.client.supportHandler.ticketHandler.transferDep(message, id, ticket);
 
 		const member = await this.client.utils.fetchMember(id, message.guild);
