@@ -91,6 +91,9 @@ export default class ticketHandler {
 			);
 
 			await message.react("✅").catch((e) => null);
+
+			ticket.lastMsg = Date.now();
+			await this.updateTicket({ caseId: ticket.caseId }, ticket);
 		} catch (e) {
 			this.close(ticket);
 			this.client.log("ERROR", `HandleDM error: \`\`\`${e.stack || e.message}\`\`\``);
@@ -113,6 +116,9 @@ export default class ticketHandler {
 			);
 
 			await message.react("✅").catch((e) => null);
+
+			ticket.lastMsg = Date.now();
+			await this.updateTicket({ caseId: ticket.caseId }, ticket);
 		} catch (e) {
 			this.close(ticket);
 			this.client.log("ERROR", `HandleChannel error: \`\`\`${e.stack || e.message}\`\`\``);

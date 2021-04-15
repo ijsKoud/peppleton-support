@@ -1,4 +1,5 @@
 import { Listener } from "discord-akairo";
+import Ticket from "../models/support/Ticket";
 
 export default class ready extends Listener {
 	constructor() {
@@ -18,5 +19,14 @@ export default class ready extends Listener {
 			() => this.client.user.setActivity("your support tickets", { type: "LISTENING" }),
 			864e5
 		);
+
+		setInterval(async () => await this.checkTickets(), 6e4);
+	}
+
+	async checkTickets() {
+		const tickets = await Ticket.find();
+		tickets
+			.filter(({ status, lastMsg }) => status === "open" && lastMsg <= 864e5)
+			.forEach((ticket) => this.client.supportHandler.ticketHandler.close(ticket, "inactive"));
 	}
 }
