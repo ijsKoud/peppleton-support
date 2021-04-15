@@ -128,13 +128,15 @@ export default class supportHandler {
 		cooldown.set(message.author.id, Date.now() + 6e4);
 		setTimeout(() => cooldown.delete(message.author.id), 6e4);
 
-		await channel.send(
+		const res = await channel.send(
 			`>>> ${this.client.mocks.emojis.logo} | **Suggestion - ${message.author.tag}**\`\`\`\n${suggestion.content}\`\`\``,
 			{ split: true }
 		);
 		await msg.edit(
 			`>>> ${this.client.mocks.emojis.logo} | **Suggestions**\nWe received your suggestion.`
 		);
+
+		["🔼", "🔽"].forEach(async (x) => await res[res.length - 1].react(x));
 	}
 
 	private async getDepartment(message: Message): Promise<iDepartment> {
