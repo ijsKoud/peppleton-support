@@ -29,4 +29,9 @@ export default class message extends Listener {
 			this.client.log("ERROR", `Message event error: \`\`\`${e.stack || e.message}\`\`\``);
 		}
 	}
+
+	async pings(message: Message) {
+		if (this.client.mocks.pings.data[message.channel.id])
+			await message.channel.send(this.client.mocks.pings.data[message.channel.id]);
+	}
 }
