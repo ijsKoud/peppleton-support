@@ -132,3 +132,5 @@ export const transfer = [
 
 export const category = "754266502638600233";
 export const transcript = "805243752787738714";
+
+export const manager = "";

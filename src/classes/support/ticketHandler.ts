@@ -494,7 +494,7 @@ export default class ticketHandler {
 		}
 	}
 
-	private async generateId(): Promise<string> {
+	public async generateId(): Promise<string> {
 		let id = nanoid(8).toLowerCase();
 		while (id.includes("-") || (await this.getTicket({ caseId: `ticket-${id}` })))
 			id = nanoid(8).toLowerCase();
