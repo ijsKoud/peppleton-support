@@ -1,6 +1,6 @@
 import { Structures } from "discord.js";
 import botBlacklist from "../models/bot/botBlacklist";
-import Blacklist from "../models/tickets/Blacklist";
+import Blacklist from "../models/support/Blacklist";
 
 Structures.extend(
 	"User",

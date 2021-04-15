@@ -2,9 +2,11 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { iDepartment } from "../../models/interfaces";
 import prClient from "../../client/client";
 import ticketHandler from "./ticketHandler";
+import reportHandler from "./reportHandler";
 
 export default class supportHandler {
 	public ticketHandler: ticketHandler;
+	public reportHandler: reportHandler;
 	public config = {
 		ticket: true,
 		suggestion: true,
@@ -13,6 +15,7 @@ export default class supportHandler {
 
 	constructor(public client: prClient) {
 		this.ticketHandler = new ticketHandler(this.client);
+		this.reportHandler = new reportHandler(this.client);
 	}
 
 	public async support(message: Message): Promise<any> {
@@ -53,6 +56,11 @@ export default class supportHandler {
 					{
 						const department = await this.getDepartment(message);
 						if (!department) return;
+
+						const report = await this.reportHandler.createReport(message, department);
+						if (!report) return;
+
+						await this.reportHandler.saveReport(report);
 					}
 					break;
 				case "suggestion":
@@ -74,8 +82,6 @@ export default class supportHandler {
 			);
 		}
 	}
-
-	private async createReport(message: Message, department: iDepartment): Promise<void> {}
 
 	private async getDepartment(message: Message): Promise<iDepartment> {
 		const emojis = this.client.mocks.departments.tickets.map(
@@ -137,9 +143,5 @@ export default class supportHandler {
 
 		// @ts-expect-error
 		return { "1️⃣": "ticket", "2️⃣": "report", "3️⃣": "suggestion" }[res?.emoji?.name];
-	}
-
-	private substr(str: string, length: number = 1024): string {
-		return str.length > length ? str.slice(0, length - 3) + "..." : str;
 	}
 }

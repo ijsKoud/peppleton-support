@@ -14,7 +14,7 @@ import {
 } from "discord.js";
 import { iDepartment, iTicket } from "../../models/interfaces";
 import prClient from "../../client/client";
-import Ticket from "../../models/tickets/Ticket";
+import Ticket from "../../models/support/Ticket";
 import Transcript from "../transcript/Transcript";
 import { nanoid } from "nanoid";
 
@@ -311,11 +311,14 @@ export default class ticketHandler {
 		msg = await dm.send(
 			`>>> ${emoji} | **Ticket Creation - ${department.name}**:\n${this.client.mocks.emojis.loading} Creating a ticket, please wait...`
 		);
-		const channel = await this.client.utils.getChannel(department.guild.channelId);
-		const attachments: string[] = [];
-		[topic.attachments, description.attachments, extra.attachments]
+		const channel = await this.client.utils.getChannel(department.guild.tickets);
+		const attachments = [topic.attachments, description.attachments, extra.attachments]
 			.map((x) => this.client.utils.getAttachments(x))
-			.forEach((x) => attachments.push(...x));
+			.filter((x) => x.filter((x) => x))
+			.reduce((a, b) => {
+				a.push(...b);
+				return a;
+			});
 
 		const caseId = await this.generateId();
 		const m = await channel.send(
@@ -355,11 +358,11 @@ export default class ticketHandler {
 			.catch((e) =>
 				this.client.log(
 					"WARN",
-					`SupportHandler#createTicket() warning: Unable to react with \`✅\` to message ${m.url}`
+					`ticketHandler#createTicket() warning: Unable to react with \`✅\` to message ${m.url}`
 				)
 			);
 		await msg.edit(
-			`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket registered under \`${caseId}\`. If you don't receive an answer within **24 hours**, please contact a **supervisor+**.`
+			`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket registered under the \`${caseId}\` id. If you don't receive an answer within **24 hours**, please contact a **${this.client.mocks.emojis.supervisor} supervisor+**.`
 		);
 
 		return {
@@ -480,7 +483,7 @@ export default class ticketHandler {
 			// this.close(ticket);
 			this.client.log(
 				"ERROR",
-				`supportHandler#handleReactions() error: \`\`\`${e.stack || e.message}\`\`\``
+				`ticketHandler#handleReactions() error: \`\`\`${e.stack || e.message}\`\`\``
 			);
 		}
 	}

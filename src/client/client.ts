@@ -140,7 +140,7 @@ export default class prClient extends AkairoClient {
 			`\`${moment(Date.now()).format("hh:mm:ss DD-MM-YYYY")}\` **${type}**  ${process.pid}  (**${
 				logger.name
 			}**): ${msg}`,
-			{ split: true }
+			{ split: true, allowedMentions: { users: [], roles: [] } }
 		);
 		logger[type.toLowerCase()](msg.replace(/`/g, "").replace(/\*/g, ""));
 	}

@@ -11,7 +11,8 @@ export const numbers = {
 export interface iDepartment {
 	name: string;
 	guild: {
-		channelId: string;
+		reports: string;
+		tickets: string;
 		roleIds: string[];
 	};
 	emojis: {
@@ -28,6 +29,13 @@ export interface iTicket {
 	channelId?: string;
 	messageId?: string;
 	claimerId?: string;
+}
+
+export interface iReport {
+	userId: string;
+	caseId: string;
+	channelId: string;
+	messageId: string;
 }
 
 export interface reactionRole {

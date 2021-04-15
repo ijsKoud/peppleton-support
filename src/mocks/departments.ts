@@ -5,7 +5,8 @@ export const tickets: iDepartment[] = [
 	{
 		name: "Driver Department",
 		guild: {
-			channelId: "780500364448235530",
+			reports: "",
+			tickets: "780500364448235530",
 			roleIds: [
 				"770360459114315806",
 				"777615536997531669",
@@ -22,7 +23,8 @@ export const tickets: iDepartment[] = [
 	{
 		name: "Dispatch Department",
 		guild: {
-			channelId: "780500364448235530",
+			reports: "",
+			tickets: "780500364448235530",
 			roleIds: [
 				"770360455763198032",
 				"777615536997531669",
@@ -39,7 +41,8 @@ export const tickets: iDepartment[] = [
 	{
 		name: "Guard Department",
 		guild: {
-			channelId: "780500364448235530",
+			reports: "",
+			tickets: "780500364448235530",
 			roleIds: [
 				"770360452395171872",
 				"777615536997531669",
@@ -56,7 +59,8 @@ export const tickets: iDepartment[] = [
 	{
 		name: "Signaller Department",
 		guild: {
-			channelId: "780500364448235530",
+			reports: "",
+			tickets: "780500364448235530",
 			roleIds: [
 				"807768040086437897",
 				"777615536997531669",
@@ -73,7 +77,8 @@ export const tickets: iDepartment[] = [
 	{
 		name: "Any Department",
 		guild: {
-			channelId: "780500364448235530",
+			reports: "",
+			tickets: "780500364448235530",
 			roleIds: [
 				"742790430034362440",
 				"777615536997531669",
@@ -90,7 +95,8 @@ export const tickets: iDepartment[] = [
 	{
 		name: "Any Department",
 		guild: {
-			channelId: "792005203867729921",
+			reports: "792005203867729921",
+			tickets: "792005203867729921",
 			roleIds: [
 				"739540543570444368",
 				"777615536997531669",
