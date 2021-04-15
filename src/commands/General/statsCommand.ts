@@ -1,6 +1,8 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
 import { version } from "../../../package.json";
+import { Message, MessageEmbed } from "discord.js";
+import Ticket from "../../models/support/Ticket";
+import { Command } from "discord-akairo";
+import fetch from "node-fetch";
 import ms from "ms";
 import os from "os";
 
@@ -19,13 +21,10 @@ export default class stats extends Command {
 	async exec(message: Message) {
 		const core = os.cpus()[0];
 
-		await message.util.send(
+		message.util.send(
 			new MessageEmbed()
-				.setColor(message.guild?.me?.displayHexColor || "BLACK")
+				.setColor(this.client.hex)
 				.setTitle(`Bot Stats - ${this.client.user.tag}`)
-				.setDescription(
-					`This is all the technical information about ${this.client.user.username}. Here you are also able to find the server count, bot uptime & the bot status. The information may not be up to date, it's the most recent information I was able to find in my cache.`
-				)
 				.addField(
 					"• General Information",
 					`\`\`\`${[
@@ -53,6 +52,16 @@ export default class stats extends Command {
 						`Client Uptime: ${ms(this.client.uptime, { long: true })}`,
 						`Client Version: v${version}`,
 					].join("\n")}\`\`\``
+				)
+				.addField(
+					"• Ticket info",
+					(
+						(await Ticket.find())
+							.map(
+								({ caseId, status, userId }) => `\`${caseId}\` - <@${userId}> | Status: ${status}`
+							)
+							.join("\n") || "No tickets found"
+					).substr(0, 1024)
 				)
 		);
 	}

@@ -31,7 +31,7 @@ export default class messageReactionAdd extends Listener {
 				return this.reactionRole(reaction.emoji.name, reaction.message.guild, user);
 
 			const feedback = await Feedback.findOne({ guildId: reaction.message.guild.id });
-			if (feedback && feedback.messageId === reaction.message.id)
+			if (feedback && feedback.messageId === reaction.message.id && reaction.emoji.name === "📋")
 				await this.feedback(reaction.message, user);
 		} catch (e) {
 			this.client.log(
