@@ -51,7 +51,7 @@ export default class Transcript {
 			let messages: Message[][] = [];
 			let group: Message[] = [];
 
-			res
+			coll
 				.array()
 				.reverse()
 				.forEach((msg) => {
@@ -68,7 +68,7 @@ export default class Transcript {
 			chatDiv.append(...messages.map((g) => this.getMessageGroup(document, g)));
 
 			body.appendChild(chatDiv);
-			body.appendChild(this.getFooter(document, res.size));
+			body.appendChild(this.getFooter(document, coll.size));
 			await writeFile(outdir, this.dom.serialize());
 		} catch (e) {
 			this.client.log("ERROR", `Transcript error: \`\`\`${e.stack || e.message}\`\`\``);
