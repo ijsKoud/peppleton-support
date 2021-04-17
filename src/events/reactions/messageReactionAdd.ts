@@ -75,7 +75,7 @@ export default class messageReactionAdd extends Listener {
 		if (!message) return;
 
 		try {
-			if (cooldown === 0) setTimeout(() => cooldowns.delete(user.id), 3e3);
+			if (cooldown === 0) setTimeout(() => cooldowns.delete(user.id), 5e3);
 			cooldowns.set(user.id, cooldown + 1);
 
 			const doc = new GoogleSpreadsheet(process.env.SHEET);
