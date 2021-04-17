@@ -13,7 +13,7 @@ export default class test extends Command {
 	}
 
 	async exec(message: Message) {
-		// await message.delete();
+		if (message.guild.id !== "739540180700102799") return;
 		await new Transcript(this.client as prClient, {
 			channel: message.channel as TextChannel,
 			id: "id_here",
