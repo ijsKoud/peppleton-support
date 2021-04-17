@@ -140,7 +140,7 @@ export default class Transcript {
 		const timestamp = document.createElement("span");
 		timestamp.setAttribute("class", "chat__timestamp");
 		timestamp.appendChild(
-			document.createTextNode(message.createdAt.toLocaleString("en-GB", { timeZone: "utc" }))
+			document.createTextNode(message.createdAt.toLocaleString("en-GB", { timeZone: "bst" }))
 		);
 		messagesDiv.appendChild(timestamp);
 		messages.map((m) => messagesDiv.appendChild(this.getMessage(document, m)));
