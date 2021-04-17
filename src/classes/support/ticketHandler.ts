@@ -149,12 +149,7 @@ export default class ticketHandler {
 					new MessageEmbed()
 						.setColor(this.client.hex)
 						.setTitle(`Ticket: ${ticket.caseId}`)
-						.attachFiles([
-							new MessageAttachment(
-								join(__dirname, "..", "..", "..", "transcripts", `${ticket.caseId}.html`),
-								`${ticket.caseId}.html`
-							),
-						])
+						.attachFiles([new MessageAttachment(location, `${ticket.caseId}.html`)])
 						.setDescription([
 							`Ticket Owner: <@${ticket.userId}>`,
 							`Ticket Claimer: <@${ticket.claimerId}>`,
