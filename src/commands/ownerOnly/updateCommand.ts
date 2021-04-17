@@ -11,19 +11,18 @@ export default class updateCommand extends Command {
 	}
 
 	async exec(message: Message) {
-		const str = ({ pull, tsc }: { pull: boolean; tsc: boolean }) =>
-			`>>> 🤖 | **Update Command**:\n${[
-				`Fetched data: ${pull ? "`✅`" : "`❌`"}`,
-				`Compiled: ${tsc ? "`✅`" : "`❌`"}`,
-			].join("\n")}`;
+		const str = (fetched: boolean) =>
+			`>>> 🤖 | **Update Command**:\n${
+				fetched ? "Successfully fetched the data, compiling..." : "Fetching the data..."
+			}`;
 
-		const msg = await message.channel.send(str({ pull: false, tsc: false }));
+		const msg = await message.channel.send(str(false));
 		await this.Exec("git pull");
 
-		await msg.edit(str({ pull: true, tsc: false }));
+		await msg.edit(str(true));
 		await this.Exec("tsc");
 
-		await msg.edit(">>> >>> 🤖 | **Update Command**:\nBot is updated - restarting...");
+		await msg.edit(">>> 🤖 | **Update Command**:\nBot is updated - restarting...");
 		this.Exec("pm2 restart 0");
 	}
 
