@@ -135,3 +135,4 @@ export const transcript = "805243752787738714";
 export const suggestions = "";
 
 export const manager = "";
+export const botDev = "773626906800422933";
