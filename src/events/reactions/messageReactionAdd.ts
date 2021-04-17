@@ -60,8 +60,7 @@ export default class messageReactionAdd extends Listener {
 		if (blacklist.bot || user.bot) return;
 
 		let cooldown = cooldowns.get(user.id) ?? 0;
-		console.log(cooldown);
-		if (cooldown > 3)
+		if (cooldown > 2)
 			return this.client.log(
 				"WARN",
 				`Feedback - Blocking feedback request from user **${
