@@ -431,11 +431,11 @@ export default class ticketHandler {
 
 			const roles = (
 				await Promise.all(
-					department.guild.roleIds
-						.slice(1)
-						.map(async (r) => await this.client.utils.getRole(r, member.guild))
+					department.guild.roleIds.map(
+						async (r) => await this.client.utils.getRole(r, member.guild)
+					)
 				)
-			).filter((r) => r);
+			).filter((r) => r && r.permissions.has("VIEW_AUDIT_LOG"));
 			const users = (
 				await Promise.all(
 					(this.client.ownerID as string[]).map(

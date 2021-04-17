@@ -26,4 +26,4 @@ export const roles = [
 	},
 ];
 
-export const channel = "";
+export const channel = "714858937748291656";
