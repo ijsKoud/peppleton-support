@@ -464,7 +464,7 @@ export default class Transcript {
 
 		div = document.createElement("div");
 		div.setAttribute("class", "footer-item");
-		div.append(`Date: ${moment(new Date()).tz("Europe/London").calendar()}}`);
+		div.append(`Date: ${moment(new Date()).tz("Europe/London").calendar()}`);
 		mainDiv.append(div);
 
 		return mainDiv;
