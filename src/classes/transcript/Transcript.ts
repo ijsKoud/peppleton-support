@@ -33,7 +33,7 @@ export default class Transcript {
 				if (res) coll = coll.concat(res);
 			}
 
-			const data = await readFile(join(__dirname, "..", "..", "..", "template.html"));
+			const data = await readFile(join(process.cwd(), "template.html"));
 			this.dom = new JSDOM(
 				`<!DOCTYPE html>\n<html lang="en">\n<head>\n<title>${this.config.channel.guild.name} | ${
 					this.config.channel.name

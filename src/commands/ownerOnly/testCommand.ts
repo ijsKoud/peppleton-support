@@ -13,10 +13,10 @@ export default class test extends Command {
 	}
 
 	async exec(message: Message) {
-		await message.delete();
+		// await message.delete();
 		await new Transcript(this.client as prClient, {
 			channel: message.channel as TextChannel,
 			id: "id_here",
-		}).create(join(__dirname, "..", "..", "..", "transcripts", "test.html"));
+		}).create(join(process.cwd(), "transcripts", "test.html"));
 	}
 }

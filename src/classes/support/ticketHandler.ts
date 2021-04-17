@@ -132,7 +132,7 @@ export default class ticketHandler {
 				`>>> ${this.client.mocks.emojis.loading} | Creating ticket transcript, please wait...`
 			);
 
-			const location = join(__dirname, "..", "..", "..", "transcripts", `${ticket.caseId}.html`);
+			const location = join(process.cwd(), "transcripts", `${ticket.caseId}.html`);
 			const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
 				location
 			);
