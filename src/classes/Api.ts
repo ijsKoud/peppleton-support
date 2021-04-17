@@ -7,7 +7,7 @@ export default class Api {
 	constructor(public client: prClient) {
 		this.server
 			.get("/:id", (req, res) =>
-				res.sendFile(join(__dirname, "..", "..", "transcripts", `${req.params?.id}.html`))
+				res.sendFile(join(process.cwd(), "transcripts", `${req.params?.id}.html`))
 			)
 			.get("*", (req, res) => res.redirect("https://www.roblox.com/groups/6651302"));
 	}
