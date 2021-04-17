@@ -57,10 +57,11 @@ export default class messageReactionAdd extends Listener {
 
 	async feedback(message: Message, user: User) {
 		const blacklist = await user.getBlacklisted();
-		if (blacklist.bot) return;
+		if (blacklist.bot || user.bot) return;
 
 		let cooldown = cooldowns.get(user.id) ?? 0;
-		if (cooldown > 5)
+		console.log(cooldown);
+		if (cooldown > 3)
 			return this.client.log(
 				"WARN",
 				`Feedback - Blocking feedback request from user **${
@@ -75,6 +76,9 @@ export default class messageReactionAdd extends Listener {
 		if (!message) return;
 
 		try {
+			if (cooldown === 0) setTimeout(() => cooldowns.delete(user.id), 3e3);
+			cooldowns.set(user.id, cooldown + 1);
+
 			const doc = new GoogleSpreadsheet(process.env.SHEET);
 			doc.useApiKey(process.env.API_KEY);
 			await doc.loadInfo();
@@ -97,9 +101,6 @@ export default class messageReactionAdd extends Listener {
 				: ">>> 👤 | Sorry I didn't find your user id in the database, if you think I am wrong, please open a ticket.";
 
 			await msg.edit(feedback);
-
-			if (cooldown === 0) setTimeout(() => cooldowns.delete(user.id), 5e3);
-			cooldown = cooldowns.set(user.id, cooldown + 1).get(user.id);
 		} catch (e) {
 			await msg
 				.edit(
