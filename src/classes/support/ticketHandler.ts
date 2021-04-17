@@ -460,7 +460,7 @@ export default class ticketHandler {
 			ticket.lastMsg = Date.now();
 			await this.updateTicket({ caseId: ticket.caseId }, ticket);
 
-			const owner = await this.client.utils.fetchUser(ticket.claimerId);
+			const owner = await this.client.utils.fetchUser(ticket.userId);
 			await owner.send(
 				`>>> 🎫 | Your ticket (\`${ticket.caseId}\`) has been claimed by **${
 					member.nickname || member.user.username
