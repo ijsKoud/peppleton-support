@@ -32,7 +32,6 @@ export default class reportCommand extends Command {
 				},
 			],
 			channel: "guild",
-			ownerOnly: true,
 		});
 	}
 

@@ -12,7 +12,6 @@ export default class closeCommand extends Command {
 				usage: "close",
 			},
 			channel: "guild",
-			ownerOnly: true,
 		});
 	}
 

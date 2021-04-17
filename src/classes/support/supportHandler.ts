@@ -4,6 +4,7 @@ import { iDepartment } from "../../models/interfaces";
 import prClient from "../../client/client";
 import ticketHandler from "./ticketHandler";
 import reportHandler from "./reportHandler";
+import Blacklist from "../../models/support/Blacklist";
 
 const cooldown = new Map<string, number>();
 export default class supportHandler {
@@ -210,5 +211,55 @@ export default class supportHandler {
 				.catch((e) => null);
 			return null;
 		}
+	}
+
+	public async blacklist(
+		message: Message,
+		user: User,
+		type: "ticket" | "report" | "suggestion",
+		reason: string
+	) {
+		const blacklist = await user.getBlacklisted();
+		if (blacklist.support.includes(type))
+			return message.util.send(
+				`>>> ${this.client.mocks.emojis.redcross} | This user already has the **${type}** blacklist.`
+			);
+
+		await Blacklist.findOneAndUpdate(
+			{ userId: user.id },
+			{ userId: user.id, type: [...blacklist.support, type] },
+			{ upsert: true }
+		);
+
+		await user
+			.send(`>>> 🔨 | **${type} blacklist received**\nReason: **${reason}**`)
+			.catch((e) => null);
+		await message.util.send(
+			`>>> ${this.client.mocks.emojis.greentick} | Successfully added **${
+				user.tag
+			}** (${user.toString()}) to the **${type}** blacklist for **${reason}**.`,
+			{ allowedMentions: { users: [] } }
+		);
+	}
+
+	public async whitelist(message: Message, user: User, type: "ticket" | "report" | "suggestion") {
+		const blacklist = await user.getBlacklisted();
+		if (!blacklist.support.includes(type))
+			return message.util.send(
+				`>>> ${this.client.mocks.emojis.redcross} | This user doesn't have the **${type}** blacklist.`
+			);
+
+		await Blacklist.findOneAndUpdate(
+			{ userId: user.id },
+			{ userId: user.id, type: blacklist.support.filter((x) => x !== type) },
+			{ upsert: true }
+		);
+
+		await message.util.send(
+			`>>> ${this.client.mocks.emojis.greentick} | Successfully removed **${
+				user.tag
+			}** (${user.toString()}) from the **${type}** blacklist.`,
+			{ allowedMentions: { users: [] } }
+		);
 	}
 }

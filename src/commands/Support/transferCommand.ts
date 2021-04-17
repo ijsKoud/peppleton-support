@@ -18,7 +18,6 @@ export default class transferCommand extends Command {
 					type: "lowercase",
 				},
 			],
-			ownerOnly: true,
 		});
 	}
 

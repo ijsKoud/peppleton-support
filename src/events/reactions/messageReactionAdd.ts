@@ -56,6 +56,9 @@ export default class messageReactionAdd extends Listener {
 	}
 
 	async feedback(message: Message, user: User) {
+		const blacklist = await user.getBlacklisted();
+		if (blacklist.bot) return;
+
 		let cooldown = cooldowns.get(user.id) ?? 0;
 		if (cooldown > 5)
 			return this.client.log(
@@ -82,7 +85,7 @@ export default class messageReactionAdd extends Listener {
 			const state = rows.find((r) => r.discordID == user.id);
 
 			if (data && (!state || !state.passed || !state.feedback))
-				throw new Error("Missing `state`, `state.data` or `state.feedback` property.");
+				throw new Error("Missing `state` object, `state.data` or `state.feedback` property.");
 			const feedback = data
 				? `>>> ${this.client.mocks.emojis.logo} | You **${
 						state.passed
