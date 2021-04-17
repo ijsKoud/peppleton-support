@@ -6,6 +6,9 @@ import { JSDOM } from "jsdom";
 import markdownParser from "./markdownParser";
 import twemoji from "twemoji";
 
+import moment from "moment";
+import "moment-timezone";
+
 // interfaces
 const iDocument = new JSDOM().window.document;
 interface iConfig {
@@ -140,7 +143,7 @@ export default class Transcript {
 		const timestamp = document.createElement("span");
 		timestamp.setAttribute("class", "chat__timestamp");
 		timestamp.appendChild(
-			document.createTextNode(message.createdAt.toLocaleString("en-GB", { timeZone: "bst" }))
+			document.createTextNode(moment(message.createdAt).tz("Europe/London").calendar())
 		);
 		messagesDiv.appendChild(timestamp);
 		messages.map((m) => messagesDiv.appendChild(this.getMessage(document, m)));
@@ -160,7 +163,7 @@ export default class Transcript {
 		if (message.editedTimestamp) {
 			const edited = document.createElement("span");
 			edited.setAttribute("class", "chat__edited-timestamp");
-			edited.setAttribute("title", message.editedAt.toLocaleString("en-GB", { timeZone: "utc" }));
+			edited.setAttribute("title", moment(message.editedAt).tz("Europe/London").calendar());
 			edited.append("(edited)");
 			div.appendChild(edited);
 		}
@@ -461,7 +464,7 @@ export default class Transcript {
 
 		div = document.createElement("div");
 		div.setAttribute("class", "footer-item");
-		div.append(`Date: ${new Date().toLocaleString("en-GB", { timeZone: "utc" })}`);
+		div.append(`Date: ${moment(new Date()).tz("Europe/London").calendar()}}`);
 		mainDiv.append(div);
 
 		return mainDiv;
