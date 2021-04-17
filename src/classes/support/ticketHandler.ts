@@ -394,9 +394,9 @@ export default class ticketHandler {
 					`handleReactionsError: Unable to fetch guildMember (${user.id}/${user.tag})`
 				);
 			if (
-				member.roles.cache.filter((r) => department.guild.roleIds.join("-").includes(r.id)).size < 1
+				member.roles.cache.filter((r) => department.guild.roleIds.join("-").includes(r.id)).size < 0
 			)
-				return reaction.remove().catch((e) => null);
+				return reaction.users.remove(user).catch((e) => null);
 
 			ticket.claimerId = user.id;
 			ticket.status = "open";
