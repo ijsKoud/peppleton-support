@@ -42,8 +42,8 @@ export default class Transcript {
 					this.config.channel.name
 				}</title>\n<link rel="icon" type="image/png" href="${this.config.channel.guild.iconURL({
 					size: 4096,
-					format: "png",
-				})}}"/>\n<meta charset="utf-8" />\n<meta name="viewport" content="width=device-width" />\n\n${new JSDOM(
+					dynamic: true,
+				})}"/>\n<meta charset="utf-8" />\n<meta name="viewport" content="width=device-width" />\n\n${new JSDOM(
 					data
 				).serialize()}\n</head>\n<body></body>\n</html>`
 			);
