@@ -24,9 +24,12 @@ export default class updateCommand extends Command {
 		await this.Exec("tsc");
 
 		await msg.edit(">>> >>> 🤖 | **Update Command**:\nBot is updated - restarting...");
+		this.Exec("pm2 restart 0");
 	}
 
 	async Exec(command: string) {
-		return new Promise((res, rej) => exec(command, (e, str) => (e ? rej(e) : res(str))));
+		return new Promise((res, rej) =>
+			exec(command, { cwd: process.cwd() }, (e, str) => (e ? rej(e) : res(str)))
+		);
 	}
 }
