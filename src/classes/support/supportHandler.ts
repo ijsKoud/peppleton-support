@@ -199,8 +199,10 @@ export default class supportHandler {
 			const res = (await this.client.utils.awaitReactions(msg, filter)).first();
 			await msg.delete();
 
-			// @ts-expect-error
-			return { "1️⃣": "ticket", "2️⃣": "report", "3️⃣": "suggestion" }[res?.emoji?.name];
+			return { "1️⃣": "ticket", "2️⃣": "report", "3️⃣": "suggestion" }[res?.emoji?.name] as
+				| "ticket"
+				| "report"
+				| "suggestion";
 		} catch (e) {
 			await message.channel
 				.send(
