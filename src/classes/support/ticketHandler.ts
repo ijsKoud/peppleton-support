@@ -435,7 +435,7 @@ export default class ticketHandler {
 						async (r) => await this.client.utils.getRole(r, member.guild)
 					)
 				)
-			).filter((r) => r && r.permissions.has("VIEW_AUDIT_LOG"));
+			).filter((r) => r && r.name.toLowerCase().includes("manager"));
 			const users = (
 				await Promise.all(
 					(this.client.ownerID as string[]).map(
