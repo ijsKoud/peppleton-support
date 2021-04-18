@@ -12,7 +12,7 @@ export default class message extends Listener {
 	async exec(message: Message) {
 		try {
 			if (message.author.bot || message.system || message.webhookID) return;
-			await this.pings(message);
+			if (message.content && message.content.includes("[PING]")) await this.pings(message);
 
 			if (
 				/<((@!?\d+)|(:.+?:\d+))>/g.test(message.content.trim().split(/ +/g).shift()) &&
