@@ -23,7 +23,7 @@ export default class missingPermissionsListener extends Listener {
 		await message.util.send(
 			`>>> 👮‍♂️ | Oops, **${users[type]}** missing the following permissions for \`${
 				command.id
-			}\`: \`${this.client.utils.formatPerms(missing)}\`.`
+			}\`: ${this.client.utils.formatPerms(missing)}.`
 		);
 	}
 }
