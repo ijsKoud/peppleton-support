@@ -5,7 +5,7 @@ export default class closeCommand extends Command {
 	constructor() {
 		super("close", {
 			aliases: ["close"],
-			userPermissions: ["MANAGE_MESSAGES"],
+			userPermissions: ["MUTE_MEMBERS"],
 			clientPermissions: ["MANAGE_CHANNELS"],
 			description: {
 				content: "close a ticket",
