@@ -5,7 +5,7 @@ export default class transferCommand extends Command {
 	constructor() {
 		super("transfer", {
 			aliases: ["transfer"],
-			userPermissions: ["MANAGE_MESSAGES"],
+			userPermissions: ["MUTE_MEMBERS"],
 			clientPermissions: ["MANAGE_CHANNELS"],
 			description: {
 				content: "transfer a ticket",
