@@ -43,3 +43,9 @@ export interface reactionRole {
 	messageId: string;
 	roleId: string;
 }
+
+export interface iStats {
+	userId: string;
+	guildId: string;
+	messages: number[];
+}

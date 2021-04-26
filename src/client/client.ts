@@ -14,6 +14,7 @@ import Api from "../classes/Api";
 import "../extensions/prUser";
 
 import * as Mocks from "../mocks";
+import activityManager from "../classes/activity/activityManager";
 
 // declare
 declare module "discord-akairo" {
@@ -25,6 +26,7 @@ declare module "discord-akairo" {
 		mocks: typeof Mocks;
 		hex: string;
 
+		activityManager: activityManager;
 		supportHandler: supportHandler;
 		utils: util;
 		Api: Api;
@@ -42,6 +44,7 @@ export default class prClient extends AkairoClient {
 	public mocks: typeof Mocks = Mocks;
 	public hex = "#091B2A";
 
+	public activityManager: activityManager = new activityManager(this);
 	public supportHandler: supportHandler = new supportHandler(this);
 	public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
 		directory: join(__dirname, "..", "inhibitors"),

@@ -13,6 +13,11 @@ export default class message extends Listener {
 		try {
 			if (message.author.bot || message.system || message.webhookID) return;
 			if (message.content && message.content.includes("[PING]")) await this.pings(message);
+			if (
+				message.guild &&
+				!message.content?.trim?.().startsWith?.(this.client.commandHandler.prefix as string)
+			)
+				await this.client.activityManager.update(message.author.id, message.guild.id);
 
 			if (
 				/<((@!?\d+)|(:.+?:\d+))>/g.test(message.content.trim().split(/ +/g).shift()) &&
