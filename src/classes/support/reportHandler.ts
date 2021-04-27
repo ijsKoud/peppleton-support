@@ -10,19 +10,18 @@ export default class reportHandler {
 	public async handleUpdate(message: Message, report: iReport, reason?: string) {
 		const channel = await this.client.utils.getChannel(report.channelId);
 		const msg = await channel.messages.fetch(report.messageId);
+		const user = await this.client.utils.fetchUser(report.userId);
+
 		if (msg)
 			await msg.edit(
 				new MessageEmbed(msg.embeds[0]).setDescription(
-					`Report created by **${
-						message.author.tag
-					}** (${message.author.toString()})\nHandled by **${
+					`Report created by **${user.tag}** (${user.toString()})\nHandled by **${
 						message.member.nickname || message.author.username
 					}** (${message.author.toString()})`
 				)
 			);
 		await Report.findOneAndRemove(report);
 
-		const user = await this.client.utils.fetchUser(report.userId);
 		if (reason && typeof reason === "string")
 			await user
 				.send(
