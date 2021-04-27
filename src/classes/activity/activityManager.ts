@@ -27,6 +27,7 @@ export default class activityManager {
 		const guild = this.client.guilds.cache.get(data.guildId);
 		const member = await this.client.utils.fetchMember(data.userId, guild);
 
+		if (!member) return;
 		if (data.messages.length > max) await member.roles.add(role).catch((e) => null);
 		else await member.roles.remove(role).catch((e) => null);
 	}
