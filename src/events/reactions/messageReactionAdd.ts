@@ -46,12 +46,10 @@ export default class messageReactionAdd extends Listener {
 		if (!reactionRole) return;
 
 		const member = await this.client.utils.fetchMember(user.id, guild);
-		console.log("h1", guild, user);
 		if (!member) return;
 
-		console.log("h2");
-
 		const role = await this.client.utils.getRole(reactionRole.roleId, guild);
+		console.log(role);
 		await member.roles.add(role);
 		await member
 			.send(`>>> ${reactionRole.reactionId} | I just gave you the **${role.name}** role!`)
