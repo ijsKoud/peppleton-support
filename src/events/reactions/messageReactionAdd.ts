@@ -45,12 +45,13 @@ export default class messageReactionAdd extends Listener {
 		const reactionRole = this.client.mocks.reactionRoles.roles.find((r) => r.reactionId === id);
 		if (!reactionRole) return;
 
-		console.log("h");
-
 		const member = await this.client.utils.fetchMember(user.id, guild);
+		console.log("h1", guild, user);
 		if (!member) return;
 
-		const role = guild.roles.cache.get(reactionRole.roleId);
+		console.log("h2");
+
+		const role = await this.client.utils.getRole(reactionRole.roleId, guild);
 		await member.roles.add(role);
 		await member
 			.send(`>>> ${reactionRole.reactionId} | I just gave you the **${role.name}** role!`)
