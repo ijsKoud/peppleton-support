@@ -45,6 +45,8 @@ export default class messageReactionAdd extends Listener {
 		const reactionRole = this.client.mocks.reactionRoles.roles.find((r) => r.reactionId === id);
 		if (!reactionRole) return;
 
+		console.log("h");
+
 		const member = await this.client.utils.fetchMember(user.id, guild);
 		if (!member) return;
 
