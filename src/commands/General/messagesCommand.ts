@@ -1,13 +1,11 @@
 import { Command } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
 import { Message } from "discord.js";
-import ms from "ms";
 
 export default class messagesCommand extends Command {
 	public constructor() {
 		super("messages", {
 			aliases: ["messages"],
-			clientPermissions: ["EMBED_LINKS"],
+			cooldown: 6e4,
 			description: {
 				content: "Shows the amount of messages the user sent within 7 days.",
 				usage: "messages [user]",
