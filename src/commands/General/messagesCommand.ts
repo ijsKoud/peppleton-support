@@ -5,6 +5,7 @@ export default class messagesCommand extends Command {
 	public constructor() {
 		super("messages", {
 			aliases: ["messages"],
+			userPermissions: ["VIEW_AUDIT_LOGS"],
 			cooldown: 6e4,
 			description: {
 				content: "Shows the amount of messages the user sent within 7 days.",
