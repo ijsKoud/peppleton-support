@@ -128,10 +128,10 @@ export default class Api {
 			const member = await this.client.utils.fetchMember(data.id, guild);
 			res.send({
 				...data,
-				valid:
-					member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true }) ??
-					this.client.isOwner(member.id),
-				admin: this.client.isOwner(member.id),
+				valid: member
+					? member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true })
+					: false || this.client.isOwner(data.id),
+				admin: this.client.isOwner(data.id),
 			});
 		} catch (e) {
 			this.client.log("ERROR", `Api#user error: \`\`\`${e}\`\`\``);
