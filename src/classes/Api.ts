@@ -48,6 +48,7 @@ export default class Api {
 	}
 
 	public authenticated(req: Request, res: Response, next: NextFunction) {
+		console.log(req.cookies);
 		if (!req.headers || req.headers.authorization !== process.env.AUTH_KEY)
 			return res.status(401).send("401 - unauthorized");
 		next();
