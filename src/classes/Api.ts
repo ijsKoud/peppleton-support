@@ -21,13 +21,7 @@ export default class Api {
 				async (req, res) => await this.getTranscripts(req, res)
 			)
 			.get("/login", (_, res) => res.redirect(process.env.DISCORD_AUTH))
-			.get("/logout", (_, res) =>
-				res
-					.cookie("accesstoken", "null", {
-						maxAge: 1,
-					})
-					.redirect(process.env.DASHBOARD)
-			)
+			.get("/logout", (_, res) => res.clearCookie("accesstoken").redirect(process.env.DASHBOARD))
 			.get("/callback", async (req, res) => await this.callback(req, res));
 
 		this.server
