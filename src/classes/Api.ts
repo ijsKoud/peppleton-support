@@ -48,7 +48,6 @@ export default class Api {
 	}
 
 	public authenticated(req: Request, res: Response, next: NextFunction) {
-		console.log(req.cookies);
 		if (!req.headers || req.headers.authorization !== process.env.AUTH_KEY)
 			return res.status(401).send("401 - unauthorized");
 		next();
@@ -155,6 +154,7 @@ export default class Api {
 			if (data.error) throw new Error(data.error_description);
 			res.cookie("accesstoken", data.access_token, {
 				maxAge: data.expires_in * 1000,
+				domain: "https://peppleton-transcript.marcusn.ml",
 			});
 
 			res.redirect(process.env.DASHBOARD);
