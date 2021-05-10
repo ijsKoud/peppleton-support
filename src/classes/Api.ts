@@ -29,7 +29,11 @@ export default class Api {
 			.use(
 				cors({
 					credentials: true,
-					origin: ["http://localhost:3000", "https://peppleton.daangamesdg.tk"],
+					origin: [
+						"http://localhost:3000",
+						"https://peppleton.daangamesdg.tk",
+						"https://peppleton-transcript.marcus.ml",
+					],
 				})
 			)
 			.use("/api", this.apiRouter)
