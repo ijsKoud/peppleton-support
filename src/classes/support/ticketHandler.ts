@@ -153,7 +153,7 @@ export default class ticketHandler {
 						.setDescription([
 							`Ticket Owner: <@${ticket.userId}>`,
 							`Ticket Claimer: <@${ticket.claimerId}>`,
-							`[direct transcript](https://peppleton-transcript.marcusn.ml/${ticket.caseId})`,
+							`[direct transcript](https://peppleton-transcript.marcusn.ml/transcripts/${ticket.caseId})`,
 						])
 				);
 
@@ -389,7 +389,7 @@ export default class ticketHandler {
 					`handleReactionsError: Unable to fetch guildMember (${user.id}/${user.tag})`
 				);
 			// if (member.roles.cache.filter((r) => department.guild.roleIds.includes(r.id)).size === 0)
-				// return reaction.users.remove(user).catch((e) => null);
+			// return reaction.users.remove(user).catch((e) => null);
 
 			ticket.claimerId = user.id;
 			ticket.status = "open";
