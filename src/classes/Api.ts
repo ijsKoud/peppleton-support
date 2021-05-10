@@ -154,7 +154,6 @@ export default class Api {
 			if (data.error) throw new Error(data.error_description);
 			res.cookie("accesstoken", data.access_token, {
 				maxAge: data.expires_in * 1000,
-				domain: "https://peppleton-transcript.marcusn.ml",
 			});
 
 			res.redirect(process.env.DASHBOARD);
