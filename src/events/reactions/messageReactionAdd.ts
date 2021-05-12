@@ -89,7 +89,7 @@ export default class messageReactionAdd extends Listener {
 
 			if (data && (!state || !state.passed || !state.feedback))
 				throw new Error(
-					`Missing \`state\` object, \`state.passed\` or \`state.feedback\` property.\nData provided: State {\npassed: ${state?.passed},\nfeedback:${state?.feedback}\n}`
+					`Missing \`state\` object, \`state.passed\` or \`state.feedback\` property.\nData provided:\nState {\npassed: ${state?.passed},\nfeedback: ${state?.feedback}\n}`
 				);
 			const feedback = data
 				? `>>> ${this.client.mocks.emojis.logo} | You **${
