@@ -88,7 +88,9 @@ export default class messageReactionAdd extends Listener {
 			const state = rows.find((r) => r.discordID == user.id);
 
 			if (data && (!state || !state.passed || !state.feedback))
-				throw new Error("Missing `state` object, `state.data` or `state.feedback` property.");
+				throw new Error(
+					`Missing \`state\` object, \`state.passed\` or \`state.feedback\` property.\nData provided: State {\npassed: ${state?.passed},\nfeedback:${state?.feedback}\n}`
+				);
 			const feedback = data
 				? `>>> ${this.client.mocks.emojis.logo} | You **${
 						state.passed
