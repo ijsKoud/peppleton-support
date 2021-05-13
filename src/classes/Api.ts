@@ -5,7 +5,7 @@ import cors from "cors";
 import FormData from "form-data";
 import fetch from "node-fetch";
 import cookieParser from "cookie-parser";
-import { unlink, readdir, readFile, rename } from "fs/promises";
+import fs, { unlink, readdir, readFile, rename, stat } from "fs/promises";
 
 export default class Api {
 	public server = express();
@@ -84,7 +84,20 @@ export default class Api {
 
 	private async getTranscripts(req: Request, res: Response) {
 		try {
-			const files = await readdir(join(process.cwd(), "transcripts"));
+			const filesNames = await readdir(join(process.cwd(), "transcripts"));
+			const files = (
+				await Promise.all(
+					filesNames.map(async (f) => {
+						return {
+							f,
+							date: (await stat(join(process.cwd(), "transcripts", f))).birthtimeMs,
+						};
+					})
+				)
+			)
+				.sort((a, b) => b.date - a.date)
+				.map(({ f }) => f);
+
 			res.send(files);
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: e.message });
