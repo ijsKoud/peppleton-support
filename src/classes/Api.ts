@@ -15,6 +15,7 @@ export default class Api {
 	constructor(public client: prClient) {
 		this.apiRouter
 			.get("/user", this.authenticated, async (req, res) => await this.getUser(req, res))
+			.get("/messages", this.authenticated, async (req, res) => await this.messages(req, res))
 			.get(
 				"/transcripts",
 				this.authenticated,
@@ -55,6 +56,29 @@ export default class Api {
 
 	public start(port = 80, callback: () => void = () => null) {
 		this.server.listen(port, callback);
+	}
+
+	private async messages(req: Request, res: Response) {
+		try {
+			const data = (
+				await Promise.all(
+					this.client.activityManager.cache
+						.filter((stats) => stats.guildId === process.env.GUILD)
+						.map(async (stats) => {
+							return {
+								...stats,
+								messagesAmount: stats.messages.length,
+								user: (await this.client.utils.fetchUser(stats.userId)).tag,
+							};
+						})
+				)
+			).sort((a, b) => b.messages.length - a.messages.length);
+
+			res.status(200).send(data);
+		} catch (e) {
+			this.client.log("ERROR", `Api#messages error: \`\`\`${e.stack || e.message}\`\`\``);
+			res.status(500).json({ message: "internal server error", error: e.message });
+		}
 	}
 
 	private async deleteFile(req: Request, res: Response) {
