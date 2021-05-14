@@ -23,6 +23,7 @@ export default class updateCommand extends Command {
 		await this.Exec("tsc");
 
 		await msg.edit(">>> 🤖 | **Update Command**:\nBot is updated - restarting...");
+		await this.client.activityManager.updateAll();
 		this.Exec("pm2 restart 0");
 	}
 
