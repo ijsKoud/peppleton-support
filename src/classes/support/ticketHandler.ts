@@ -109,9 +109,9 @@ export default class ticketHandler {
 			await user.send(
 				`>>> 💬 | Reply from **${
 					message.member.nickname || message.author.username
-				}** (${message.author.toString()}):\n${
+				}** (${message.author.toString()}):\n\n${
 					message.content
-				}\nℹ | Your ticket id is \`${ticket.caseId}\``,
+				}\n\nℹ | Your ticket id is \`${ticket.caseId}\``,
 				{ files, allowedMentions: { users: [] } }
 			);
 
