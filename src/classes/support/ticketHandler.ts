@@ -84,9 +84,9 @@ export default class ticketHandler {
 
 			const files = this.client.utils.getAttachments(message.attachments);
 			await channel.send(
-				`>>> 💬 | Reply from **${message.author.tag}** (${message.author.toString()}):\`\`\`\n${
+				`>>> 💬 | Reply from **${message.author.tag}** (${message.author.toString()}):\n${
 					message.content
-				}\n\`\`\`ℹ | Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>`,
+				}\nℹ | Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>`,
 				{ files, allowedMentions: { users: [] } }
 			);
 
@@ -109,9 +109,9 @@ export default class ticketHandler {
 			await user.send(
 				`>>> 💬 | Reply from **${
 					message.member.nickname || message.author.username
-				}** (${message.author.toString()}):\`\`\`\n${
+				}** (${message.author.toString()}):\n${
 					message.content
-				}\n\`\`\`ℹ | Your ticket id is \`${ticket.caseId}\``,
+				}\nℹ | Your ticket id is \`${ticket.caseId}\``,
 				{ files, allowedMentions: { users: [] } }
 			);
 
