@@ -84,9 +84,9 @@ export default class ticketHandler {
 
 			const files = this.client.utils.getAttachments(message.attachments);
 			await channel.send(
-				`>>> 💬 | Reply from **${message.author.tag}** (${message.author.toString()}):\n${
+				`>>> 💬 | Reply from **${message.author.tag}** (${message.author.toString()}):\n\n${
 					message.content
-				}\nℹ | Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>`,
+				}\n\nℹ | Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>`,
 				{ files, allowedMentions: { users: [] } }
 			);
 
