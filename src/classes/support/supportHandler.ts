@@ -191,7 +191,7 @@ export default class supportHandler {
 					.setDescription([
 						`1️⃣ - **I want to open a ticket**`,
 						`2️⃣ - **I want to report a user**`,
-						`3️⃣ - **I want make a suggestion**`,
+						`3️⃣ - **I want to make a suggestion**`,
 					])
 			);
 
