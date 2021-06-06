@@ -76,7 +76,7 @@ export default class util {
 
 	public async fetchUser(id: string): Promise<User> {
 		return typeof id === "string"
-			? this.client.util.resolveUser(id, this.client.users.cache, false, false) ||
+			? this.client.util.resolveUser(id ?? "", this.client.users.cache, false, false) ||
 					(await this.client.users.fetch(id, true).catch((e) => null))
 			: null;
 	}

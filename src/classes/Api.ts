@@ -21,7 +21,11 @@ export default class Api {
 				this.authenticated,
 				async (req, res) => await this.getTranscripts(req, res)
 			)
-			.get("/login", (_, res) => res.redirect(process.env.DISCORD_AUTH))
+			.get("/login", (req, res) => {
+				if (req.query.redirect)
+					res.cookie("redirect", decodeURIComponent(req.query.redirect as string));
+				res.redirect(process.env.DISCORD_AUTH);
+			})
 			.get("/logout", (_, res) => res.clearCookie("accesstoken").redirect(process.env.DASHBOARD))
 			.get("/callback", async (req, res) => await this.callback(req, res));
 
@@ -34,6 +38,7 @@ export default class Api {
 						"http://localhost:3000",
 						"https://peppleton.daangamesdg.tk",
 						"https://peppleton-transcript.marcusn.ml",
+						"https://peppleton-share.marcusn.ml",
 					],
 				})
 			)
@@ -168,6 +173,7 @@ export default class Api {
 				valid: member
 					? member.hasPermission("VIEW_AUDIT_LOG", { checkAdmin: true, checkOwner: true })
 					: false || this.client.isOwner(data.id),
+				supervisor: member.hasPermission("MANAGE_MESSAGES", { checkAdmin: true, checkOwner: true }),
 				admin: this.client.isOwner(data.id),
 			});
 		} catch (e) {
@@ -192,6 +198,9 @@ export default class Api {
 			res.cookie("accesstoken", data.access_token, {
 				maxAge: data.expires_in * 1000,
 			});
+
+			const redirect = req.cookies.redirect;
+			if (redirect) return res.clearCookie("redirect").redirect(redirect);
 
 			res.redirect(process.env.DASHBOARD);
 		} catch (e) {
