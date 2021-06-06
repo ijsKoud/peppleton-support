@@ -23,7 +23,7 @@ export default class Api {
 			)
 			.get("/login", (req, res) => {
 				if (req.query.redirect)
-					res.cookie("redirect", decodeURIComponent(req.query.redirect as string));
+					res.cookie("redirect", decodeURIComponent(req.query.redirect.toString()));
 				res.redirect(process.env.DISCORD_AUTH);
 			})
 			.get("/logout", (_, res) => res.clearCookie("accesstoken").redirect(process.env.DASHBOARD))
@@ -200,7 +200,7 @@ export default class Api {
 			});
 
 			const redirect = req.cookies.redirect;
-			if (redirect) return res.clearCookie("redirect").redirect(redirect);
+			if (redirect) return res.clearCookie("redirect").redirect(decodeURIComponent(redirect));
 
 			res.redirect(process.env.DASHBOARD);
 		} catch (e) {
