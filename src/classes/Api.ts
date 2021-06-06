@@ -200,7 +200,7 @@ export default class Api {
 			});
 
 			const redirect = req.cookies.redirect;
-			res.redirect(decodeURIComponent(redirect || "") || process.env.DASHBOARD);
+			res.redirect(process.env.DASHBOARD);
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: e.message });
 		}
