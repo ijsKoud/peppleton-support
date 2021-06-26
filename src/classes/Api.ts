@@ -5,7 +5,7 @@ import cors from "cors";
 import FormData from "form-data";
 import fetch from "node-fetch";
 import cookieParser from "cookie-parser";
-import fs, { unlink, readdir, readFile, rename, stat } from "fs/promises";
+import { unlink, readdir, readFile, rename, stat } from "fs/promises";
 
 export default class Api {
 	public server = express();
