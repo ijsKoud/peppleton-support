@@ -22,7 +22,7 @@ export default class messagesCommand extends Command {
 	}
 
 	async exec(message: Message, { id }: { id: string }) {
-		if (!["721360723351044149", "803013913150488617"].includes(message.channel.id))
+		if (!["866700533594062859", "803013913150488617"].includes(message.channel.id))
 			return message.util.send(
 				`>>> ${this.client.mocks.emojis.redcross} | You can only use this command in <#803013913150488617> or <#721360723351044149>!`
 			);
