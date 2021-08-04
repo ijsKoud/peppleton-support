@@ -13,6 +13,7 @@ export default class ready extends Listener {
 	async exec() {
 		this.client.Api.start(80, () => this.client.log("INFO", "Api is running on port `80`."));
 
+		await this.checkTickets();
 		await this.client.activityManager.loadAll();
 		await this.client.user.setActivity("your support tickets", { type: "LISTENING" });
 		this.client.log("INFO", "ActivityManager is now online.");
@@ -24,7 +25,7 @@ export default class ready extends Listener {
 	async checkTickets() {
 		const tickets = await Ticket.find();
 		tickets
-			.filter(({ status, lastMsg }) => status === "open" && lastMsg <= 864e5)
+			.filter(({ status, lastMsg }) => status === "open" && (Date.now() - lastMsg) <= 864e5)
 			.forEach((ticket) => this.client.supportHandler.ticketHandler.close(ticket, "inactive"));
 	}
 
