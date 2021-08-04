@@ -25,7 +25,7 @@ export default class ready extends Listener {
 	async checkTickets() {
 		const tickets = await Ticket.find();
 		tickets
-			.filter(({ status, lastMsg }) => status === "open" && (Date.now() - lastMsg) <= 864e5)
+			.filter(({ status, lastMsg }) => status === "open" && (Date.now() - lastMsg) >= 864e5)
 			.forEach((ticket) => this.client.supportHandler.ticketHandler.close(ticket, "inactive"));
 	}
 
