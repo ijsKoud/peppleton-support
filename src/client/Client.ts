@@ -22,8 +22,8 @@ export default class Client extends SapphireClient {
 	}
 
 	public BlacklistManager: BlacklistManager = new BlacklistManager(this, []);
-	public utils: Utils = new Utils(this);
 	public loggers: Collection<string, Logger> = new Collection();
+	public utils: Utils = new Utils(this);
 
 	constructor(options: ClientOptions) {
 		super({
