@@ -1,6 +1,6 @@
-<h1 align="center">project-template</h1>
+<h1 align="center">bot-template</h1>
 
-> Personal project template by DaanGamesDG
+> Personal discord bot template by DaanGamesDG
 
 ## Install
 
@@ -27,6 +27,7 @@ _You can also use `npm` instead of `yarn`_
 - Github: [@DaanGamesDG](https://github.com/DaanGamesDG)
 
 ## Donate
+
 This will always be open source project, even if I don't receive donations. But there are still people out there that want to donate, so if you do here is the link [@PayPal](https://paypal.me/daangamesdg). Thanks in advance! I really appriciate it <3
 
 ## Lisence
