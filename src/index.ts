@@ -25,4 +25,4 @@ new Client({
 	],
 	owners,
 	partials,
-}).login(process.env.TOKEN);
+}).start();

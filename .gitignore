@@ -1,4 +1,5 @@
+node_modules/
+dist/
+prisma/migrations/
 .env
-node_modules
-dist
 yarn.lock

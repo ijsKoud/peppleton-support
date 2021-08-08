@@ -1,13 +1,17 @@
 import Client from "../Client";
 
 export default class BlacklistManager {
-	public blocked: string[];
+	public blacklisted: string[] = [];
 
-	constructor(public client: Client, blocked: string[]) {
-		this.blocked = blocked;
-	}
+	constructor(public client: Client) {}
 
 	public isBlacklisted(userId: string, guildId = ""): boolean {
-		return this.blocked.includes(userId) || this.blocked.includes(guildId);
+		return this.blacklisted.includes(userId) || this.blacklisted.includes(guildId);
+	}
+
+	public setBlacklisted(blacklisted: string[]): this {
+		this.blacklisted = blacklisted;
+
+		return this;
 	}
 }
