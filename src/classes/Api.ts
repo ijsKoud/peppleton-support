@@ -39,7 +39,7 @@ export default class Api {
 						"https://peppleton.daangamesdg.tk",
 						"https://peppleton-transcript.marcusn.co.uk",
 						"https://peppleton-share.marcusn.co.uk",
-						"https://peppleton.marcusn.co.uk",
+						
 					],
 				})
 			)
