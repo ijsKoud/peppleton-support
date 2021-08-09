@@ -153,7 +153,7 @@ export default class ticketHandler {
 						.setDescription([
 							`Ticket Owner: <@${ticket.userId}>`,
 							`Ticket Claimer: <@${ticket.claimerId}>`,
-							`[direct transcript](https://peppleton-transcript.marcusn.ml/transcripts/${ticket.caseId})`,
+							`[direct transcript](https://peppleton-transcript.marcusn.co.uk/transcripts/${ticket.caseId})`,
 						])
 				);
 
