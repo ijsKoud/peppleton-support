@@ -37,8 +37,8 @@ export default class Api {
 					origin: [
 						"http://localhost:3000",
 						"https://peppleton.daangamesdg.tk",
-						"https://peppleton-transcript.marcusn.ml",
-						"https://peppleton-share.marcusn.ml",
+						"https://peppleton-transcript.marcusn.co.uk",
+						"https://peppleton-share.marcusn.co.uk",
 					],
 				})
 			)
