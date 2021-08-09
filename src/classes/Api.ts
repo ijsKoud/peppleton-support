@@ -200,7 +200,7 @@ export default class Api {
 			});
 
 			const redirect = req.cookies.redirect;
-			res.redirect(process.env.DASHBOARD);
+			res.redirect("https://peppleton-transcript.marcusn.co.uk");
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: e.message });
 		}
