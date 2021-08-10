@@ -1,6 +1,6 @@
 <h1 align="center">Peppleton Support</h1>
 
-> Support bot for Peppleton. Tracks activity as well as an advanced tickets system
+> Support bot for Peppleton
 
 ## Install
 
