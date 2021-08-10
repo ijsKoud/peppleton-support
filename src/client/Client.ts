@@ -13,6 +13,7 @@ import Utils from "./Utils";
 import * as constants from "./constants";
 import BlacklistManager from "./structures/BlacklistManager";
 import { PrismaClient } from "@prisma/client";
+import SupportHandler from "./handlers/support/SupportHandler";
 
 export default class Client extends SapphireClient {
 	public owners: string[];
@@ -23,10 +24,11 @@ export default class Client extends SapphireClient {
 	}
 
 	public prisma = new PrismaClient();
-
-	public blacklistManager: BlacklistManager = new BlacklistManager(this);
-	public loggers: Collection<string, Logger> = new Collection();
 	public utils: Utils = new Utils(this);
+	public loggers: Collection<string, Logger> = new Collection();
+
+	public supportHandler: SupportHandler = new SupportHandler(this);
+	public blacklistManager: BlacklistManager = new BlacklistManager(this);
 
 	constructor(options: ClientOptions) {
 		super({
@@ -49,6 +51,9 @@ export default class Client extends SapphireClient {
 
 		const DataLogger = new Logger({ name: "DB", webhook: process.env.LOGS });
 		this.loggers.set("db", DataLogger);
+
+		const SupportLogger = new Logger({ name: "Support", webhook: process.env.LOGS });
+		this.loggers.set("support", SupportLogger);
 
 		if (options.debug)
 			this.on("debug", (msg) => {
@@ -84,6 +89,7 @@ declare module "@sapphire/framework" {
 		isOwner(id: string): boolean;
 
 		prisma: PrismaClient;
+		supportHandler: SupportHandler;
 		blacklistManager: BlacklistManager;
 		utils: Utils;
 		loggers: Collection<string, Logger>;

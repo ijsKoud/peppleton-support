@@ -13,3 +13,14 @@ generator client {
 model botBlacklist {
   id String @id
 }
+
+model ticket {
+  status    String  @default("unclaimed")
+  department String
+  userId    String
+  caseId    String  @id
+  lastMsg   Int?
+  channelId String?
+  claimerId String?
+  closekey  String?
+}

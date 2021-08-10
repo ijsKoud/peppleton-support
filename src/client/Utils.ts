@@ -1,10 +1,22 @@
 import {
+	AwaitMessageComponentOptions,
+	AwaitMessagesOptions,
+	Channel,
 	Collection,
+	DMChannel,
+	Emoji,
+	Guild,
+	GuildChannel,
+	GuildMember,
+	Message,
 	MessageAttachment,
+	MessageComponentInteraction,
 	MessageEmbed,
 	MessageEmbedOptions,
 	PermissionResolvable,
 	PermissionString,
+	Role,
+	User,
 } from "discord.js";
 import Client from "./Client";
 
@@ -30,6 +42,82 @@ export default class Utils {
 
 	public createEmbed(options: MessageEmbedOptions): MessageEmbed[] {
 		return [new MessageEmbed({ color: process.env.COLOUR as `#${string}`, ...options })];
+	}
+
+	public async getChannel(id: string): Promise<Channel | null> {
+		return typeof id === "string"
+			? this._resolve(this.client.channels.cache, id) ||
+					(await this.client.channels.fetch(id).catch(() => null))
+			: null;
+	}
+
+	public async fetchMember(id: string, guild: Guild) {
+		return typeof id === "string" && guild instanceof Guild
+			? this._resolve(guild.members.cache, id) || (await guild.members.fetch(id).catch(() => null))
+			: null;
+	}
+
+	protected _resolve<T extends GuildMember | User | Channel | Guild | Emoji | Role>(
+		cache: Collection<string, T>,
+		id: string
+	): T | null {
+		const check = (item: T): boolean => {
+			let bool = false;
+			if (!(item instanceof Guild)) {
+				const reg = this._regex(item);
+				const match = id.match(reg);
+
+				bool = (bool || (match && match[1] === item.id)) ?? false;
+			}
+
+			if (!(item instanceof Channel && this.isDM(item))) {
+				const i = item as User | GuildChannel | Guild | Emoji | Role;
+				const name = (i instanceof User ? i.tag : i.name)?.toLowerCase();
+
+				if (name) bool = bool || name === id || name.includes(id);
+				else bool = bool ?? false;
+			}
+
+			return bool;
+		};
+
+		return cache.get(id) ?? cache.find((v) => check(v)) ?? null;
+	}
+
+	public isDM(channel: Channel): channel is DMChannel {
+		return ["DM", "GROUP_DM"].includes(channel.type);
+	}
+
+	protected _regex(item: User | Channel | Emoji | Role | GuildMember): RegExp {
+		return item instanceof Emoji
+			? /<a?:[a-zA-Z0-9_]+:(\d{17,19})>/
+			: item instanceof Channel
+			? /<#(\d{17,19})>/
+			: item instanceof User || item instanceof GuildMember
+			? /<@!?(\d{17,19})>/
+			: /<@&(\d{17,19})>/;
+	}
+
+	public async awaitComponent(
+		message: Message,
+		options: AwaitMessageComponentOptions<MessageComponentInteraction> = { time: 6e4 }
+	): Promise<MessageComponentInteraction | null> {
+		options = { time: 6e4, ...options };
+		const coll = await message.awaitMessageComponent(options).catch(() => null);
+
+		return coll;
+	}
+
+	public async awaitMessages(
+		message: Message,
+		options: AwaitMessagesOptions = { time: 6e4, errors: ["time"], max: 1 }
+	): Promise<Collection<string, Message>> {
+		options = { time: 6e4, errors: ["time"], max: 1, ...options };
+		const coll = await message.channel
+			.awaitMessages(options)
+			.catch(() => new Collection<string, Message>());
+
+		return coll;
 	}
 
 	public trimArray(arr: Array<string>, maxLen = 10): string[] {

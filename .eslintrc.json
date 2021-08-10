@@ -15,6 +15,7 @@
 		"ecmaVersion": 11
 	},
 	"rules": {
+		"no-empty": ["error", { "allowEmptyCatch": true }],
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/ban-ts-comment": "off",
 		"no-mixed-spaces-and-tabs": "off",

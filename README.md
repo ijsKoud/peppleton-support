@@ -1,6 +1,6 @@
-<h1 align="center">bot-template</h1>
+<h1 align="center">Peppleton Support</h1>
 
-> Personal discord bot template by DaanGamesDG
+> Support bot for Peppleton. Tracks activity as well as an advanced tickets system
 
 ## Install
 

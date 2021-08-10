@@ -5,9 +5,11 @@ export default class Logger {
 	public readonly name: string;
 	public readonly timestamp: boolean;
 	public readonly webhook: WebhookClient | null;
+	private _debug: boolean;
 
 	public constructor(options: LoggerOptions) {
 		this.name = options.name;
+		this._debug = options.debug ?? false;
 		this.timestamp = options.timestamp ?? true;
 		this.webhook = options.webhook ? new WebhookClient({ url: options.webhook }) : null;
 	}
@@ -17,7 +19,9 @@ export default class Logger {
 	}
 
 	public debug(...input: unknown[]): this {
-		return this.write(input, { level: "DEBUG", timestamp: Date.now() });
+		if (this._debug) return this.write(input, { level: "DEBUG", timestamp: Date.now() });
+
+		return this;
 	}
 
 	public error(...input: unknown[]): this {
@@ -63,6 +67,7 @@ export interface LoggerOptions {
 	name: string;
 	timestamp?: boolean;
 	webhook?: string;
+	debug?: boolean;
 }
 
 export interface LogData {
