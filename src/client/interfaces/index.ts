@@ -19,6 +19,7 @@ export interface iTicket {
 	channelId?: string;
 	claimerId?: string;
 	closekey?: string;
+	department: string;
 }
 
 export interface iReport {

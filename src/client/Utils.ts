@@ -57,6 +57,13 @@ export default class Utils {
 			: null;
 	}
 
+	public async fetchUser(id: string) {
+		return typeof id === "string"
+			? this._resolve(this.client.users.cache, id) ||
+					(await this.client.users.fetch(id).catch(() => null))
+			: null;
+	}
+
 	protected _resolve<T extends GuildMember | User | Channel | Guild | Emoji | Role>(
 		cache: Collection<string, T>,
 		id: string

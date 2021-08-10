@@ -11,5 +11,7 @@ export default class MessageCreateListener extends Listener {
 			message.content.trim().split(/ +/g).length === 1
 		)
 			return this.container.client.supportHandler.handleMention(message);
+
+		this.container.client.supportHandler.ticketHandler.handleMessages(message);
 	}
 }

@@ -27,7 +27,7 @@ export default class Client extends SapphireClient {
 	public utils: Utils = new Utils(this);
 	public loggers: Collection<string, Logger> = new Collection();
 
-	public supportHandler: SupportHandler = new SupportHandler(this);
+	public supportHandler: SupportHandler;
 	public blacklistManager: BlacklistManager = new BlacklistManager(this);
 
 	constructor(options: ClientOptions) {
@@ -44,8 +44,7 @@ export default class Client extends SapphireClient {
 			},
 		});
 
-		this.owners = options.owners;
-
+		// loggers setup
 		const botLogger = new Logger({ name: "BOT", webhook: process.env.LOGS });
 		this.loggers.set("bot", botLogger);
 
@@ -54,6 +53,11 @@ export default class Client extends SapphireClient {
 
 		const SupportLogger = new Logger({ name: "Support", webhook: process.env.LOGS });
 		this.loggers.set("support", SupportLogger);
+
+		this.owners = options.owners;
+
+		// handlers init
+		this.supportHandler = new SupportHandler(this);
 
 		if (options.debug)
 			this.on("debug", (msg) => {
