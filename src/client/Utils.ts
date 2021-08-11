@@ -44,6 +44,10 @@ export default class Utils {
 		return [new MessageEmbed({ color: process.env.COLOUR as `#${string}`, ...options })];
 	}
 
+	public embed(options?: MessageEmbedOptions): MessageEmbed {
+		return new MessageEmbed({ color: process.env.COLOUR as `#${string}`, ...options });
+	}
+
 	public async getChannel(id: string): Promise<Channel | null> {
 		return typeof id === "string"
 			? this._resolve(this.client.channels.cache, id) ||

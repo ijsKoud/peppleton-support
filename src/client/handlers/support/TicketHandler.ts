@@ -6,6 +6,7 @@ import {
 	Interaction,
 	Message,
 	MessageActionRow,
+	MessageAttachment,
 	MessageButton,
 	MessageMentions,
 	OverwriteResolvable,
@@ -16,6 +17,8 @@ import Logger from "../../structures/Logger/Logger";
 import Client from "../../Client";
 import { nanoid } from "nanoid";
 import { join } from "path";
+import Transcript from "../transcript";
+import { readdir } from "fs/promises";
 
 export default class TicketHandler {
 	public logger: Logger;
@@ -140,7 +143,8 @@ export default class TicketHandler {
 			if (!user) throw new Error(`Unable to find user for ${ticket.caseId}`);
 
 			const components: MessageActionRow[] = [];
-			if (message.content.includes("--close-request")) {
+			const bool = message.content.includes("--close-request");
+			if (bool) {
 				message.content = message.content.replace(/--request-close/g, "");
 				components.push(
 					new MessageActionRow().addComponents(
@@ -160,7 +164,11 @@ export default class TicketHandler {
 					message.member?.nickname || message.author.username
 				}** (${message.author.toString()}):\n${message.content}\nℹ | Your ticket id is \`${
 					ticket.caseId
-				}\``,
+				}\`${
+					bool
+						? "\nIf this reply answered your ticket, press the red close button to close your ticket."
+						: ""
+				}`,
 			});
 
 			await message.react("✅").catch();
@@ -185,37 +193,45 @@ export default class TicketHandler {
 		const channel = await this.client.utils.getChannel(ticket.channelId ?? "");
 		if (options?.interaction) {
 			if (channel && channel.isText()) {
-				// const msg = await channel.send(
-				// 	`>>> ${this.client.constants.emojis.loading} | Creating ticket transcript, please wait...`
-				// );
-				// const location = join(process.cwd(), "transcripts", `${ticket.caseId}.html`);
-				// const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
-				// 	location
-				// );
-				// if (!transcript)
-				// 	msg.edit(
-				// 		`>>> ${this.client.mocks.emojis.redcross} | Something went wrong when saving the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
-				// 	);
-				// else {
-				// 	const transcriptChannel = await this.client.utils.getChannel(
-				// 		this.client.mocks.departments.transcript
-				// 	);
-				// 	await transcriptChannel.send(
-				// 		new MessageEmbed()
-				// 			.setColor(this.client.hex)
-				// 			.setTitle(`Ticket: ${ticket.caseId}`)
-				// 			.attachFiles([new MessageAttachment(location, `${ticket.caseId}.html`)])
-				// 			.setDescription([
-				// 				`Ticket Owner: <@${ticket.userId}>`,
-				// 				`Ticket Claimer: <@${ticket.claimerId}>`,
-				// 				`[direct transcript](https://peppleton-transcript.marcusn.co.uk/transcripts/${ticket.caseId})`,
-				// 				`From Devs: Due to some backend issues at the moment, our API is currently not working, please download the HTML file above to access the transcript, we are working hard to resolve the issue`
-				// 			])
-				// 	);
-				// 	await msg.edit(
-				// 		`>>> ${this.client.mocks.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
-				// 	);
-				// }
+				const msg = await channel.send(
+					`>>> ${this.client.constants.emojis.loading} | The user closed their ticket. Creating ticket transcript, please wait...`
+				);
+				const location = join(process.cwd(), "transcripts", `${ticket.caseId}.html`);
+				const transcript = await new Transcript({
+					channel: channel as TextChannel,
+					client: this.client,
+				}).create(location);
+
+				if (!transcript) {
+					msg.edit(
+						`>>> ${this.client.constants.emojis.redcross} | Something went wrong when saving the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+					);
+				} else {
+					const transcriptChannel = await this.client.utils.getChannel(
+						this.client.constants.departments.transcript
+					);
+
+					if (transcriptChannel && transcriptChannel.isText())
+						await transcriptChannel.send({
+							files: [new MessageAttachment(location, `${ticket.caseId}.html`)],
+							embeds: [
+								this.client.utils
+									.embed()
+									.setTitle(`Ticket: ${ticket.caseId}`)
+									.setDescription(
+										[
+											`Ticket Owner: <@${ticket.userId}>`,
+											`Ticket Claimer: <@${ticket.claimerId}>`,
+											`[direct transcript](https://peppleton-transcript.marcusn.co.uk/transcripts/${ticket.caseId})`,
+										].join("\n")
+									),
+							],
+						});
+
+					await msg.edit(
+						`>>> ${this.client.constants.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+					);
+				}
 			}
 
 			await options.interaction
@@ -223,37 +239,45 @@ export default class TicketHandler {
 				.catch();
 		} else {
 			if (channel && channel.isText()) {
-				// const msg = await channel.send(
-				// 	`>>> ${this.client.constants.emojis.loading} | Creating ticket transcript, please wait...`
-				// );
-				// const location = join(process.cwd(), "transcripts", `${ticket.caseId}.html`);
-				// const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
-				// 	location
-				// );
-				// if (!transcript)
-				// 	msg.edit(
-				// 		`>>> ${this.client.mocks.emojis.redcross} | Something went wrong when saving the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
-				// 	);
-				// else {
-				// 	const transcriptChannel = await this.client.utils.getChannel(
-				// 		this.client.mocks.departments.transcript
-				// 	);
-				// 	await transcriptChannel.send(
-				// 		new MessageEmbed()
-				// 			.setColor(this.client.hex)
-				// 			.setTitle(`Ticket: ${ticket.caseId}`)
-				// 			.attachFiles([new MessageAttachment(location, `${ticket.caseId}.html`)])
-				// 			.setDescription([
-				// 				`Ticket Owner: <@${ticket.userId}>`,
-				// 				`Ticket Claimer: <@${ticket.claimerId}>`,
-				// 				`[direct transcript](https://peppleton-transcript.marcusn.co.uk/transcripts/${ticket.caseId})`,
-				// 				`From Devs: Due to some backend issues at the moment, our API is currently not working, please download the HTML file above to access the transcript, we are working hard to resolve the issue`
-				// 			])
-				// 	);
-				// 	await msg.edit(
-				// 		`>>> ${this.client.mocks.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
-				// 	);
-				// }
+				const msg = await channel.send(
+					`>>> ${this.client.constants.emojis.loading} | Creating ticket transcript, please wait...`
+				);
+				const location = join(process.cwd(), "transcripts", `${ticket.caseId}.html`);
+				const transcript = await new Transcript({
+					channel: channel as TextChannel,
+					client: this.client,
+				}).create(location);
+
+				if (!transcript) {
+					msg.edit(
+						`>>> ${this.client.constants.emojis.redcross} | Something went wrong when saving the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+					);
+				} else {
+					const transcriptChannel = await this.client.utils.getChannel(
+						this.client.constants.departments.transcript
+					);
+
+					if (transcriptChannel && transcriptChannel.isText())
+						await transcriptChannel.send({
+							files: [new MessageAttachment(location, `${ticket.caseId}.html`)],
+							embeds: [
+								this.client.utils
+									.embed()
+									.setTitle(`Ticket: ${ticket.caseId}`)
+									.setDescription(
+										[
+											`Ticket Owner: <@${ticket.userId}>`,
+											`Ticket Claimer: <@${ticket.claimerId}>`,
+											`[direct transcript](https://peppleton-transcript.marcusn.co.uk/transcripts/${ticket.caseId})`,
+										].join("\n")
+									),
+							],
+						});
+
+					await msg.edit(
+						`>>> ${this.client.constants.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+					);
+				}
 			}
 
 			const user = await this.client.utils.fetchUser(ticket.userId);
@@ -595,7 +619,12 @@ export default class TicketHandler {
 
 	public async generateId(): Promise<string> {
 		let id = nanoid(8).toLowerCase();
-		const tickets = await this.client.prisma.ticket.findMany();
+		const tickets = [
+			...(await this.client.prisma.ticket.findMany()),
+			...(await readdir(join(process.cwd(), "transcripts"))).map((str) => ({
+				caseId: str.replace(".html", ""),
+			})),
+		];
 
 		while (id.includes("-") || tickets.find((t) => t.caseId === `ticket-${id}`))
 			id = nanoid(8).toLowerCase();

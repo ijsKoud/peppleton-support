@@ -12,15 +12,8 @@ new Client({
 	debug: !!process.env.DEBUG,
 	activity: [
 		{
-			type: process.env.TYPE as
-				| "PLAYING"
-				| "STREAMING"
-				| "LISTENING"
-				| "WATCHING"
-				| "CUSTOM"
-				| "COMPETING",
-			name: process.env.MESSAGE,
-			url: process.env.URL,
+			type: "LISTENING",
+			name: "your support tickets",
 		},
 	],
 	owners,
