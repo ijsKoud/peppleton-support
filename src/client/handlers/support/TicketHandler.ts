@@ -3,6 +3,7 @@ import {
 	Collection,
 	DMChannel,
 	GuildChannelCreateOptions,
+	GuildMember,
 	Interaction,
 	Message,
 	MessageActionRow,
@@ -502,6 +503,48 @@ export default class TicketHandler {
 			this.logger.debug(`Successfully saved ticket for ${userId} with caseId: ${caseId}`);
 		} catch (e) {
 			this.logger.fatal(e);
+		}
+	}
+
+	public async transferUser(message: Message, member: GuildMember, ticket: iTicket) {
+		try {
+			if (
+				!message.channel.isText() ||
+				!(message.channel.type === "GUILD_TEXT") ||
+				!message.guild ||
+				!ticket.claimerId
+			)
+				return;
+
+			await message.channel.permissionOverwrites.create(member, {
+				VIEW_CHANNEL: true,
+				SEND_MESSAGES: true,
+				ATTACH_FILES: true,
+			});
+
+			const claimer = await this.client.utils.fetchMember(ticket.claimerId, message.guild);
+			if (!claimer) return;
+
+			if (!claimer.permissions.has("VIEW_AUDIT_LOG", true) && !this.client.isOwner(claimer.id))
+				await message.channel.permissionOverwrites.create(claimer, {
+					VIEW_CHANNEL: false,
+				});
+
+			ticket.claimerId = member.id;
+			await this.updateTicket(ticket, ticket.caseId);
+
+			await message.channel.send(
+				`>>> 👋 | Hey ${member.toString()}, please check the **pins** for more information.`
+			);
+
+			const user = await this.client.utils.fetchUser(ticket.userId);
+			await user?.send(
+				`>>> ${this.client.constants.emojis.transfer} | Your ticket has been transferred to **${
+					member.nickname || member.user.username
+				}** (${member.toString()})`
+			);
+		} catch (e) {
+			this.close(ticket);
 		}
 	}
 

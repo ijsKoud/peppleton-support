@@ -23,6 +23,10 @@ export default class Client extends SapphireClient {
 		return this.owners.includes(id);
 	}
 
+	public isDev(): boolean {
+		return this.user?.id === "711468893457088553";
+	}
+
 	public prisma = new PrismaClient();
 	public utils: Utils = new Utils(this);
 	public loggers: Collection<string, Logger> = new Collection();
@@ -90,7 +94,9 @@ declare module "@sapphire/framework" {
 	class SapphireClient {
 		owners: string[];
 		constants: typeof constants;
+
 		isOwner(id: string): boolean;
+		isDev(): boolean;
 
 		prisma: PrismaClient;
 		supportHandler: SupportHandler;
@@ -103,5 +109,6 @@ declare module "@sapphire/framework" {
 		UserPermissions: never;
 		OwnerOnly: never;
 		Blacklisted: never;
+		StaffOnly: never;
 	}
 }

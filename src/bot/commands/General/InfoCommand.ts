@@ -17,9 +17,6 @@ export default class InfoCommand extends Command {
 		const core = cpus()[0];
 		const embeds = this.container.client.utils.createEmbed({
 			title: `Bot Info: ${this.container.client.user?.tag}`,
-			description: `Developers: ${this.container.client.owners
-				.map((str) => `<@${str}>`)
-				.join(", ")}`,
 			fields: [
 				{
 					name: "• Bot Information",

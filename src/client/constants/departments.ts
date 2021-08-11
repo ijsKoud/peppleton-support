@@ -94,5 +94,7 @@ export const category = "754266502638600233";
 export const transcript = "793203715154378752";
 export const suggestions = "788811272899919872";
 
+export const supervisor = "742790430034362440";
 export const manager = "742791627495571596";
+export const BoD = "742790053998362768";
 export const botDev = "773626906800422933";
