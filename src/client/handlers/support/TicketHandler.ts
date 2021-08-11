@@ -146,7 +146,7 @@ export default class TicketHandler {
 			const components: MessageActionRow[] = [];
 			const bool = message.content.includes("--close-request");
 			if (bool) {
-				message.content = message.content.replace(/--request-close/g, "");
+				message.content = message.content.replace(/--close-request/g, "");
 				components.push(
 					new MessageActionRow().addComponents(
 						new MessageButton()
