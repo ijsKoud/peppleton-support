@@ -463,7 +463,7 @@ export default class ticketHandler {
 			await owner.send(
 				`>>> 🎫 | Your ticket (\`${ticket.caseId}\`) has been claimed by **${
 					member.nickname || member.user.username
-				}** (${member.toString()}), you should receive a respond shortly.`,
+				}** (${member.toString()}), you should receive a response shortly.`,
 				{ allowedMentions: { users: [] } }
 			);
 			await channel
