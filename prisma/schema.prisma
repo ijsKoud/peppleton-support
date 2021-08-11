@@ -22,5 +22,4 @@ model ticket {
   lastMsg   Int?
   channelId String?
   claimerId String?
-  closekey  String?
 }

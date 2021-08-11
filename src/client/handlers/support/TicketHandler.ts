@@ -1,4 +1,5 @@
 import {
+	ButtonInteraction,
 	Collection,
 	DMChannel,
 	GuildChannelCreateOptions,
@@ -6,13 +7,15 @@ import {
 	Message,
 	MessageActionRow,
 	MessageButton,
+	MessageMentions,
 	OverwriteResolvable,
 	TextChannel,
 } from "discord.js";
-import { nanoid } from "nanoid";
-import Client from "../../Client";
 import { iDepartment, iTicket } from "../../interfaces";
 import Logger from "../../structures/Logger/Logger";
+import Client from "../../Client";
+import { nanoid } from "nanoid";
+import { join } from "path";
 
 export default class TicketHandler {
 	public logger: Logger;
@@ -33,7 +36,7 @@ export default class TicketHandler {
 						) ?? null;
 
 					if (!ticket) {
-						ticket = await this.getTicket({ userId: message.author.id });
+						ticket = await this.getTicket({ userId: message.author.id, status: "open" });
 						if (!ticket) return;
 
 						this.tickets.set(ticket.caseId, ticket);
@@ -46,7 +49,7 @@ export default class TicketHandler {
 						message.content.trim().startsWith(process.env.PREFIX as string)
 					)
 						return;
-					message.content = this.substr(message.content || "no message content", 1500);
+					message.content = this._format(message.content || "no message content", message.mentions);
 					await this.handleDM(message, ticket);
 				}
 				break;
@@ -64,20 +67,47 @@ export default class TicketHandler {
 
 					if (ticket.status !== "open" || ticket.claimerId !== message.author.id) return;
 					const [cmd, ...args] = (message.content ?? "").trim().split(/ +/g);
-					if (
-						!cmd ||
-						cmd.toLowerCase() !== `${process.env.PREFIX}message` ||
-						(!args.length && !message.attachments.size)
-					)
+
+					if (cmd === `${process.env.PREFIX}close`) return this.close(ticket);
+					if (cmd !== `${process.env.PREFIX}message` || (!args.length && !message.attachments.size))
 						return;
 
-					message.content = this.substr(args.join(" ") || "no message content", 1500);
+					message.content = this._format(args.join(" ") || "no message content", message.mentions);
 					await this.handleChannel(message, ticket);
 				}
 				break;
 			default:
 				break;
 		}
+	}
+
+	private _format(
+		str: string,
+		{ channels, crosspostedChannels, members, users }: MessageMentions
+	): string {
+		const mentions: { id: string; extra?: string; name: string }[] = [
+			...channels.map((c) => ({
+				id: `<#${c.id}>`,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				name: `#${(c as any).name ?? c.id}`,
+			})),
+			...crosspostedChannels.map((c) => ({ id: `<#${c.channelId}>`, name: `#${c.name}` })),
+			...(members
+				? members.map((m) => ({
+						id: `<@${m.id}>`,
+						extra: `<@!${m.id}>`,
+						name: `@${m.nickname ?? m.user.username}#${m.user.discriminator}`,
+				  }))
+				: []),
+			...users.map((u) => ({ id: `<@${u.id}>`, extra: `<@!${u.id}>`, name: `@${u.tag}` })),
+		];
+
+		mentions.forEach((mention) => {
+			str = str.replace(new RegExp(mention.id, "g"), mention.name);
+			if (mention.extra) str = str.replace(new RegExp(mention.extra, "g"), mention.name);
+		});
+
+		return this.substr(str, 1500, true);
 	}
 
 	private async handleDM(message: Message, ticket: iTicket): Promise<void> {
@@ -89,11 +119,9 @@ export default class TicketHandler {
 			const files = this.client.utils.getAttachments(message.attachments);
 			await channel.send({
 				files,
-				content: `>>> 💬 | Reply from **${
-					message.author.tag
-				}** (${message.author.toString()}):\n\n${
+				content: `>>> 💬 | Reply from **${message.author.tag}** (${message.author.toString()}):\n${
 					message.content
-				}\n\nℹ | Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>`,
+				}\nℹ | Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>`,
 			});
 
 			await message.react("✅").catch();
@@ -101,7 +129,7 @@ export default class TicketHandler {
 			ticket.lastMsg = Date.now();
 			await this.updateTicket(ticket, ticket.caseId);
 		} catch (e) {
-			// this.close(ticket);
+			this.close(ticket);
 			this.logger.error(`HandleDM error: \`\`\`${e.stack || e.message}\`\`\``);
 		}
 	}
@@ -111,12 +139,26 @@ export default class TicketHandler {
 			const user = await this.client.utils.fetchUser(ticket.userId);
 			if (!user) throw new Error(`Unable to find user for ${ticket.caseId}`);
 
+			const components: MessageActionRow[] = [];
+			if (message.content.includes("--close-request")) {
+				message.content = message.content.replace(/--request-close/g, "");
+				components.push(
+					new MessageActionRow().addComponents(
+						new MessageButton()
+							.setCustomId(`${ticket.caseId.replace("ticket", "close")}`)
+							.setStyle("DANGER")
+							.setLabel("Close")
+					)
+				);
+			}
+
 			const files = this.client.utils.getAttachments(message.attachments);
 			await user.send({
 				files,
+				components,
 				content: `>>> 💬 | Reply from **${
 					message.member?.nickname || message.author.username
-				}** (${message.author.toString()}):\n\n${message.content}\n\nℹ | Your ticket id is \`${
+				}** (${message.author.toString()}):\n${message.content}\nℹ | Your ticket id is \`${
 					ticket.caseId
 				}\``,
 			});
@@ -126,13 +168,126 @@ export default class TicketHandler {
 			ticket.lastMsg = Date.now();
 			await this.updateTicket(ticket, ticket.caseId);
 		} catch (e) {
-			// this.close(ticket);
+			this.close(ticket);
 			this.logger.error(`handleChannel error: \`\`\`${e.stack || e.message}\`\`\``);
 		}
 	}
 
+	public async close(
+		ticket: iTicket,
+		options?: { inactive?: boolean; interaction?: ButtonInteraction | null }
+	) {
+		if (ticket.status === "closed") return;
+
+		ticket.status = "closed";
+		await this.updateTicket(ticket, ticket.caseId);
+
+		const channel = await this.client.utils.getChannel(ticket.channelId ?? "");
+		if (options?.interaction) {
+			if (channel && channel.isText()) {
+				// const msg = await channel.send(
+				// 	`>>> ${this.client.constants.emojis.loading} | Creating ticket transcript, please wait...`
+				// );
+				// const location = join(process.cwd(), "transcripts", `${ticket.caseId}.html`);
+				// const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
+				// 	location
+				// );
+				// if (!transcript)
+				// 	msg.edit(
+				// 		`>>> ${this.client.mocks.emojis.redcross} | Something went wrong when saving the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+				// 	);
+				// else {
+				// 	const transcriptChannel = await this.client.utils.getChannel(
+				// 		this.client.mocks.departments.transcript
+				// 	);
+				// 	await transcriptChannel.send(
+				// 		new MessageEmbed()
+				// 			.setColor(this.client.hex)
+				// 			.setTitle(`Ticket: ${ticket.caseId}`)
+				// 			.attachFiles([new MessageAttachment(location, `${ticket.caseId}.html`)])
+				// 			.setDescription([
+				// 				`Ticket Owner: <@${ticket.userId}>`,
+				// 				`Ticket Claimer: <@${ticket.claimerId}>`,
+				// 				`[direct transcript](https://peppleton-transcript.marcusn.co.uk/transcripts/${ticket.caseId})`,
+				// 				`From Devs: Due to some backend issues at the moment, our API is currently not working, please download the HTML file above to access the transcript, we are working hard to resolve the issue`
+				// 			])
+				// 	);
+				// 	await msg.edit(
+				// 		`>>> ${this.client.mocks.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+				// 	);
+				// }
+			}
+
+			await options.interaction
+				.followUp(`>>> 🔒 | I have closed your ticket (\`${ticket.caseId}\`)!`)
+				.catch();
+		} else {
+			if (channel && channel.isText()) {
+				// const msg = await channel.send(
+				// 	`>>> ${this.client.constants.emojis.loading} | Creating ticket transcript, please wait...`
+				// );
+				// const location = join(process.cwd(), "transcripts", `${ticket.caseId}.html`);
+				// const transcript = await new Transcript(this.client, { channel, id: ticket.caseId }).create(
+				// 	location
+				// );
+				// if (!transcript)
+				// 	msg.edit(
+				// 		`>>> ${this.client.mocks.emojis.redcross} | Something went wrong when saving the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+				// 	);
+				// else {
+				// 	const transcriptChannel = await this.client.utils.getChannel(
+				// 		this.client.mocks.departments.transcript
+				// 	);
+				// 	await transcriptChannel.send(
+				// 		new MessageEmbed()
+				// 			.setColor(this.client.hex)
+				// 			.setTitle(`Ticket: ${ticket.caseId}`)
+				// 			.attachFiles([new MessageAttachment(location, `${ticket.caseId}.html`)])
+				// 			.setDescription([
+				// 				`Ticket Owner: <@${ticket.userId}>`,
+				// 				`Ticket Claimer: <@${ticket.claimerId}>`,
+				// 				`[direct transcript](https://peppleton-transcript.marcusn.co.uk/transcripts/${ticket.caseId})`,
+				// 				`From Devs: Due to some backend issues at the moment, our API is currently not working, please download the HTML file above to access the transcript, we are working hard to resolve the issue`
+				// 			])
+				// 	);
+				// 	await msg.edit(
+				// 		`>>> ${this.client.mocks.emojis.greentick} | Successfully saved the ticket transcript.\nThis channel will be deleted in **5 seconds**.`
+				// 	);
+				// }
+			}
+
+			const user = await this.client.utils.fetchUser(ticket.userId);
+			if (user)
+				await user
+					.send(
+						`>>> 🔒 | Your ticket (\`${ticket.caseId}\`) has been closed.\nReason: \`${
+							options?.inactive
+								? "closed automatically for being inactive for 24 hours"
+								: "Closed by the Staff Team"
+						}\`.\n\n❓ | Need more support? Mention me to open a ticket!`
+					)
+					.catch();
+		}
+
+		setTimeout(async () => {
+			await channel?.delete?.();
+			await this.client.prisma.ticket.delete({ where: { caseId: ticket.caseId } });
+		}, 5e3);
+	}
+
 	public async handleInteraction(interaction: Interaction) {
 		if (!interaction.isButton()) return;
+		if (interaction.customId.startsWith("close-")) {
+			await interaction.deferReply();
+
+			const ticket = await this.getTicket({
+				caseId: interaction.customId.replace("close", "ticket"),
+			});
+			if (!ticket) return;
+
+			return this.close(ticket, { interaction });
+		}
+
 		if (!interaction.customId.startsWith("ticket-")) return;
 
 		await interaction.deferUpdate().catch();
@@ -293,7 +448,7 @@ export default class TicketHandler {
 			const ticket = await this.client.prisma.ticket.findFirst({ where: data });
 			if (ticket)
 				this.logger.debug(`Successfully fetched ticket for with caseId: ${ticket.caseId}`);
-			return ticket as iTicket;
+			return ticket;
 		} catch (e) {
 			this.logger.fatal(e);
 			return null;
@@ -448,7 +603,10 @@ export default class TicketHandler {
 		return `ticket-${id}`;
 	}
 
-	private substr(str: string, length = 1024): string {
+	private substr(str: string, length = 1024, codeblock = false): string {
+		if (codeblock)
+			return `\`\`\`\n${str.length + 8 > length ? str.slice(0, length - 11) + "..." : str}\n\`\`\``;
+
 		return str.length > length ? str.slice(0, length - 3) + "..." : str;
 	}
 }

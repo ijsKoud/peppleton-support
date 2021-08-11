@@ -12,13 +12,12 @@ export interface iDepartment {
 }
 
 export interface iTicket {
-	status: "unclaimed" | "closed" | "open";
+	status: string;
 	userId: string;
 	caseId: string;
-	lastMsg: number;
-	channelId?: string;
-	claimerId?: string;
-	closekey?: string;
+	lastMsg: number | null;
+	channelId: string | null;
+	claimerId: string | null;
 	department: string;
 }
 
