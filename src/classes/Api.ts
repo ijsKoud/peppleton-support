@@ -39,7 +39,7 @@ export default class Api {
 						"https://peppleton.daangamesdg.tk",
 						"https://peppleton-transcript.marcusn.co.uk",
 						"https://peppleton-share.marcusn.co.uk",
-						
+						"https://transcript.peppletonrly.cf",
 					],
 				})
 			)
@@ -201,7 +201,7 @@ export default class Api {
 			});
 
 			const redirect = req.cookies.redirect;
-			res.redirect("https://peppleton-transcript.marcusn.co.uk");
+			res.redirect("https://transcript.peppletonrly.cf");
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: e.message });
 		}
