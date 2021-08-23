@@ -1,7 +1,7 @@
 import { DMChannel, Message, MessageActionRow, MessageButton } from "discord.js";
 import { iDepartment } from "../../interfaces";
 import Client from "../../Client";
-import Logger from "../../structures/Logger/Logger";
+import Logger from "../../structures/Logger";
 import ms from "ms";
 import TicketHandler from "./TicketHandler";
 

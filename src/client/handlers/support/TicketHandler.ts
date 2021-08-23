@@ -14,7 +14,7 @@ import {
 	TextChannel,
 } from "discord.js";
 import { iDepartment, iTicket } from "../../interfaces";
-import Logger from "../../structures/Logger/Logger";
+import Logger from "../../structures/Logger";
 import Client from "../../Client";
 import { nanoid } from "nanoid";
 import { join } from "path";

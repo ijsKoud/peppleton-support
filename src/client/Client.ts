@@ -8,7 +8,7 @@ import {
 	PresenceStatusData,
 } from "discord.js";
 import { join } from "path";
-import Logger from "./structures/Logger/Logger";
+import Logger from "./structures/Logger";
 import Utils from "./Utils";
 import * as constants from "./constants";
 import BlacklistManager from "./structures/BlacklistManager";
