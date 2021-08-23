@@ -23,3 +23,11 @@ model ticket {
   channelId String?
   claimerId String?
 }
+
+model Report {
+  status    String  @default("unclaimed")
+  userId    String
+  caseId    String  @id
+  channelId String
+  messageId String
+}

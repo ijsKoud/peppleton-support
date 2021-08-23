@@ -4,6 +4,7 @@ import Client from "../../Client";
 import Logger from "../../structures/Logger";
 import ms from "ms";
 import TicketHandler from "./TicketHandler";
+import ReportHandler from "./ReportHandler";
 
 export default class SupportHandler {
 	public logger: Logger;
@@ -11,6 +12,7 @@ export default class SupportHandler {
 	public cooldown: Map<string, number> = new Map();
 
 	public ticketHandler: TicketHandler;
+	public reportHandler: ReportHandler;
 
 	public config = {
 		ticket: true,
@@ -22,6 +24,7 @@ export default class SupportHandler {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		this.logger = client.loggers.get("support")!;
 		this.ticketHandler = new TicketHandler(client);
+		this.reportHandler = new ReportHandler(client);
 	}
 
 	public async handleMention(message: Message) {
@@ -54,6 +57,14 @@ export default class SupportHandler {
 						if (!data) return;
 
 						await this.ticketHandler.saveTicket({ ...data, department: department.name });
+					}
+					break;
+				case "report":
+					{
+						const data = await this.reportHandler.createReport(message, channel, department);
+						if (!data) return;
+
+						await this.reportHandler.saveReport(data);
 					}
 					break;
 			}
