@@ -44,8 +44,8 @@ export default class Utils {
 		return [new MessageEmbed({ color: process.env.COLOUR as `#${string}`, ...options })];
 	}
 
-	public embed(options?: MessageEmbedOptions): MessageEmbed {
-		return new MessageEmbed({ color: process.env.COLOUR as `#${string}`, ...options });
+	public embed(options?: MessageEmbedOptions | MessageEmbed): MessageEmbed {
+		return new MessageEmbed(options).setColor(process.env.COLOUR as `#${string}`);
 	}
 
 	public async getChannel(id: string): Promise<Channel | null> {
