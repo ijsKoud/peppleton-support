@@ -128,7 +128,7 @@ export default class TicketHandler {
 				}\nℹ | Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>`,
 			});
 
-			await message.react("✅").catch(() => void 0);;
+			await message.react("✅").catch(() => void 0);
 
 			ticket.lastMsg = Date.now();
 			await this.updateTicket(ticket, ticket.caseId);
@@ -172,7 +172,7 @@ export default class TicketHandler {
 				}`,
 			});
 
-			await message.react("✅").catch(() => void 0);;
+			await message.react("✅").catch(() => void 0);
 
 			ticket.lastMsg = Date.now();
 			await this.updateTicket(ticket, ticket.caseId);
@@ -237,7 +237,7 @@ export default class TicketHandler {
 
 			await options.interaction
 				.followUp(`>>> 🔒 | I have closed your ticket (\`${ticket.caseId}\`)!`)
-				.catch(() => void 0);;
+				.catch(() => void 0);
 		} else {
 			if (channel && channel.isText()) {
 				const msg = await channel.send(
@@ -291,7 +291,7 @@ export default class TicketHandler {
 								: "Closed by the Staff Team"
 						}\`.\n\n❓ | Need more support? Mention me to open a ticket!`
 					)
-					.catch(() => void 0);;
+					.catch(() => void 0);
 		}
 
 		setTimeout(async () => {
@@ -315,11 +315,11 @@ export default class TicketHandler {
 
 		if (!interaction.customId.startsWith("ticket-")) return;
 
-		await interaction.deferUpdate().catch(() => void 0);;
+		await interaction.deferUpdate().catch(() => void 0);
 
 		const ticket = await this.getTicket({ caseId: interaction.customId });
 		if (!ticket || ticket.status !== "unclaimed") {
-			await interaction.deleteReply().catch(() => void 0);;
+			await interaction.deleteReply().catch(() => void 0);
 			return;
 		}
 
@@ -355,7 +355,7 @@ export default class TicketHandler {
 		)
 			return;
 
-		await interaction.deleteReply().catch(() => void 0);;
+		await interaction.deleteReply().catch(() => void 0);
 
 		ticket.status = "open";
 		ticket.claimerId = member.id;
@@ -465,7 +465,7 @@ export default class TicketHandler {
 					: this.client.utils.getAttachments(interaction.message.attachments),
 				embeds,
 			})
-			.then((m) => m.pin().catch(() => void 0););
+			.then((m) => m.pin().catch(() => void 0));
 	}
 
 	public async getTicket(data: Partial<iTicket>) {
