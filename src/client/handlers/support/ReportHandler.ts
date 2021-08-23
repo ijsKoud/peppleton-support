@@ -3,9 +3,67 @@ import { DMChannel, Message } from "discord.js";
 import { nanoid } from "nanoid";
 import { iDepartment } from "../../interfaces";
 import Client from "../../Client";
+import Logger from "../../structures/Logger";
 
 export default class ReportHandler {
-	constructor(public client: Client) {}
+	public logger: Logger;
+	constructor(public client: Client) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		this.logger = client.loggers.get("support")!;
+	}
+
+	public async handleUpdate(message: Message, report: Report, reason?: string | null) {
+		const channel = await this.client.utils.getChannel(report.channelId);
+		if (!channel)
+			return this.logger.error(`Expected TEXT_CHANNEL, received null for ${report.channelId}`);
+
+		if (!channel.isText())
+			return this.logger.error(
+				`Expected TEXT_CHANNEL, received ${channel.type} for ${report.channelId}`
+			);
+
+		const msg = await channel.messages.fetch(report.messageId);
+		const user = await this.client.utils.fetchUser(report.userId);
+
+		if (msg)
+			await msg.edit({
+				embeds: [
+					this.client.utils
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						.embed(msg.embeds[0]!)
+						.setDescription(
+							`Report created by **${user?.tag}** (${user?.toString()})\nHandled by **${
+								message.member?.nickname || message.author.username
+							}** (${message.author.toString()})`
+						),
+				],
+			});
+
+		await this.client.prisma.report.delete({ where: { caseId: report.caseId } });
+
+		if (reason && typeof reason === "string")
+			await user
+				?.send(
+					`>>> ${this.client.constants.emojis.redcross} | Unfortunately your report (\`${
+						report.caseId
+					}\`) has been declined by **${
+						message.member?.nickname || message.author.username
+					}** (${message.author.toString()})\`\`\`\n${reason}\n\`\`\` ❓ | If you think this is a mistake or a false judgement please make a ticket.`
+				)
+				.catch(() => void 0);
+		else
+			await user
+				?.send(
+					`>>> ${this.client.constants.emojis.greentick} | Your report (\`${report.caseId}\`) has been accepted by the appropriate managers and will be dealt with accordingly.`
+				)
+				.catch(() => void 0);
+
+		await message.reply(
+			`>>> ${this.client.constants.emojis.greentick} | Successfully **${
+				reason ? "declined" : "accepted"
+			}** report \`${report.caseId}\`!`
+		);
+	}
 
 	public async createReport(
 		message: Message,
