@@ -48,7 +48,7 @@ export default class ReportHandler {
 						report.caseId
 					}\`) has been declined by **${
 						message.member?.nickname || message.author.username
-					}** (${message.author.toString()})\`\`\`\n${reason}\n\`\`\` ❓ | If you think this is a mistake or a false judgement please make a ticket.`
+					}** (${message.author.toString()})\`\`\`\n${reason}\n\`\`\` ❓ | If you think this is a mistake or a false judgement please open a ticket.`
 				)
 				.catch(() => void 0);
 		else
