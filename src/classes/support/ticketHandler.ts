@@ -273,7 +273,7 @@ export default class ticketHandler {
 
 		// topic
 		let msg = await dm.send(base("`1` - What is the topic of your question?"));
-		const topic = (await this.client.utils.awaitMessages(msg, filter)).first();
+		const topic = (await this.client.utils.awaitMessages(msg, filter, { max: 1, time: 6e4 * 5, errors: ["time"] })).first();
 		if (
 			!topic ||
 			(typeof topic.content === "string" && topic.content.toLowerCase().includes("cancel"))
@@ -286,7 +286,7 @@ export default class ticketHandler {
 
 		// description
 		msg = await dm.send(base("`2` - Please explain in full what question is."));
-		const description = (await this.client.utils.awaitMessages(msg, filter)).first();
+		const description = (await this.client.utils.awaitMessages(msg, filter, { max: 1, time: 6e4 * 5, errors: ["time"] })).first();
 		if (
 			!description ||
 			(typeof description.content === "string" &&
@@ -299,7 +299,7 @@ export default class ticketHandler {
 		}
 
 		msg = await dm.send(base("`3` - Anything else you want to add to your ticket?"));
-		const extra = (await this.client.utils.awaitMessages(msg, filter)).first();
+		const extra = (await this.client.utils.awaitMessages(msg, filter, { max: 1, time: 6e4 * 5, errors: ["time"] })).first();
 		if (
 			!extra ||
 			(typeof extra.content === "string" && extra.content.toLowerCase().includes("cancel"))
