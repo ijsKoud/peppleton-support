@@ -88,18 +88,20 @@ export default class SupportHandler {
 		try {
 			const dm = await message.author.createDM();
 
-			const embeds = this.client.utils.createEmbed({
-				title: "Please select an option to continue",
-				description: [
-					"1️⃣ - **I want to open a ticket**",
-					"2️⃣ - **I want to report a user**",
-					"3️⃣ - **I want to make a suggestion**",
-				].join("\n"),
-				footer: {
-					text: "This prompt will close in 60s",
-					iconURL: this.client.user?.displayAvatarURL({ size: 4096 }),
-				},
-			});
+			const embed = this.client.utils
+				.embed()
+				.setDescription(
+					[
+						"1️⃣ - **I want to open a ticket**",
+						"2️⃣ - **I want to report a user**",
+						"3️⃣ - **I want to make a suggestion**",
+					].join("\n")
+				)
+				.setTitle("Please select an option to continue")
+				.setFooter(
+					"This prompt will close in 60s",
+					this.client.user?.displayAvatarURL({ size: 4096 })
+				);
 
 			const ids = [
 				`${message.author.id}-ticket`,
@@ -114,7 +116,7 @@ export default class SupportHandler {
 				),
 			];
 
-			const msg = await dm.send({ embeds, components });
+			const msg = await dm.send({ embeds: [embed], components });
 			const button = await this.client.utils.awaitComponent(msg, {
 				componentType: "BUTTON",
 				filter: (e) => ids.includes(e.customId),
@@ -206,14 +208,14 @@ export default class SupportHandler {
 		);
 
 		try {
-			const embeds = this.client.utils.createEmbed({
-				title: "Please select a department",
-				description: departments.map(({ name }, i) => `${emojis[i]} - **${name}**`).join("\n"),
-				footer: {
-					text: "This prompt will close in 60s",
-					iconURL: this.client.user?.displayAvatarURL({ size: 4096 }),
-				},
-			});
+			const embed = this.client.utils
+				.embed()
+				.setTitle("Please select a department")
+				.setDescription(departments.map(({ name }, i) => `${emojis[i]} - **${name}**`).join("\n"))
+				.setFooter(
+					"This prompt will close in 60s",
+					this.client.user?.displayAvatarURL({ size: 4096 })
+				);
 
 			const components = [
 				new MessageActionRow().addComponents(
@@ -223,7 +225,7 @@ export default class SupportHandler {
 				),
 			];
 
-			const msg = await channel.send({ embeds, components });
+			const msg = await channel.send({ embeds: [embed], components });
 			const button = await this.client.utils.awaitComponent(msg, {
 				componentType: "BUTTON",
 				filter: (e) => departments.map((dep) => dep.name).includes(e.customId),
