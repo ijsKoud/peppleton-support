@@ -109,8 +109,8 @@ export default class activityManager {
 			(await this.client.prisma.activity.create({ data: { id: `${userId}-${guildId}` } }));
 
 		data.voice.push({ duration: 6e4, delete: date });
-		await this.client.prisma.activity.update({ data, where: { id: `${userId}-${guildId}` } });
 
+		this.setQueue(`${userId}-${guildId}`, data);
 		this.cache.set(`${userId}-${guildId}`, data);
 	}
 
