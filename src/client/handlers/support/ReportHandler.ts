@@ -125,6 +125,30 @@ export default class ReportHandler {
 		msg = await dm.send(
 			`>>> ${emoji} | **Report Creation - ${department.name}**:\n${this.client.constants.emojis.loading} Creating a report, please wait...`
 		);
+
+		const data = await this._createReport(department, topic, description, message);
+		if (!data) return null;
+
+		const { channel, caseId, message: m } = data;
+
+		await msg.edit(
+			`>>> ${emoji} | **Report Creation - ${department.name}**:\nReport registered under the \`${caseId}\` id.\nYou will receive a DM when a **${this.client.constants.emojis.manager} manager+** handled your report.`
+		);
+
+		return {
+			messageId: m.id,
+			userId: message.author.id,
+			channelId: channel.id,
+			caseId,
+		};
+	}
+
+	public async _createReport(
+		department: iDepartment,
+		topic: Message,
+		description: Message,
+		extra: Message
+	) {
 		const channel = await this.client.utils.getChannel(department.guild.reports);
 		const attachments = [topic.attachments, description.attachments, extra.attachments]
 			.map((x) => this.client.utils.getAttachments(x))
@@ -143,14 +167,14 @@ export default class ReportHandler {
 					.embed()
 					.setAuthor(
 						`New Report - ${caseId}`,
-						message.author.displayAvatarURL({ dynamic: true, size: 4096 })
+						topic.author.displayAvatarURL({ dynamic: true, size: 4096 })
 					)
 					.setDescription(
 						`Report for **${department.name}** created by **${
-							message.author.tag
-						}** (${message.author.toString()})\nUse \`${
+							topic.author.tag
+						}** (${topic.author.toString()})\nUse \`${
 							this.client.options.defaultPrefix
-						}report <${caseId}> <accept/decline> [reason]\` to accept/decline the report.`
+						}accept ${caseId} <accept/decline> [reason]\` to accept/decline the report.`
 					)
 					.addFields([
 						{
@@ -173,16 +197,7 @@ export default class ReportHandler {
 			files: attachments,
 		});
 
-		await msg.edit(
-			`>>> ${emoji} | **Report Creation - ${department.name}**:\nReport registered under the \`${caseId}\` id.\nYou will receive a DM when a **${this.client.constants.emojis.manager} manager+** handled your report.`
-		);
-
-		return {
-			messageId: m.id,
-			userId: message.author.id,
-			channelId: channel.id,
-			caseId,
-		};
+		return { message: m, channel: m.channel, caseId };
 	}
 
 	public async getReport(caseId: string): Promise<Report | null> {
