@@ -2,12 +2,10 @@ import { config } from "dotenv";
 config();
 
 import Client from "./client/Client";
-
-const owners = process.env.OWNERS?.split(" ") ?? [];
-
 new Client({
-	intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"],
-	partials: ["GUILD_MEMBER", "MESSAGE"],
+	intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
+	partials: ["GUILD_MEMBER", "MESSAGE", "REACTION"],
+	owners: process.env.OWNERS?.split(" ") ?? [],
 	debug: !!process.env.DEBUG,
 	activity: [
 		{
@@ -15,5 +13,4 @@ new Client({
 			name: "your support tickets",
 		},
 	],
-	owners,
 }).start();
