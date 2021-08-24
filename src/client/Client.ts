@@ -108,6 +108,7 @@ declare module "@sapphire/framework" {
 
 		prisma: PrismaClient;
 		supportHandler: SupportHandler;
+		activityManager: activityManager;
 		blacklistManager: BlacklistManager;
 		utils: Utils;
 		loggers: Collection<string, Logger>;
