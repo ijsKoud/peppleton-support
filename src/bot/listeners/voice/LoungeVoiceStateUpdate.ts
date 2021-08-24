@@ -2,7 +2,7 @@ import { Listener, ListenerOptions } from "@sapphire/framework";
 import { ApplyOptions } from "@sapphire/decorators";
 import { TextChannel, VoiceState } from "discord.js";
 
-@ApplyOptions<ListenerOptions>({ once: true, event: "voiceStateUpdate" })
+@ApplyOptions<ListenerOptions>({ event: "voiceStateUpdate" })
 export default class LoungeVoiceStateUpdateListener extends Listener {
 	public async run(oldState: VoiceState, newState: VoiceState): Promise<void> {
 		const { client } = this.container;
