@@ -45,6 +45,14 @@ export default class SupportHandler {
 				);
 			}
 
+			const blacklisted = await this.client.blacklistManager.getSupportBlacklisted(
+				message.author.id
+			);
+			if (blacklisted && blacklisted.includes(option))
+				return message.author.send(
+					`>>> ${this.client.constants.emojis.redcross} | Sorry, you are blacklisted. You are unable to use the **${option}** feature.`
+				);
+
 			if (option === "suggestion") return this.handleSuggestion(channel, message);
 
 			const department = await this.getDepartment(channel);
