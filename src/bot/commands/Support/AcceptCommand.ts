@@ -4,7 +4,7 @@ import { Message } from "discord.js";
 import { Args } from "@sapphire/framework";
 
 @ApplyOptions<Command.Options>({
-	name: "aceept",
+	name: "accept",
 	aliases: ["accept", "acceptreport"],
 	description: "Accept/decline a report",
 	preconditions: ["ManagerOnly"],
