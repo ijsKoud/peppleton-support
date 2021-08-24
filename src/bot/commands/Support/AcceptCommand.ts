@@ -7,7 +7,7 @@ import { Args } from "@sapphire/framework";
 	name: "aceept",
 	aliases: ["accept", "acceptreport"],
 	description: "Accept/decline a report",
-	preconditions: ["StaffOnly"],
+	preconditions: ["ManagerOnly"],
 	usage: "<caseId> <accept/decline> [reason (only if declined)]",
 })
 export default class AcceptCommand extends Command {
