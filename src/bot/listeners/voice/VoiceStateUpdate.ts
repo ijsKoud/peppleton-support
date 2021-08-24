@@ -7,7 +7,7 @@ export default class VoiceStateUpdateListener extends Listener {
 	public async run(oldState: VoiceState, newState: VoiceState): Promise<void> {
 		const { client } = this.container;
 
-		if (!oldState.member) return;
+		if (!oldState.member || oldState.member.user.bot) return;
 
 		if (!oldState.channelId && newState.channelId)
 			client.activityManager.start(oldState.member.id, oldState.guild.id);

@@ -9,7 +9,7 @@ export default class LoungeVoiceStateUpdateListener extends Listener {
 		const { GvoiceChannel, GtextChannel } = client.constants.voice;
 		const { manager, botDev } = client.constants.departments;
 
-		if (!oldState.member) return;
+		if (!oldState.member || oldState.member.user.bot) return;
 		if (oldState.member.partial) await oldState.member.fetch();
 
 		if (oldState.member.roles.cache.has(botDev) || oldState.member.roles.cache.has(manager)) return;

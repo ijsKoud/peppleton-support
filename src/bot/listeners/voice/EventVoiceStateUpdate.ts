@@ -8,7 +8,7 @@ export default class EventVoiceStateUpdateListener extends Listener {
 		const { client } = this.container;
 		const { eventsRole, EvoiceChannel, EtextChannel } = client.constants.voice;
 
-		if (!oldState.member) return;
+		if (!oldState.member || oldState.member.user.bot) return;
 		if (oldState.member.partial) await oldState.member.fetch();
 
 		if (oldState.member.roles.cache.has(eventsRole)) return;
