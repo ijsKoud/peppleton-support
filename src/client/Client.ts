@@ -67,6 +67,12 @@ export default class Client extends SapphireClient {
 			this.on("debug", (msg) => {
 				botLogger.debug(msg);
 			});
+
+		process.on("unhandledRejection", this.handleRejection.bind(this));
+	}
+
+	private handleRejection(reason: unknown) {
+		this.loggers.get("bot")?.error("Unhandled rejection: ", reason);
 	}
 
 	public async start(): Promise<void> {
