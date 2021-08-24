@@ -7,5 +7,7 @@ export default class ReadyListener extends Listener {
 		this.container.client.loggers
 			.get("bot")
 			?.info(`${this.container.client.user?.tag} has logged in!`);
+
+		this.container.client.activityManager.loadAll();
 	}
 }
