@@ -49,6 +49,7 @@ export default class activityManager {
 		// const date = Date.now() + 6e4 / 2;
 
 		const data =
+			this.cache.get(userId) ||
 			(await this.client.prisma.activity.findFirst({ where: { id: userId } })) ||
 			(await this.client.prisma.activity.create({ data: { id: userId, guildId } }));
 
