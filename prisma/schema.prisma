@@ -41,3 +41,9 @@ model Report {
   channelId String
   messageId String
 }
+
+model Activity {
+  id       String   @id
+  voice    Int      @default(0)
+  messages String[]
+}
