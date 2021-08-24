@@ -174,7 +174,7 @@ export default class ReportHandler {
 							topic.author.tag
 						}** (${topic.author.toString()})\nUse \`${
 							this.client.options.defaultPrefix
-						}accept ${caseId} <accept/decline> [reason]\` to accept/decline the report.`
+						}handle ${caseId} <accept/decline> [reason]\` to accept/decline the report.`
 					)
 					.addFields([
 						{

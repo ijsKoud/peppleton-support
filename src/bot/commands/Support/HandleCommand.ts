@@ -4,13 +4,13 @@ import { Message } from "discord.js";
 import { Args } from "@sapphire/framework";
 
 @ApplyOptions<Command.Options>({
-	name: "accept",
-	aliases: ["accept", "acceptreport"],
+	name: "handle",
+	aliases: ["handle", "handlereport"],
 	description: "Accept/decline a report",
 	preconditions: ["ManagerOnly"],
 	usage: "<caseId> <accept/decline> [reason (only if declined)]",
 })
-export default class AcceptCommand extends Command {
+export default class HandleCommand extends Command {
 	public async run(message: Message, args: Args) {
 		const { client } = this.container;
 		const { value: caseId } = await args.pickResult("string");
