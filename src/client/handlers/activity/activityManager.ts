@@ -139,7 +139,6 @@ export default class activityManager {
 			(await this.client.prisma.activity.create({ data: { id: `${userId}-${guildId}` } }));
 
 		data.voice.push(BigInt(date));
-		console.log(data, date);
 
 		this.setQueue(`${userId}-${guildId}`, data);
 		this.cache.set(`${userId}-${guildId}`, data);
