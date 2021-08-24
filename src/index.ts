@@ -3,7 +3,13 @@ config();
 
 import Client from "./client/Client";
 new Client({
-	intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES", "GUILD_MESSAGE_REACTIONS"],
+	intents: [
+		"GUILDS",
+		"GUILD_MESSAGES",
+		"DIRECT_MESSAGES",
+		"GUILD_MESSAGE_REACTIONS",
+		"GUILD_VOICE_STATES",
+	],
 	partials: ["GUILD_MEMBER", "MESSAGE", "REACTION"],
 	owners: process.env.OWNERS?.split(" ") ?? [],
 	debug: !!process.env.DEBUG,
