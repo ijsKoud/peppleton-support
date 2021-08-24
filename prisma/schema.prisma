@@ -43,7 +43,7 @@ model Report {
 }
 
 model Activity {
-  id       String @id
-  voice    Int[]
-  messages Int[]
+  id       String   @id
+  voice    BigInt[]
+  messages BigInt[]
 }

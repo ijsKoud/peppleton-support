@@ -15,6 +15,7 @@ export default class activityManager {
 		const data = raw.filter((r) => r);
 
 		await Promise.all(data.map(async (x) => await this.load(x)));
+		this.loadVoice(raw.length ? raw[0].id : process.env.GUILD ?? "");
 		await this.checkAll();
 
 		setInterval(() => this.checkAll(), 6e4);
@@ -22,15 +23,17 @@ export default class activityManager {
 
 	public async load(data: Activity) {
 		this.cache.set(data.id, data);
-
-		const [userId, guildId] = data.id.split("-");
-		const guild = this.client.guilds.cache.get(guildId);
-		if (guild) {
-			const state = guild.voiceStates.cache.get(userId);
-			if (state?.channelId) this.start(userId, guildId);
-		}
-
 		await this.check(data);
+	}
+
+	public loadVoice(id: string) {
+		const [, guildId] = id.split("-");
+		const guild = this.client.guilds.cache.get(guildId);
+		if (guild)
+			guild.voiceStates.cache.forEach((state) => {
+				if (state?.channelId && !state.member?.user.bot)
+					this.start(state.member?.id ?? "", guildId);
+			});
 	}
 
 	public async check(data: Activity) {
@@ -53,7 +56,7 @@ export default class activityManager {
 		);
 
 		this.cache.forEach((d) =>
-			d.voice.filter((x) => x < Date.now()).map((id) => this.remove(id, d.id))
+			d.voice.filter((x) => x < Date.now()).map((id) => this.removeVoice(id, d.id))
 		);
 
 		this.cache.forEach((x) => this.check(x));
@@ -68,13 +71,13 @@ export default class activityManager {
 			(await this.client.prisma.activity.findFirst({ where: { id: `${userId}-${guildId}` } })) ||
 			(await this.client.prisma.activity.create({ data: { id: `${userId}-${guildId}` } }));
 
-		data.messages.push(date);
+		data.messages.push(BigInt(date));
 		this.setQueue(`${userId}-${guildId}`, data);
 
 		this.cache.set(userId, data);
 	}
 
-	public remove(id: number, dataId: string) {
+	public remove(id: bigint, dataId: string) {
 		const data = this.cache.get(dataId);
 		if (!data)
 			return this.client.loggers
@@ -85,13 +88,14 @@ export default class activityManager {
 
 		data.messages = data.messages.filter((x) => x !== id);
 		this.cache.set(dataId, data);
+		this.setQueue(dataId, data);
 
 		// console.log(
 		// 	`removing ${id} from ${userId} - their message count is now ${data.messages.length}`
 		// );
 	}
 
-	public removeVoice(id: number, dataId: string) {
+	public removeVoice(id: bigint, dataId: string) {
 		const data = this.cache.get(dataId);
 		if (!data)
 			return this.client.loggers
@@ -102,6 +106,7 @@ export default class activityManager {
 
 		data.voice = data.messages.filter((x) => x !== id);
 		this.cache.set(dataId, data);
+		this.setQueue(dataId, data);
 
 		// console.log(
 		// 	`removing ${id} from ${userId} - their message count is now ${data.messages.length}`
@@ -117,15 +122,11 @@ export default class activityManager {
 		this.queue.set(id, data);
 	}
 
-	private async process() {
-		for (const item of this.queue) {
-			await this.client.prisma.activity.update({
-				where: { id: item[0] },
-				data: item[1],
-			});
-
-			this.queue.delete(item[0]);
-		}
+	private process() {
+		this.queue.forEach(async (v) => {
+			await this.client.prisma.activity.update({ where: { id: v.id }, data: v });
+			this.queue.delete(v.id);
+		});
 	}
 
 	private async sync(userId: string, guildId: string) {
@@ -137,7 +138,8 @@ export default class activityManager {
 			(await this.client.prisma.activity.findFirst({ where: { id: `${userId}-${guildId}` } })) ||
 			(await this.client.prisma.activity.create({ data: { id: `${userId}-${guildId}` } }));
 
-		data.voice.push(date);
+		data.voice.push(BigInt(date));
+		console.log(data, date);
 
 		this.setQueue(`${userId}-${guildId}`, data);
 		this.cache.set(`${userId}-${guildId}`, data);
