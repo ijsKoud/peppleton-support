@@ -15,6 +15,12 @@ export default class BlacklistManager {
 		return this;
 	}
 
+	public async blacklist(id: string): Promise<void> {
+		if (this.blacklisted.includes(id)) return;
+		this.blacklisted.push(id);
+		await this.client.prisma.botBlacklist.create({ data: { id } });
+	}
+
 	public async getSupportBlacklisted(userId: string): Promise<string[] | null> {
 		const data = await this.client.prisma.supportBlacklist.findFirst({ where: { id: userId } });
 		return data?.types ?? null;
