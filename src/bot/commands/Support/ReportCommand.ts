@@ -10,7 +10,7 @@ import { Args } from "@sapphire/framework";
 	preconditions: ["ManagerOnly"],
 	usage: '<department> <username> <reason in ""> <extra in "">',
 })
-export default class AcceptCommand extends Command {
+export default class ReportCommand extends Command {
 	public async run(message: Message, args: Args) {
 		const { client } = this.container;
 		const { value: dep } = await args.pickResult("string");
