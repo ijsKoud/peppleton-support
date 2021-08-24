@@ -15,43 +15,47 @@ import ms from "ms";
 export default class InfoCommand extends Command {
 	public async run(message: Message): Promise<void> {
 		const core = cpus()[0];
-		const embeds = this.container.client.utils.createEmbed({
-			title: `Bot Info: ${this.container.client.user?.tag}`,
-			fields: [
-				{
-					name: "• Bot Information",
-					value: `\`\`\`Uptime: ${ms(this.container.client.uptime ?? 0, {
-						long: true,
-					})}\nVersion: v${version}\`\`\``,
-				},
-				{
-					name: "• System Information",
-					value: `\`\`\`System Platform: ${platform()}\nSystem Uptime: ${ms(uptime() * 1e3, {
-						long: true,
-					})}\`\`\``,
-				},
-				{
-					name: "• Cpu Information",
-					value: `\`\`\`${[
-						core.model,
-						cpus()
-							.map(
-								(data, i) =>
-									`${(i + 1).toString().padStart(2, "0")} - ${(data.times.sys / 1e6).toFixed(2)}%`
-							)
-							.join("\n"),
-					].join("\n")}\`\`\``,
-				},
-				{
-					name: "• Memory Usage",
-					value: `\`\`\`${[
-						`Total Memory: ${this.container.client.utils.formatBytes(totalmem())}`,
-						`Used Memory: ${this.container.client.utils.formatBytes(memoryUsage().heapUsed)}`,
-					].join("\n")}\`\`\``,
-				},
+		await message.reply({
+			embeds: [
+				this.container.client.utils
+					.embed()
+					.setTitle(`Bot Info: ${this.container.client.user?.tag}`)
+					.setFields([
+						{
+							name: "• Bot Information",
+							value: `\`\`\`Uptime: ${ms(this.container.client.uptime ?? 0, {
+								long: true,
+							})}\nVersion: v${version}\`\`\``,
+						},
+						{
+							name: "• System Information",
+							value: `\`\`\`System Platform: ${platform()}\nSystem Uptime: ${ms(uptime() * 1e3, {
+								long: true,
+							})}\`\`\``,
+						},
+						{
+							name: "• Cpu Information",
+							value: `\`\`\`${[
+								core.model,
+								cpus()
+									.map(
+										(data, i) =>
+											`${(i + 1).toString().padStart(2, "0")} - ${(data.times.sys / 1e6).toFixed(
+												2
+											)}%`
+									)
+									.join("\n"),
+							].join("\n")}\`\`\``,
+						},
+						{
+							name: "• Memory Usage",
+							value: `\`\`\`${[
+								`Total Memory: ${this.container.client.utils.formatBytes(totalmem())}`,
+								`Used Memory: ${this.container.client.utils.formatBytes(memoryUsage().heapUsed)}`,
+							].join("\n")}\`\`\``,
+						},
+					]),
 			],
 		});
-
-		await message.reply({ embeds });
 	}
 }

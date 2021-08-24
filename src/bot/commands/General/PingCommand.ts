@@ -14,16 +14,20 @@ export default class PingCommand extends Command {
 
 		await msg.edit({
 			content: null,
-			embeds: this.container.client.utils.createEmbed({
-				title: "🏓 Pong!",
-				description: [
-					`API Latency: \`${this.container.client.ws.ping}\` ms`,
-					`Edit Latency: \`${msg.createdTimestamp - message.createdTimestamp}\` ms`,
-					`Uptime: \`${ms(this.container.client.uptime ?? 0, {
-						long: true,
-					})}\``,
-				].join("\n"),
-			}),
+			embeds: [
+				this.container.client.utils
+					.embed()
+					.setTitle("🏓 Pong!")
+					.setDescription(
+						[
+							`API Latency: \`${this.container.client.ws.ping}\` ms`,
+							`Edit Latency: \`${msg.createdTimestamp - message.createdTimestamp}\` ms`,
+							`Uptime: \`${ms(this.container.client.uptime ?? 0, {
+								long: true,
+							})}\``,
+						].join("\n")
+					),
+			],
 		});
 	}
 }

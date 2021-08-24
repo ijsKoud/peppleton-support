@@ -12,7 +12,10 @@ import { Args } from "@sapphire/framework";
 })
 export default class PingCommand extends Command {
 	public async run(message: Message, args: Args, context: Command.Context): Promise<void> {
-		let embeds: MessageEmbed[];
+		const embed: MessageEmbed = this.container.client.utils
+			.embed()
+			.setTitle(`Help Command - ${message.author.tag}`)
+			.setFooter("Bot created by DaanGamesDG#7621", "https://cdn.daangamesdg.wtf/discord/pfp.gif");
 
 		const cmd = await args.pickResult("string");
 		const command = this.container.stores.get("commands").get(cmd.value ?? "") as
@@ -23,13 +26,8 @@ export default class PingCommand extends Command {
 			const userPermissions = this.container.client.utils.formatPerms(command.permissions);
 			const clientPermissions = this.container.client.utils.formatPerms(command.clientPermissions);
 
-			embeds = this.container.client.utils.createEmbed({
-				title: `Help Command - ${message.author.tag}`,
-				footer: {
-					text: "Bot created by DaanGamesDG#7621",
-					iconURL: "https://cdn.daangamesdg.wtf/discord/pfp.gif",
-				},
-				description: [
+			embed.setDescription(
+				[
 					`>>> 🏷 | **Name**: ${command.name}`,
 					`📁 | **Category**: ${command.category}`,
 					`🔖 | **Aliases**: \`${command.aliases.join("`, `") || "-"}\`\n`,
@@ -39,8 +37,8 @@ export default class PingCommand extends Command {
 					`🤖 | **Client Permissions**: ${clientPermissions ?? "-"}`,
 					`⌚ | **Cooldown**: \`${ms(command.cooldown, { long: false })}\``,
 					`🔢 | **Cooldown Limit**: \`${command.cooldownLimit}\``,
-				].join("\n"),
-			});
+				].join("\n")
+			);
 		} else {
 			const isOwner = this.container.client.isOwner(message.author.id);
 			const commands = [...this.container.stores.get("commands").values()] as Command[];
@@ -58,16 +56,9 @@ export default class PingCommand extends Command {
 				};
 			});
 
-			embeds = this.container.client.utils.createEmbed({
-				title: `Help Command - ${message.author.tag}`,
-				footer: {
-					text: "Bot created by DaanGamesDG#7621",
-					iconURL: "https://cdn.daangamesdg.wtf/discord/pfp.gif",
-				},
-				fields,
-			});
+			embed.setFields(fields);
 		}
 
-		await message.reply({ embeds });
+		await message.reply({ embeds: [embed] });
 	}
 }

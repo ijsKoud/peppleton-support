@@ -40,18 +40,24 @@ export default class Utils {
 			: `\`${formattedPerms[0]}\``;
 	}
 
-	public createEmbed(options: MessageEmbedOptions): MessageEmbed[] {
-		return [new MessageEmbed({ color: process.env.COLOUR as `#${string}`, ...options })];
+	public embed(options?: MessageEmbedOptions): MessageEmbed {
+		return new MessageEmbed({ color: process.env.COLOUR as `#${string}`, ...options });
 	}
 
-	public embed(options?: MessageEmbedOptions | MessageEmbed): MessageEmbed {
-		return new MessageEmbed(options).setColor(process.env.COLOUR as `#${string}`);
+	public capitalize(str: string): string {
+		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 
 	public async getChannel(id: string): Promise<Channel | null> {
 		return typeof id === "string"
 			? this._resolve(this.client.channels.cache, id) ||
 					(await this.client.channels.fetch(id).catch(() => null))
+			: null;
+	}
+
+	public async getRole(id: string, guild: Guild) {
+		return typeof id === "string" && guild instanceof Guild
+			? this._resolve(guild.roles.cache, id) || (await guild.roles.fetch(id).catch(() => null))
 			: null;
 	}
 
@@ -92,7 +98,9 @@ export default class Utils {
 			return bool;
 		};
 
-		return cache.get(id) ?? cache.find((v) => check(v)) ?? null;
+		return (
+			cache.get(id) ?? cache.find((v) => check(v)) ?? cache.find((v) => v.toString() === id) ?? null
+		);
 	}
 
 	public isDM(channel: Channel): channel is DMChannel {
