@@ -14,20 +14,30 @@ model botBlacklist {
   id String @id
 }
 
+model supportBlacklist {
+  id    String   @id
+  types String[]
+}
+
+model Feedback {
+  guildId   String @id
+  messageId String
+}
+
 model ticket {
-  status    String  @default("unclaimed")
+  status     String  @default("unclaimed")
   department String
-  userId    String
-  caseId    String  @id
-  lastMsg   Int?
-  channelId String?
-  claimerId String?
+  userId     String
+  caseId     String  @id
+  lastMsg    Int?
+  channelId  String?
+  claimerId  String?
 }
 
 model Report {
-  status    String  @default("unclaimed")
+  status    String @default("unclaimed")
   userId    String
-  caseId    String  @id
+  caseId    String @id
   channelId String
   messageId String
 }

@@ -14,4 +14,17 @@ export default class BlacklistManager {
 
 		return this;
 	}
+
+	public async getSupportBlacklisted(userId: string): Promise<string[] | null> {
+		const data = await this.client.prisma.supportBlacklist.findFirst({ where: { id: userId } });
+		return data?.types ?? null;
+	}
+
+	public async getFullBacklisted(userId: string): Promise<{ bot: boolean; support: string[] }> {
+		const data = await this.client.prisma.supportBlacklist.findFirst({ where: { id: userId } });
+		return {
+			bot: this.isBlacklisted(userId),
+			support: data?.types ?? [],
+		};
+	}
 }
