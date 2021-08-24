@@ -14,6 +14,7 @@ import * as constants from "./constants";
 import BlacklistManager from "./structures/BlacklistManager";
 import { PrismaClient } from "@prisma/client";
 import SupportHandler from "./handlers/support/SupportHandler";
+import activityManager from "./handlers/activity/activityManager";
 
 export default class Client extends SapphireClient {
 	public owners: string[];
@@ -32,6 +33,7 @@ export default class Client extends SapphireClient {
 	public loggers: Collection<string, Logger> = new Collection();
 
 	public supportHandler: SupportHandler;
+	public activityManager: activityManager = new activityManager(this);
 	public blacklistManager: BlacklistManager = new BlacklistManager(this);
 
 	constructor(options: ClientOptions) {
