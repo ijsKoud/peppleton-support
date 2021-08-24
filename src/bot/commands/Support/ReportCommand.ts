@@ -54,14 +54,5 @@ export default class ReportCommand extends Command {
 		await message.reply(
 			`>>> ${client.constants.emojis.greentick} | **Report Creation - ${department.name}**:\nReport registered under the \`${report?.caseId}\` id.\nYou will receive a DM when a **${client.constants.emojis.manager} manager+** handled your report.`
 		);
-
-		// if (!report)
-		// 	return message.reply(
-		// 		`>>> ${client.constants.emojis.redcross} | I was unable to find a report with the \`${caseId}\` id.`
-		// 	);
-		// if (!["accept", "decline"].includes(accepted ?? ""))
-		// 	return message.reply(
-		// 		`>>> ${client.constants.emojis.redcross} | The second argument must be "accept" or "decline".`
-		// 	);
 	}
 }
