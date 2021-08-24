@@ -8,6 +8,8 @@ export class StaffOnlyPrecondition extends Precondition {
 			? ["739540543570444368"]
 			: [data.supervisor, data.manager, data.BoD];
 
+		if (this.container.client.isOwner(message.author.id)) return this.ok();
+
 		return message.member && message.member.roles.cache.some((r) => roles.includes(r.id))
 			? this.ok()
 			: this.error({
