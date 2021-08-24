@@ -110,5 +110,6 @@ declare module "@sapphire/framework" {
 		OwnerOnly: never;
 		Blacklisted: never;
 		StaffOnly: never;
+		ManagerOnly: never;
 	}
 }
