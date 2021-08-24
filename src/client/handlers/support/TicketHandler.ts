@@ -442,28 +442,26 @@ export default class TicketHandler {
 		);
 
 		const rawEmbed = interaction.message.embeds[0];
-		const embeds = this.client.utils.createEmbed({
-			title: rawEmbed.title ?? undefined,
-			description: rawEmbed.description?.replace(
-				"Press the button to claim!",
-				"Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>"
-			),
-			author: {
-				name: rawEmbed.author?.name,
-				iconURL: rawEmbed.author?.url,
-			},
-			fields: rawEmbed.fields,
-			footer: {
-				text: `Ticket claimed by ${member.user.tag}`,
-			},
-		});
+		const embed = this.client.utils
+			.embed()
+			.setTitle(rawEmbed.title ?? "")
+			.setAuthor(rawEmbed.author?.name ?? "", rawEmbed.author?.url)
+			.setFields(rawEmbed.fields ?? [])
+			.setFooter(`Ticket claimed by ${member.user.tag}`)
+			.setDescription(
+				rawEmbed.description?.replace(
+					"Press the button to claim!",
+					"Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>"
+				) ??
+					"Chatting within this ticket should not occur. This should occur in <#767016711164919809> or <#721360723351044149>"
+			);
 
 		await channel
 			.send({
 				files: Array.isArray(interaction.message.attachments)
 					? interaction.message.attachments.map((a) => a.url)
 					: this.client.utils.getAttachments(interaction.message.attachments),
-				embeds,
+				embeds: [embed],
 			})
 			.then((m) => m.pin().catch(() => void 0));
 	}
@@ -620,15 +618,13 @@ export default class TicketHandler {
 				return a;
 			});
 
-		const embeds = this.client.utils.createEmbed({
-			author: {
-				name: `New ticket - ${caseId}`,
-				iconURL: message.author.displayAvatarURL({ dynamic: true, size: 4096 }),
-			},
-			description: `Ticket for **${department.name}** created by **${
-				message.author.tag
-			}** (${message.author.toString()})\nPress the button to claim!`,
-			fields: [
+		const embed = this.client.utils
+			.embed()
+			.setAuthor(
+				`New ticket - ${caseId}`,
+				message.author.displayAvatarURL({ dynamic: true, size: 4096 })
+			)
+			.setFields([
 				{
 					name: "• Topic",
 					value: this.substr(topic.content || "no message content"),
@@ -644,11 +640,15 @@ export default class TicketHandler {
 					value: this.substr(extra.content || "no message content"),
 					inline: true,
 				},
-			],
-		});
+			])
+			.setDescription(
+				`Ticket for **${department.name}** created by **${
+					message.author.tag
+				}** (${message.author.toString()})\nPress the button to claim!`
+			);
 
 		if (!channel || !channel.isText()) return null;
-		await channel.send({ embeds, files: attachments, components });
+		await channel.send({ embeds: [embed], files: attachments, components });
 
 		await msg.edit(
 			`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket registered under the \`${caseId}\` id. If you don't receive an answer within **24 hours**, please contact a **${this.client.constants.emojis.supervisor} supervisor+**.`
