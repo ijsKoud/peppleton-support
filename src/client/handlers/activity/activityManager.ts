@@ -22,6 +22,14 @@ export default class activityManager {
 
 	public async load(data: Activity) {
 		this.cache.set(data.id, data);
+
+		const [userId, guildId] = data.id.split("-");
+		const guild = this.client.guilds.cache.get(guildId);
+		if (guild) {
+			const state = guild.voiceStates.cache.get(userId);
+			if (state?.channelId) this.start(userId, guildId);
+		}
+
 		await this.check(data);
 	}
 
