@@ -43,8 +43,8 @@ model Report {
 }
 
 model Activity {
-  id       String   @id
+  id       String @id
   guildId  String
-  voice    Int      @default(0)
-  messages String[]
+  voice    Int    @default(0)
+  messages Int[]
 }
