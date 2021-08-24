@@ -40,8 +40,12 @@ export default class activityManager {
 	}
 
 	public async checkAll() {
-		this.cache.map((d) =>
+		this.cache.forEach((d) =>
 			d.messages.filter((x) => x < Date.now()).map((id) => this.remove(id, d.id))
+		);
+
+		this.cache.forEach((d) =>
+			d.voice.filter((x) => x < Date.now()).map((id) => this.remove(id, d.id))
 		);
 
 		this.cache.forEach((x) => this.check(x));
@@ -62,17 +66,34 @@ export default class activityManager {
 		this.cache.set(userId, data);
 	}
 
-	public remove(id: number, userId: string) {
-		const data = this.cache.get(userId);
+	public remove(id: number, dataId: string) {
+		const data = this.cache.get(dataId);
 		if (!data)
 			return this.client.loggers
 				.get("bot")
 				?.warn(
-					`activityManager#remove(): Unkown remove request, user: \`${userId}\` - id: \`${id}\``
+					`activityManager#remove(): Unkown remove request, dataId: \`${dataId}\` - id: \`${id}\``
 				);
 
 		data.messages = data.messages.filter((x) => x !== id);
-		this.cache.set(userId, data);
+		this.cache.set(dataId, data);
+
+		// console.log(
+		// 	`removing ${id} from ${userId} - their message count is now ${data.messages.length}`
+		// );
+	}
+
+	public removeVoice(id: number, dataId: string) {
+		const data = this.cache.get(dataId);
+		if (!data)
+			return this.client.loggers
+				.get("bot")
+				?.warn(
+					`activityManager#remove(): Unkown remove request, dataId: \`${dataId}\` - id: \`${id}\``
+				);
+
+		data.voice = data.messages.filter((x) => x !== id);
+		this.cache.set(dataId, data);
 
 		// console.log(
 		// 	`removing ${id} from ${userId} - their message count is now ${data.messages.length}`
@@ -108,7 +129,7 @@ export default class activityManager {
 			(await this.client.prisma.activity.findFirst({ where: { id: `${userId}-${guildId}` } })) ||
 			(await this.client.prisma.activity.create({ data: { id: `${userId}-${guildId}` } }));
 
-		data.voice.push({ duration: 6e4, delete: date });
+		data.voice.push(date);
 
 		this.setQueue(`${userId}-${guildId}`, data);
 		this.cache.set(`${userId}-${guildId}`, data);
@@ -126,6 +147,5 @@ export default class activityManager {
 		if (!data) return;
 
 		clearInterval(data);
-		this.sync(userId, guildId);
 	}
 }

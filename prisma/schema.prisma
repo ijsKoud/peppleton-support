@@ -44,6 +44,6 @@ model Report {
 
 model Activity {
   id       String @id
-  voice    Json[]
+  voice    Int[]
   messages Int[]
 }
