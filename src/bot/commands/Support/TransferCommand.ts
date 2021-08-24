@@ -7,7 +7,7 @@ import { Args } from "@sapphire/framework";
 	name: "transfer",
 	aliases: ["transfer"],
 	description: "Transfers a ticket to another staff member",
-	preconditions: ["StaffOnly"],
+	preconditions: ["StaffOnly", "GuildOnly"],
 	usage: "<staff member>",
 })
 export default class TransferCommand extends Command {

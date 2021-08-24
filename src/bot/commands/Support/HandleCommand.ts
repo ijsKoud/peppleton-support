@@ -7,7 +7,7 @@ import { Args } from "@sapphire/framework";
 	name: "handle",
 	aliases: ["handle", "handlereport"],
 	description: "Accept/decline a report",
-	preconditions: ["ManagerOnly"],
+	preconditions: ["ManagerOnly", "GuildOnly"],
 	usage: "<caseId> <accept/decline> [reason (only if declined)]",
 })
 export default class HandleCommand extends Command {
