@@ -1,4 +1,4 @@
-import { DMChannel, Message, MessageActionRow, MessageButton } from "discord.js";
+import { DMChannel, Message, MessageActionRow, MessageButton, User } from "discord.js";
 import { iDepartment } from "../../interfaces";
 import Client from "../../Client";
 import Logger from "../../structures/Logger";
@@ -239,5 +239,53 @@ export default class SupportHandler {
 		} catch (e) {
 			return null;
 		}
+	}
+
+	public async blacklist(
+		message: Message,
+		user: User,
+		type: "ticket" | "report" | "suggestion",
+		reason: string
+	) {
+		const blacklist = (await this.client.blacklistManager.getSupportBlacklisted(user.id)) ?? [];
+		if (blacklist.includes(type))
+			return message.reply(
+				`>>> ${this.client.constants.emojis.redcross} | This user already has the **${type}** blacklist.`
+			);
+
+		await this.client.prisma.supportBlacklist.upsert({
+			where: { id: user.id },
+			update: { types: [...blacklist, type] },
+			create: { id: user.id, types: [type] },
+		});
+
+		await user
+			.send(`>>> 🔨 | **${type} blacklist received**\nReason: **${reason}**`)
+			.catch(() => void 0);
+		await message.reply(
+			`>>> ${this.client.constants.emojis.greentick} | Successfully added **${
+				user.tag
+			}** (${user.toString()}) to the **${type}** blacklist for **${reason}**.`
+		);
+	}
+
+	public async whitelist(message: Message, user: User, type: "ticket" | "report" | "suggestion") {
+		const blacklist = (await this.client.blacklistManager.getSupportBlacklisted(user.id)) ?? [];
+		if (!blacklist.includes(type))
+			return message.reply(
+				`>>> ${this.client.constants.emojis.redcross} | This user doesn't have the **${type}** blacklist.`
+			);
+
+		await this.client.prisma.supportBlacklist.upsert({
+			where: { id: user.id },
+			update: { types: [...blacklist.filter((x) => x !== type)] },
+			create: { id: user.id, types: [] },
+		});
+
+		await message.reply(
+			`>>> ${this.client.constants.emojis.greentick} | Successfully removed **${
+				user.tag
+			}** (${user.toString()}) from the **${type}** blacklist.`
+		);
 	}
 }
