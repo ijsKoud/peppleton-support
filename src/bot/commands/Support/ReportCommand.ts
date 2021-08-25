@@ -7,7 +7,7 @@ import { Args } from "@sapphire/framework";
 	name: "report",
 	aliases: ["report"],
 	description: "Report command without prompt",
-	preconditions: ["ManagerOnly", "GuildOnly"],
+	preconditions: ["StaffOnly", "GuildOnly"],
 	usage: '<department> <username> <reason in ""> <extra in "">',
 })
 export default class ReportCommand extends Command {
