@@ -48,10 +48,12 @@ export default class SupportHandler {
 			const blacklisted = await this.client.blacklistManager.getSupportBlacklisted(
 				message.author.id
 			);
-			if (blacklisted && blacklisted.includes(option))
+			if (blacklisted && blacklisted.includes(option)) {
+				this.active.delete(message.author.id);
 				return message.author.send(
 					`>>> ${this.client.constants.emojis.redcross} | Sorry, you are blacklisted. You are unable to use the **${option}** feature.`
 				);
+			}
 
 			if (option === "suggestion") return this.handleSuggestion(channel, message);
 
@@ -62,6 +64,7 @@ export default class SupportHandler {
 				case "ticket":
 					{
 						const data = await this.ticketHandler.createTicket(message, channel, department);
+						this.active.delete(message.author.id);
 						if (!data) return;
 
 						await this.ticketHandler.saveTicket({ ...data, department: department.name });
@@ -70,6 +73,7 @@ export default class SupportHandler {
 				case "report":
 					{
 						const data = await this.reportHandler.createReport(message, channel, department);
+						this.active.delete(message.author.id);
 						if (!data) return;
 
 						await this.reportHandler.saveReport(data);
