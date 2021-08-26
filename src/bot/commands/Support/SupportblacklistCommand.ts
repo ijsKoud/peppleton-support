@@ -10,7 +10,7 @@ import { Args } from "@sapphire/framework";
 	preconditions: ["ManagerOnly", "GuildOnly"],
 	usage: "<user> <ticket/suggestion/report> <reason>",
 })
-export default class ReportCommand extends Command {
+export default class SupportwhitelistCommand extends Command {
 	public async run(message: Message, args: Args) {
 		const { client } = this.container;
 		const { value: user } = await args.pickResult("user");
