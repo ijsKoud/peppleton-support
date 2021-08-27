@@ -9,5 +9,6 @@ export default class ReadyListener extends Listener {
 			?.info(`${this.container.client.user?.tag} has logged in!`);
 
 		this.container.client.activityManager.loadAll();
+		this.container.client.Api.start();
 	}
 }

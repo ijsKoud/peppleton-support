@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SapphireClient } from "@sapphire/framework";
 import {
 	ActivitiesOptions,
@@ -15,6 +16,7 @@ import BlacklistManager from "./structures/BlacklistManager";
 import { PrismaClient } from "@prisma/client";
 import SupportHandler from "./handlers/support/SupportHandler";
 import activityManager from "./handlers/activity/activityManager";
+import { Api, AuthCookie } from "./structures/Api";
 
 export default class Client extends SapphireClient {
 	public owners: string[];
@@ -31,8 +33,11 @@ export default class Client extends SapphireClient {
 	public prisma = new PrismaClient();
 	public utils: Utils = new Utils(this);
 	public loggers: Collection<string, Logger> = new Collection();
+	public ApiCache = new Collection<string, any>();
 
 	public supportHandler: SupportHandler;
+	public Api: Api;
+
 	public activityManager: activityManager = new activityManager(this);
 	public blacklistManager: BlacklistManager = new BlacklistManager(this);
 
@@ -57,13 +62,17 @@ export default class Client extends SapphireClient {
 		const DataLogger = new Logger({ name: "DB", webhook: process.env.LOGS });
 		this.loggers.set("db", DataLogger);
 
-		const SupportLogger = new Logger({ name: "Support", webhook: process.env.LOGS });
+		const SupportLogger = new Logger({ name: "SUPPORT", webhook: process.env.LOGS });
 		this.loggers.set("support", SupportLogger);
+
+		const ApiLogger = new Logger({ name: "API", webhook: process.env.LOGS });
+		this.loggers.set("api", ApiLogger);
 
 		this.owners = options.owners;
 
 		// handlers init
 		this.supportHandler = new SupportHandler(this);
+		this.Api = new Api(this);
 
 		if (options.debug)
 			this.on("debug", (msg) => {
@@ -111,6 +120,9 @@ declare module "@sapphire/framework" {
 		activityManager: activityManager;
 		blacklistManager: BlacklistManager;
 		utils: Utils;
+		Api: Api;
+
+		ApiCache: Collection<string, any>;
 		loggers: Collection<string, Logger>;
 	}
 
@@ -120,5 +132,14 @@ declare module "@sapphire/framework" {
 		Blacklisted: never;
 		StaffOnly: never;
 		ManagerOnly: never;
+	}
+}
+
+declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
+	namespace Express {
+		export interface Request {
+			auth: AuthCookie | null;
+		}
 	}
 }
