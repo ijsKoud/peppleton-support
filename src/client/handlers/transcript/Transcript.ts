@@ -54,7 +54,7 @@ export class Transcript {
 	public async create(location: string) {
 		if (!this.messages.size) {
 			const res = await this.fetch();
-			if (!res) return null;
+			if (!res) return false;
 		}
 
 		const data = await readFile(join(process.cwd(), "template.html"));
@@ -64,7 +64,7 @@ export class Transcript {
 		const body = document.getElementsByTagName("body").item(0);
 		if (!body) {
 			this.logger.fatal(`Body was not present when transcripting channel ${this.channel.id}`);
-			return null;
+			return false;
 		}
 
 		body.appendChild(this.getGuildDiv(document));
@@ -91,7 +91,7 @@ export class Transcript {
 		body.appendChild(this.getFooter(document, this.messages.size));
 		await writeFile(location, this.dom.serialize());
 
-		return null;
+		return true;
 	}
 
 	private joinable(msg1: Message, msg2: Message): boolean {
