@@ -3,7 +3,7 @@ import { Logger } from "@daangamesdg/logger";
 import { NextFunction, Request, Response, Router } from "express";
 import { lstat, readdir, readFile, rename, unlink } from "fs/promises";
 import ms from "ms";
-import { join } from "path/posix";
+import { join } from "path";
 import Client from "../../../Client";
 import Utils from "../utils";
 
@@ -17,10 +17,10 @@ export class ApiRoute {
 		this.router
 			.get("/user", this.user.bind(this)) // get user
 			.get("/activity", this.check.bind(this), this.activity.bind(this)) // get activity
-			.get("/transcripts", this.transcripts.bind(this)) // get transcripts
-			.get("/transcript", this.transcriptGet.bind(this)) // get transcript
-			.patch("/transcript", this.transcriptPatch.bind(this)) // update transcript
-			.delete("/transcript", this.transcriptDelete.bind(this)); // delete transcript
+			.get("/transcripts", this.check.bind(this), this.transcripts.bind(this)) // get transcripts
+			.get("/transcript", this.check.bind(this), this.transcriptGet.bind(this)) // get transcript
+			.patch("/transcript", this.check.bind(this), this.transcriptPatch.bind(this)) // update transcript
+			.delete("/transcript", this.check.bind(this), this.transcriptDelete.bind(this)); // delete transcript
 	}
 
 	private async check(req: Request, res: Response, next: NextFunction) {
