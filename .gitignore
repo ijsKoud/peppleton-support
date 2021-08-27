@@ -1,5 +1,7 @@
 node_modules/
 dist/
 prisma/migrations/
+transcripts/
+
 .env
 yarn.lock

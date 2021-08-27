@@ -8,6 +8,7 @@ import {
 	Guild,
 	GuildChannel,
 	GuildMember,
+	GuildMemberRoleManager,
 	Message,
 	MessageAttachment,
 	MessageComponentInteraction,
@@ -22,6 +23,12 @@ import Client from "./Client";
 
 export default class Utils {
 	constructor(public client: Client) {}
+
+	public getColour(manager: GuildMemberRoleManager) {
+		return manager.hoist && manager.hoist.color > 0
+			? manager.hoist.hexColor
+			: manager.cache.filter((r) => r.color > 0).first()?.hexColor ?? "#fff";
+	}
 
 	public formatPerms(perms: PermissionString[] | PermissionResolvable): string {
 		if (!Array.isArray(perms) || perms.length === 0) return "`―`";

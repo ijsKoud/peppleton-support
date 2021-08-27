@@ -188,8 +188,8 @@ export default class TicketHandler {
 	) {
 		if (ticket.status === "closed") return;
 
-		ticket.status = "closed";
-		await this.updateTicket(ticket, ticket.caseId);
+		// ticket.status = "closed";
+		// await this.updateTicket(ticket, ticket.caseId);
 
 		const channel = await this.client.utils.getChannel(ticket.channelId ?? "");
 		if (options?.interaction) {
@@ -294,10 +294,10 @@ export default class TicketHandler {
 					.catch(() => void 0);
 		}
 
-		setTimeout(async () => {
-			await channel?.delete?.();
-			await this.client.prisma.ticket.delete({ where: { caseId: ticket.caseId } });
-		}, 5e3);
+		// setTimeout(async () => {
+		// 	await channel?.delete?.();
+		// 	await this.client.prisma.ticket.delete({ where: { caseId: ticket.caseId } });
+		// }, 5e3);
 	}
 
 	public async handleInteraction(interaction: Interaction) {
