@@ -1,7 +1,7 @@
 /* eslint-disable no-inline-comments */
 import { Logger } from "@daangamesdg/logger";
 import { NextFunction, Request, Response, Router } from "express";
-import { lstat, readdir } from "fs/promises";
+import { lstat, readdir, readFile, rename, unlink } from "fs/promises";
 import ms from "ms";
 import { join } from "path/posix";
 import Client from "../../../Client";
@@ -15,9 +15,12 @@ export class ApiRoute {
 		this.utils = new Utils(client);
 		this.router = Router();
 		this.router
-			.get("/user", this.user.bind(this))
-			.get("/activity", this.check.bind(this), this.activity.bind(this))
-			.get("/transcripts", this.transcripts.bind(this));
+			.get("/user", this.user.bind(this)) // get user
+			.get("/activity", this.check.bind(this), this.activity.bind(this)) // get activity
+			.get("/transcripts", this.transcripts.bind(this)) // get transcripts
+			.get("/transcript", this.transcriptGet.bind(this)) // get transcript
+			.patch("/transcript", this.transcriptPatch.bind(this)) // update transcript
+			.delete("/transcript", this.transcriptDelete.bind(this)); // delete transcript
 	}
 
 	private async check(req: Request, res: Response, next: NextFunction) {
@@ -97,6 +100,54 @@ export class ApiRoute {
 			);
 
 			res.send(valid);
+		} catch (e) {
+			res.status(500).json({ message: "internal server error", error: e.message });
+		}
+	}
+
+	private async transcriptGet(req: Request, res: Response) {
+		if (!req.auth) return res.send(null);
+		const id = this.utils.parseQuery(req.query.id);
+		if (!id) return res.sendStatus(400);
+
+		try {
+			const base = join(process.cwd(), "transcripts", id);
+			const file = await readFile(base, "utf-8");
+
+			res.send(file);
+		} catch (e) {
+			res.status(500).json({ message: "internal server error", error: e.message });
+		}
+	}
+
+	private async transcriptPatch(req: Request, res: Response) {
+		if (!req.auth) return res.send(null);
+		const body = req.body;
+		if (!body || !body.id || !body.name) return res.sendStatus(400);
+		if (!this.client.isOwner(req.auth.userId)) return res.sendStatus(401);
+
+		try {
+			const base = join(process.cwd(), "transcripts");
+			await rename(join(base, body.id), join(body, body.name));
+
+			res.sendStatus(204);
+		} catch (e) {
+			res.status(500).json({ message: "internal server error", error: e.message });
+		}
+	}
+
+	private async transcriptDelete(req: Request, res: Response) {
+		if (!req.auth) return res.send(null);
+		const id = this.utils.parseQuery(req.query.id);
+		if (!id) return res.sendStatus(400);
+
+		if (!this.client.isOwner(req.auth.userId)) return res.sendStatus(401);
+
+		try {
+			const base = join(process.cwd(), "transcripts");
+			await unlink(join(base, id));
+
+			res.sendStatus(204);
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: e.message });
 		}
