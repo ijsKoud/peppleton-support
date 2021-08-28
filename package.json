@@ -10,7 +10,7 @@
 		"@daangamesdg/logger": "^1.1.0",
 		"@prisma/client": "^2.29.1",
 		"@sapphire/decorators": "^2.2.0",
-		"@sapphire/framework": "next",
+		"@sapphire/framework": "^2.0.0-next.7a1c5c69.0",
 		"@sapphire/plugin-subcommands": "^1.0.6",
 		"@sapphire/type": "^2.0.11",
 		"@types/body-parser": "^1.19.1",
@@ -46,7 +46,7 @@
 	"scripts": {
 		"build": "tsc --build",
 		"start:dev": "npm run build && npm run start",
-		"dev": "nodemon --exec \"npm run start:dev\" -e ts",
+		"dev": "nodemon --exec ts-node src/index.ts",
 		"start": "node .",
 		"lint": "eslint src"
 	}

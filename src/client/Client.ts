@@ -127,7 +127,6 @@ declare module "@sapphire/framework" {
 	}
 
 	interface Preconditions {
-		UserPermissions: never;
 		OwnerOnly: never;
 		Blacklisted: never;
 		StaffOnly: never;

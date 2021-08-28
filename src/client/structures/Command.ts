@@ -37,7 +37,7 @@ export abstract class Command extends SubCommandPluginCommand<Args, Command> {
 		this.cooldown = options.cooldownDelay ?? 5e3;
 		this.cooldownLimit = options.cooldownLimit ?? 2;
 
-		this.permissions = options.permissions ?? [];
+		this.permissions = options.requiredUserPermissions ?? [];
 		this.clientPermissions = options.requiredClientPermissions ?? [];
 
 		const paths = context.path.split(sep);
@@ -64,11 +64,10 @@ export abstract class Command extends SubCommandPluginCommand<Args, Command> {
 
 	protected parseConstructorPreConditions(options: Command.Options): void {
 		super.parseConstructorPreConditions(options);
-		this.parseExtraPreConditions(options);
+		this.parseExtraPreConditions();
 	}
 
-	protected parseExtraPreConditions(options: Command.Options): void {
-		if (options.permissions) this.preconditions.append("UserPermissions");
+	protected parseExtraPreConditions(): void {
 		this.preconditions.append("Blacklisted");
 	}
 }
@@ -78,7 +77,6 @@ export namespace Command {
 	export type Options = SubCommandPluginCommand.Options & {
 		hidden?: boolean;
 		usage?: string;
-		permissions?: PermissionResolvable;
 	};
 
 	export type Context = CommandContext;
