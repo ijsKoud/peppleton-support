@@ -31,7 +31,7 @@ export class ApiRoute {
 			if (!guild) throw new Error("Unable to get the correct guild");
 
 			const member = await this.client.utils.fetchMember(req.auth.userId, guild);
-			if (!member || !member.permissions.has("MANAGE_MESSAGES")) return res.send(null);
+			if (!member || !member.permissions.has("MANAGE_MESSAGES", true)) return res.send(null);
 
 			next();
 		} catch (e) {
@@ -59,7 +59,7 @@ export class ApiRoute {
 			res.send({
 				...user,
 				admin: this.client.isOwner(user.id),
-				permissions: member.permissions.has("MANAGE_MESSAGES"),
+				permissions: member.permissions.has("MANAGE_MESSAGES", true),
 			});
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: e.message });
