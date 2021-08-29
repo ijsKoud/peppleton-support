@@ -79,19 +79,25 @@ export class ApiRoute {
 		try {
 			const data = await this.client.prisma.activity.findMany();
 			const stats = await Promise.all(
-				data.map(async (act) => {
-					const user = await this.client.utils.fetchUser(act.id.split("-")[0]);
+				data
+					.filter(
+						(d) =>
+							(d.voice.length > 0 || d.messages.length > 0) &&
+							d.id.includes(process.env.GUILD as string)
+					)
+					.map(async (act) => {
+						const user = await this.client.utils.fetchUser(act.id.split("-")[0]);
 
-					return {
-						user: user?.tag,
-						avatar: user?.displayAvatarURL({ dynamic: true, size: 512 }),
-						messages: act.messages.length,
-						voice: ms(act.voice.length * this.client.constants.activity.duration, { long: true }),
-					};
-				})
+						return {
+							user: user?.tag,
+							avatar: user?.displayAvatarURL({ dynamic: true, size: 512 }),
+							messages: act.messages.length,
+							voice: ms(act.voice.length * this.client.constants.activity.duration, { long: true }),
+						};
+					})
 			);
 
-			res.send(stats.filter((d) => d.messages > 0 || d.voice !== "0 ms"));
+			res.send(stats);
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
