@@ -35,9 +35,9 @@ export default class markdownParser {
 		}) as string;
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const parsed = new JSDOM(
-			`<div class="${ref ? "chat__reference-link " : ""}${message.id}-content">${this._parse(
-				html
-			)}</div>`
+			`<div class="${ref ? "chat__reference-link " : ""} chat-text ${
+				message.id
+			}-content">${this._parse(html)}</div>`
 		).window.document
 			.getElementsByClassName(`${message.id}-content`)
 			.item(0)!;

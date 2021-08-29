@@ -78,6 +78,7 @@ class DiscordMD {
 			html: (node: any, output: Function, state: State) =>
 				this.htmlTag("a", output(node.content, state), {
 					href: markdown.sanitizeUrl(node.target) ?? "",
+					class: "transcript-link",
 				}),
 		}),
 		url: Object.assign({}, markdown.defaultRules.url, {
@@ -95,6 +96,7 @@ class DiscordMD {
 			html: (node: any, output: Function, state: State) =>
 				this.htmlTag("a", output(node.content, state), {
 					href: markdown.sanitizeUrl(node.target) ?? "",
+					class: "transcript-link",
 				}),
 		}),
 		em: Object.assign({}, markdown.defaultRules.em, {

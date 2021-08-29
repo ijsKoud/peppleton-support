@@ -2,6 +2,7 @@ node_modules/
 dist/
 prisma/migrations/
 transcripts/
+share/
 
 .env
 yarn.lock
