@@ -91,7 +91,7 @@ export class ApiRoute {
 				})
 			);
 
-			res.send(stats);
+			res.send(stats.filter((d) => d.messages > 0 && d.voice !== "0 ms"));
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
