@@ -24,17 +24,17 @@ export default class UpdateCommand extends Command {
 
 		const msg = await message.reply(">>> 🤖 | Update Command**");
 		if (fetch) {
-			await msg.edit(">>> 🤖 | Update Command**\nFetching code from GitHub");
+			await msg.edit(">>> 🤖 | **Update Command**\nFetching code from GitHub");
 			await this.Exec("git pull");
 		}
 
 		if (update) {
-			await msg.edit(">>> 🤖 | Update Command**\nInstalling new Dependencies");
+			await msg.edit(">>> 🤖 | **Update Command**\nInstalling new Dependencies");
 			await this.Exec("yarn install");
 		}
 
 		if (restart) {
-			await msg.edit(">>> 🤖 | Update Command**\nBot is updated - restarting...");
+			await msg.edit(">>> 🤖 | **Update Command**\nBot is updated - restarting...");
 			return process.exit(0);
 		}
 
