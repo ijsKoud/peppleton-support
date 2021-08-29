@@ -60,7 +60,7 @@ export default class TicketHandler {
 				{
 					let ticket = this.tickets.get(message.channel.name) ?? null;
 					if (!ticket) {
-						ticket = await this.getTicket({ userId: message.author.id });
+						ticket = await this.getTicket({ caseId: message.channel.name });
 						if (!ticket) return;
 
 						this.tickets.set(ticket.caseId, ticket);
