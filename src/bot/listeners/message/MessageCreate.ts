@@ -6,6 +6,8 @@ import { Message } from "discord.js";
 export default class MessageCreateListener extends Listener {
 	public async run(message: Message) {
 		if (message.author.bot || message.system || message.webhookId) return;
+		if (message.content && message.content.includes("[PING]")) await this.pings(message);
+
 		if (
 			/<((@!?\d+)|(:.+?:\d+))>/g.test(message.content.trim().split(/ +/g).shift() ?? "") &&
 			message.mentions.users.has(this.container.client.user?.id ?? "") &&
@@ -19,5 +21,10 @@ export default class MessageCreateListener extends Listener {
 			!message.content.startsWith(this.container.client.options.defaultPrefix?.toString() ?? "!")
 		)
 			this.container.client.activityManager.update(message.author.id, message.guildId);
+	}
+
+	private async pings(message: Message) {
+		if (this.container.client.constants.pings[message.channel.id])
+			await message.channel.send(this.container.client.constants.pings[message.channel.id]);
 	}
 }
