@@ -25,6 +25,9 @@ export default class MessageCreateListener extends Listener {
 
 	private async pings(message: Message) {
 		if (this.container.client.constants.pings[message.channel.id])
-			await message.channel.send(this.container.client.constants.pings[message.channel.id]);
+			await message.channel.send({
+				content: this.container.client.constants.pings[message.channel.id],
+				allowedMentions: { roles: ["797902390208364594", "739489234892750919"] },
+			});
 	}
 }
