@@ -44,6 +44,7 @@ export default class EvalCommand extends Command {
 		code: string,
 		flags: { async: boolean; depth: number; showHidden: boolean }
 	) {
+		code = code.replace(/\n/g, "");
 		if (flags.async) code = `(async () => {\n${code}\n})();`;
 
 		// otherwise "message is not defined"
