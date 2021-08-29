@@ -351,12 +351,12 @@ export default class TicketHandler {
 				JSON.stringify(ticket)
 			);
 
-		if (
-			!this.client.isOwner(member.id) ||
-			!member.permissions.has("ADMINISTRATOR", true) ||
-			!member.roles.cache.some((r) => department.guild.roleIds.includes(r.id))
-		)
-			return;
+		// if (
+		// 	!this.client.isOwner(member.id) ||
+		// 	!member.permissions.has("ADMINISTRATOR", true) ||
+		// 	!member.roles.cache.some((r) => department.guild.roleIds.includes(r.id))
+		// )
+		// 	return;
 
 		await interaction.deleteReply().catch(() => void 0);
 
