@@ -224,7 +224,7 @@ export default class TicketHandler {
 										[
 											`Ticket Owner: <@${ticket.userId}>`,
 											`Ticket Claimer: <@${ticket.claimerId}>`,
-											`[direct transcript](https://transcript.peppletonrly.cf/transcripts/${ticket.caseId})`,
+											`[direct transcript](https://share.peppletonrly.cf/transcripts/${ticket.caseId})`,
 										].join("\n")
 									),
 							],
