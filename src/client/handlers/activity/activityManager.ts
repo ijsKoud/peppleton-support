@@ -17,6 +17,7 @@ export default class activityManager {
 		await Promise.all(data.map(async (x) => await this.load(x)));
 		this.loadVoice(raw.length ? raw[0].id : process.env.GUILD ?? "");
 		await this.checkAll();
+		this.process();
 
 		setInterval(() => this.checkAll(), 6e4);
 	}
@@ -114,19 +115,16 @@ export default class activityManager {
 	}
 
 	private setQueue(id: string, data: Activity) {
-		if (!this.queue.size) {
-			this.queue.set(id, data);
-			this.process();
-		}
-
 		this.queue.set(id, data);
 	}
 
-	private process() {
-		this.queue.forEach(async (v) => {
-			await this.client.prisma.activity.update({ where: { id: v.id }, data: v });
-			this.queue.delete(v.id);
-		});
+	private async process() {
+		setInterval(() => {
+			this.queue.forEach(async (v) => {
+				await this.client.prisma.activity.update({ where: { id: v.id }, data: v });
+				this.queue.delete(v.id);
+			});
+		}, 6e4);
 	}
 
 	private async sync(userId: string, guildId: string) {
