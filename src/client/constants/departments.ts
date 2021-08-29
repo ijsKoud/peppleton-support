@@ -53,10 +53,10 @@ export const tickets: iDepartment[] = [
 	{
 		name: "Any Department",
 		guild: {
-			// reports: "798639622380453929",
-			// tickets: "780500364448235530",
-			tickets: "842506864964927500",
-			reports: "842506864964927500",
+			reports: "798639622380453929",
+			tickets: "780500364448235530",
+			// tickets: "842506864964927500",
+			// reports: "842506864964927500",
 			roleIds: [
 				"777615536997531669",
 				"735204683475583008",
