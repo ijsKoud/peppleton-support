@@ -74,7 +74,7 @@ export default class activityManager {
 		data.messages.push(BigInt(date));
 		this.setQueue(`${userId}-${guildId}`, data);
 
-		this.cache.set(userId, data);
+		this.cache.set(`${userId}-${guildId}`, data);
 	}
 
 	public remove(id: bigint, dataId: string) {

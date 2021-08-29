@@ -77,24 +77,22 @@ export class ApiRoute {
 		if (!req.auth) return res.send(null);
 
 		try {
-			const data = await this.client.prisma.activity.findMany();
+			const data = this.client.activityManager.cache.filter(
+				(d) =>
+					(d.voice.length > 0 || d.messages.length > 0) &&
+					d.id.includes(process.env.GUILD as string)
+			);
 			const stats = await Promise.all(
-				data
-					.filter(
-						(d) =>
-							(d.voice.length > 0 || d.messages.length > 0) &&
-							d.id.includes(process.env.GUILD as string)
-					)
-					.map(async (act) => {
-						const user = await this.client.utils.fetchUser(act.id.split("-")[0]);
+				data.map(async (act) => {
+					const user = await this.client.utils.fetchUser(act.id.split("-")[0]);
 
-						return {
-							user: user?.tag,
-							avatar: user?.displayAvatarURL({ dynamic: true, size: 512 }),
-							messages: act.messages.length,
-							voice: ms(act.voice.length * this.client.constants.activity.duration, { long: true }),
-						};
-					})
+					return {
+						user: user?.tag,
+						avatar: user?.displayAvatarURL({ dynamic: true, size: 512 }),
+						messages: act.messages.length,
+						voice: ms(act.voice.length * this.client.constants.activity.duration, { long: true }),
+					};
+				})
 			);
 
 			res.send(stats);
