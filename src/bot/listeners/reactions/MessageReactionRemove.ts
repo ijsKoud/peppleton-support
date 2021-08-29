@@ -39,7 +39,9 @@ export default class MessageReactionRemoveListener extends Listener {
 				.send(`>>> ${reactionRole.reactionId} | I took away the **${role.name}** role!`)
 				.catch(() => void 0);
 		} catch (e) {
-			this.logger.error(`messageReactionRemove event error: \`\`\`${e.stack || e.message}\`\`\``);
+			this.logger.error(
+				`messageReactionRemove event error: \`\`\`${(e as any).stack || (e as any).message}\`\`\``
+			);
 		}
 	}
 }

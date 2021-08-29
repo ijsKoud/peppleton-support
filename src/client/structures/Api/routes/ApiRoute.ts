@@ -42,7 +42,7 @@ export class ApiRoute {
 
 			next();
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -69,7 +69,7 @@ export class ApiRoute {
 				permissions: member.permissions.has("MANAGE_MESSAGES", true),
 			});
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -92,7 +92,7 @@ export class ApiRoute {
 
 			res.send(stats);
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -115,7 +115,7 @@ export class ApiRoute {
 
 			res.send(valid);
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -132,7 +132,7 @@ export class ApiRoute {
 
 			res.send({ data: file, head });
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -148,7 +148,7 @@ export class ApiRoute {
 
 			res.sendStatus(204);
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -165,7 +165,7 @@ export class ApiRoute {
 
 			res.sendStatus(204);
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -188,7 +188,7 @@ export class ApiRoute {
 
 			res.send(valid);
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -203,7 +203,7 @@ export class ApiRoute {
 
 			res.send({ length: dirs.length });
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -217,7 +217,7 @@ export class ApiRoute {
 			const base = join(process.cwd(), "share", `${dir}`, `${id}.svg`);
 			res.sendFile(base);
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 }

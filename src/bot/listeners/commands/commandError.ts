@@ -59,7 +59,7 @@ export class UserListener extends Listener {
 		try {
 			return message.reply(this.generateUnexpectedErrorMessage(args, error));
 		} catch (err) {
-			this.container.client.emit(Events.Error, err);
+			this.container.client.emit(Events.Error, err as Error);
 		}
 
 		return undefined;

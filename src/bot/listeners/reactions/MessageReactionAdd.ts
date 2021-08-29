@@ -29,7 +29,9 @@ export default class MessageReactionAddListener extends Listener {
 			if (feedback && feedback.messageId === reaction.message.id && reaction.emoji.name === "📋")
 				await this.feedback(reaction.message, user);
 		} catch (e) {
-			this.logger.error(`messageReactionAdd event error: \`\`\`${e.stack || e.message}\`\`\``);
+			this.logger.error(
+				`messageReactionAdd event error: \`\`\`${(e as any).stack || (e as any).message}\`\`\``
+			);
 		}
 	}
 
@@ -109,7 +111,9 @@ export default class MessageReactionAddListener extends Listener {
 			this.logger.error(
 				`Feedback - Blocking feedback request from user **${
 					user.tag
-				}** (${user.toString()})\nReason: \`ERROR\`\n\`\`\`\n${e.stack || e.message}\n\`\`\``
+				}** (${user.toString()})\nReason: \`ERROR\`\n\`\`\`\n${
+					(e as any).stack || (e as any).message
+				}\n\`\`\``
 			);
 		}
 	}

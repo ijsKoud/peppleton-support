@@ -134,7 +134,7 @@ export default class TicketHandler {
 			await this.updateTicket(ticket, ticket.caseId);
 		} catch (e) {
 			this.close(ticket);
-			this.logger.error(`HandleDM error: \`\`\`${e.stack || e.message}\`\`\``);
+			this.logger.error(`HandleDM error: \`\`\`${(e as any).stack || (e as any).message}\`\`\``);
 		}
 	}
 
@@ -178,7 +178,9 @@ export default class TicketHandler {
 			await this.updateTicket(ticket, ticket.caseId);
 		} catch (e) {
 			this.close(ticket);
-			this.logger.error(`handleChannel error: \`\`\`${e.stack || e.message}\`\`\``);
+			this.logger.error(
+				`handleChannel error: \`\`\`${(e as any).stack || (e as any).message}\`\`\``
+			);
 		}
 	}
 

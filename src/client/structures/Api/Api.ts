@@ -18,7 +18,10 @@ export class Api {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		this.logger = client.loggers.get("api")!;
 		this.server.use(
-			cors({ credentials: true, origin: ["http://localhost:3000"] }),
+			cors({
+				credentials: true,
+				origin: ["http://localhost:3000", "https://share.peppletonrly.cf"],
+			}),
 			json(),
 			cookieParser(),
 			new AuthMiddleware(client).middleware

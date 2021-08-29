@@ -39,7 +39,7 @@ export class OauthRoute {
 				.cookie("PEPPLETON_AUTH", cookie)
 				.redirect(process.env.DASHBOARD ?? "http://localhost:3000");
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 
@@ -70,7 +70,7 @@ export class OauthRoute {
 
 			res.clearCookie("PEPPLETON_AUTH").sendStatus(204);
 		} catch (e) {
-			res.status(500).json({ message: "internal server error", error: e.message });
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
 		}
 	}
 }

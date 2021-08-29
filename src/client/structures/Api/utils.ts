@@ -57,7 +57,7 @@ export default class Utils {
 
 			return data;
 		} catch (e) {
-			return { error: e.message };
+			return { error: (e as any).message };
 		}
 	}
 
@@ -99,7 +99,7 @@ export default class Utils {
 
 			return data;
 		} catch (e) {
-			return { error: e.message };
+			return { error: (e as any).message };
 		}
 	}
 
