@@ -99,3 +99,4 @@ export const supervisor = "742790430034362440";
 export const manager = "742791627495571596";
 export const BoD = "742790053998362768";
 export const botDev = "773626906800422933";
+export const admin = "881535202051096586";

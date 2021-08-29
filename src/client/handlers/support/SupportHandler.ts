@@ -182,12 +182,12 @@ export default class SupportHandler {
 			const suggestionChannel = await this.client.utils.getChannel(
 				this.client.constants.departments.suggestions
 			);
-			if (!suggestionChannel)
+			if (!suggestionChannel || !suggestionChannel.isText())
 				return msg.edit(
 					`>>> ${this.client.constants.emojis.logo} | **Suggestions**\nI was unable to find the correct suggestions channel, please contact **DaanGamesDG#7621** or **Marcus N#0001** about this.`
 				);
 
-			const m = await channel.send(
+			const m = await suggestionChannel.send(
 				`>>> ${this.client.constants.emojis.logo} | **Suggestion - ${message.author.tag}**\`\`\`\n${res.content}\`\`\``
 			);
 

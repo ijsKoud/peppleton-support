@@ -10,7 +10,6 @@ import {
 	MessageAttachment,
 	MessageButton,
 	MessageMentions,
-	OverwriteResolvable,
 	TextChannel,
 } from "discord.js";
 import { iDepartment, iTicket } from "../../interfaces";
@@ -419,10 +418,10 @@ export default class TicketHandler {
 								id: this.client.constants.departments.manager,
 								allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
 							},
-							// ...this.client.owners.map<OverwriteResolvable>((str) => ({
-							// 	id: str,
-							// 	allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
-							// })),
+							{
+								id: this.client.constants.departments.admin,
+								allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
+							},
 						],
 				  };
 
