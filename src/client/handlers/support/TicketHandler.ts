@@ -352,7 +352,8 @@ export default class TicketHandler {
 			);
 
 		if (
-			(!this.client.isOwner(member.id) || !member.permissions.has("ADMINISTRATOR", true)) &&
+			!this.client.isOwner(member.id) ||
+			!member.permissions.has("ADMINISTRATOR", true) ||
 			!member.roles.cache.some((r) => department.guild.roleIds.includes(r.id))
 		)
 			return;
@@ -364,7 +365,7 @@ export default class TicketHandler {
 
 		// check if bot === test bot
 		const options: GuildChannelCreateOptions =
-			this.client.user?.id === "711468893457088553"
+			process.env.NODE_ENV === "development"
 				? {
 						type: "GUILD_TEXT",
 						permissionOverwrites: [
@@ -418,10 +419,10 @@ export default class TicketHandler {
 								id: this.client.constants.departments.manager,
 								allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
 							},
-							...this.client.owners.map<OverwriteResolvable>((str) => ({
-								id: str,
-								allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
-							})),
+							// ...this.client.owners.map<OverwriteResolvable>((str) => ({
+							// 	id: str,
+							// 	allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "ATTACH_FILES"],
+							// })),
 						],
 				  };
 
