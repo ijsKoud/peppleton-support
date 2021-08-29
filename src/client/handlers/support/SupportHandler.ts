@@ -196,6 +196,7 @@ export default class SupportHandler {
 			this.cooldown.set(message.author.id, Date.now() + 6e4);
 			setTimeout(() => this.cooldown.delete(message.author.id), 6e4);
 
+			this.active.delete(message.author.id);
 			await msg.edit(
 				`>>> ${this.client.constants.emojis.greentick} | Successfully delivered your suggestion!`
 			);
