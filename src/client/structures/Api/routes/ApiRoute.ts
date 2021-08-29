@@ -78,7 +78,9 @@ export class ApiRoute {
 
 		try {
 			const stats = await Promise.all(
-				this.client.activityManager.cache.map(async (act) => {
+				(
+					await this.client.prisma.activity.findMany()
+				).map(async (act) => {
 					const user = await this.client.utils.fetchUser(act.id.split("-")[0]);
 
 					return {
