@@ -19,10 +19,10 @@ export class ApiRoute {
 			.get("/activity", this.check.bind(this), this.activity.bind(this)); // get activity
 
 		this.router
-			.get("/transcripts", this.check.bind(this), this.transcripts.bind(this)) // get transcripts
-			.get("/transcript", this.check.bind(this), this.transcriptGet.bind(this)) // get transcript
-			.patch("/transcript", this.check.bind(this), this.transcriptPatch.bind(this)) // update transcript
-			.delete("/transcript", this.check.bind(this), this.transcriptDelete.bind(this)); // delete transcript
+			.get("/transcripts", this.check2.bind(this), this.transcripts.bind(this)) // get transcripts
+			.get("/transcript", this.check2.bind(this), this.transcriptGet.bind(this)) // get transcript
+			.patch("/transcript", this.check2.bind(this), this.transcriptPatch.bind(this)) // update transcript
+			.delete("/transcript", this.check2.bind(this), this.transcriptDelete.bind(this)); // delete transcript
 
 		this.router
 			.get("/shares", this.check.bind(this), this.shares.bind(this)) // get shares
@@ -39,6 +39,26 @@ export class ApiRoute {
 
 			const member = await this.client.utils.fetchMember(req.auth.userId, guild);
 			if (!member || !member.permissions.has("MANAGE_MESSAGES", true)) return res.send(null);
+
+			next();
+		} catch (e) {
+			res.status(500).json({ message: "internal server error", error: (e as any).message });
+		}
+	}
+
+	private async check2(req: Request, res: Response, next: NextFunction) {
+		if (!req.auth) return res.send(null);
+
+		try {
+			const guild = this.client.guilds.cache.get(process.env.GUILD ?? "");
+			if (!guild) throw new Error("Unable to get the correct guild");
+
+			const member = await this.client.utils.fetchMember(req.auth.userId, guild);
+			if (
+				!member ||
+				(!member.permissions.has("MANAGE_ROLES", true) && !this.client.isOwner(member.id))
+			)
+				return res.send(null);
 
 			next();
 		} catch (e) {
@@ -67,6 +87,7 @@ export class ApiRoute {
 				...user,
 				admin: this.client.isOwner(user.id),
 				permissions: member.permissions.has("MANAGE_MESSAGES", true),
+				manager: member.permissions.has("MANAGE_ROLES", true),
 			});
 		} catch (e) {
 			res.status(500).json({ message: "internal server error", error: (e as any).message });
