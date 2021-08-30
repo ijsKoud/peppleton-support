@@ -4,7 +4,7 @@ import Client from "../../Client";
 
 export default class activityManager {
 	public cache = new Collection<string, Activity>();
-	public timeouts = new Collection<string, NodeJS.Timeout>();
+	public timeouts = new Collection<string, NodeJS.Timer>();
 
 	private queue = new Collection<string, Activity>();
 
