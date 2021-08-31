@@ -564,10 +564,7 @@ export default class TicketHandler {
 		// topic
 		let msg = await dm.send(base("`1` - What is the topic of your question?"));
 		const topic = (await this.client.utils.awaitMessages(msg, { filter })).first();
-		if (
-			!topic ||
-			(typeof topic.content === "string" && topic.content.toLowerCase().includes("cancel"))
-		) {
+		if (!topic || topic.content.toLowerCase() === "cancel") {
 			await msg.edit(
 				`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket creation cancelled.`
 			);
@@ -577,11 +574,7 @@ export default class TicketHandler {
 		// description
 		msg = await dm.send(base("`2` - Please explain in full what question is."));
 		const description = (await this.client.utils.awaitMessages(msg, { filter })).first();
-		if (
-			!description ||
-			(typeof description.content === "string" &&
-				description.content.toLowerCase().includes("cancel"))
-		) {
+		if (!description || description.content.toLowerCase() === "cancel") {
 			await msg.edit(
 				`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket creation cancelled.`
 			);
@@ -591,10 +584,7 @@ export default class TicketHandler {
 		// extra
 		msg = await dm.send(base("`3` - Anything else you want to add to your ticket?"));
 		const extra = (await this.client.utils.awaitMessages(msg, { filter })).first();
-		if (
-			!extra ||
-			(typeof extra.content === "string" && extra.content.toLowerCase().includes("cancel"))
-		) {
+		if (!extra || extra.content.toLowerCase() === "cancel") {
 			await msg.edit(
 				`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket creation cancelled.`
 			);

@@ -170,7 +170,7 @@ export default class SupportHandler {
 				})
 			).first();
 
-			if (!res || res.content.toLowerCase().startsWith("cancel")) {
+			if (!res || res.content.toLowerCase() === "cancel") {
 				await channel.send("Prompt cancelled.");
 				return this.active.delete(message.author.id);
 			}
