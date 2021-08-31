@@ -159,13 +159,13 @@ export default class SupportHandler {
 				);
 			}
 
-			await channel.send({
+			const _m = await channel.send({
 				content:
 					"Please provide me with the suggestions you have (1 message with 4000 characters max)\n\nSay `cancel` to cancel!",
 			});
 
 			const res = (
-				await this.client.utils.awaitMessages(message, {
+				await this.client.utils.awaitMessages(_m, {
 					filter: (m) => m.author.id === message.author.id,
 				})
 			).first();
