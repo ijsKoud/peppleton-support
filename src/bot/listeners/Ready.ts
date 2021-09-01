@@ -24,6 +24,6 @@ export default class ReadyListener extends Listener {
 				})
 			);
 
-		setInterval(this.checkTickets.bind(this), 6e4);
+		setInterval(() => this.checkTickets(), 6e4);
 	}
 }
