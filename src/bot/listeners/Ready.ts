@@ -10,5 +10,20 @@ export default class ReadyListener extends Listener {
 
 		this.container.client.activityManager.loadAll();
 		this.container.client.Api.start();
+		this.checkTickets();
+	}
+
+	async checkTickets() {
+		const { client } = this.container;
+		const tickets = await client.prisma.ticket.findMany();
+		tickets
+			.filter(({ status, lastMsg }) => status === "open" && Date.now() - (lastMsg ?? 0) >= 864e5)
+			.forEach((ticket) =>
+				client.supportHandler.ticketHandler.close(ticket, {
+					inactive: true,
+				})
+			);
+
+		setInterval(this.checkTickets.bind(this), 6e4);
 	}
 }
