@@ -14,16 +14,15 @@ export default class ReadyListener extends Listener {
 	}
 
 	async checkTickets() {
-		const { client } = this.container;
-		const tickets = await client.prisma.ticket.findMany();
-		tickets
-			.filter(({ status, lastMsg }) => status === "open" && Date.now() - (lastMsg ?? 0) >= 864e5)
-			.forEach((ticket) =>
-				client.supportHandler.ticketHandler.close(ticket, {
-					inactive: true,
-				})
-			);
-
-		setInterval(() => this.checkTickets(), 6e4);
+		// const { client } = this.container;
+		// const tickets = await client.prisma.ticket.findMany();
+		// tickets
+		// 	.filter(({ status, lastMsg }) => status === "open" && Date.now() - (lastMsg ?? 0) >= 864e5)
+		// 	.forEach((ticket) =>
+		// 		client.supportHandler.ticketHandler.close(ticket, {
+		// 			inactive: true,
+		// 		})
+		// 	);
+		// setInterval(() => this.checkTickets(), 6e4);
 	}
 }
