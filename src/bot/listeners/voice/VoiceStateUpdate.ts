@@ -4,14 +4,19 @@ import { VoiceState } from "discord.js";
 
 @ApplyOptions<ListenerOptions>({ event: "voiceStateUpdate" })
 export default class VoiceStateUpdateListener extends Listener {
-	public async run(oldState: VoiceState, newState: VoiceState): Promise<void> {
+	public async run(oldState: VoiceState, newState: VoiceState) {
 		const { client } = this.container;
 
-		if (!oldState.member || oldState.member.user.bot) return;
+		const member = oldState.member || newState.member;
+		if (!member)
+			return client.loggers
+				.get("bot")
+				?.error('Received "VoiceStateUpdate" package without member object');
+		if (member.user.bot) return;
 
 		if (!oldState.channelId && newState.channelId)
-			client.activityManager.start(oldState.member.id, oldState.guild.id);
+			client.activityManager.start(member.id, oldState.guild.id);
 		if (oldState.channelId && !newState.channelId)
-			client.activityManager.end(oldState.member.id, oldState.guild.id);
+			client.activityManager.end(member.id, oldState.guild.id);
 	}
 }
