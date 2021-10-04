@@ -38,7 +38,7 @@ export class ApiRoute {
 			if (!guild) throw new Error("Unable to get the correct guild");
 
 			const member = await this.client.utils.fetchMember(req.auth.userId, guild);
-			if (!member || !member.permissions.has("MANAGE_MESSAGES", true)) return res.send(null);
+			if (!member || (!member.permissions.has("MANAGE_MESSAGES", true) && !this.client.isOwner(member.id))) return res.send(null);
 
 			next();
 		} catch (e) {
