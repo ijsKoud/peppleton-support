@@ -39,10 +39,11 @@ export default class activityManager {
 
 	public async check(data: Activity) {
 		const { role, max } = this.client.constants.activity;
-		const guild = this.client.guilds.cache.get(data.id.split("-")[1]);
+		const [userId, guildId] = data.id.split("-");
+		const guild = this.client.guilds.cache.get(guildId);
 		if (!guild) return;
 
-		const member = await this.client.utils.fetchMember(data.id, guild);
+		const member = await this.client.utils.fetchMember(userId, guild);
 
 		if (!member) return;
 		if (data.messages.length > max && !member.roles.cache.has(role))
