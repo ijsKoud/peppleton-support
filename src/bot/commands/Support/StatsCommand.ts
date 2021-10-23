@@ -12,7 +12,7 @@ import ms from "ms";
 	usage: "[user]",
 })
 export default class StatsCommand extends Command {
-	public async run(message: Message, args: Args) {
+	public async messageRun(message: Message, args: Args) {
 		if (!message.member) return;
 		const { client } = this.container;
 		let { value: member } = await args.pickResult("member");

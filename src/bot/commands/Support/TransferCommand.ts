@@ -11,7 +11,7 @@ import { Args } from "@sapphire/framework";
 	usage: "<staff member>",
 })
 export default class TransferCommand extends Command {
-	public async run(message: Message, args: Args) {
+	public async messageRun(message: Message, args: Args) {
 		if (message.channel.type !== "GUILD_TEXT" || !message.channel.name.startsWith("ticket-"))
 			return;
 		const ticket = await this.container.client.supportHandler.ticketHandler.getTicket({

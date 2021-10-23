@@ -11,7 +11,7 @@ import { Args } from "@sapphire/framework";
 	usage: '<department> <username> <reason in ""> <extra in "">',
 })
 export default class ReportCommand extends Command {
-	public async run(message: Message, args: Args) {
+	public async messageRun(message: Message, args: Args) {
 		const { client } = this.container;
 		const { value: dep } = await args.pickResult("string");
 		const { value: username } = await args.pickResult("string");

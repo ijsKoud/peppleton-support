@@ -11,7 +11,7 @@ import { Args } from "@sapphire/framework";
 	usage: "<caseId> <accept/decline> [reason (only if declined)]",
 })
 export default class HandleCommand extends Command {
-	public async run(message: Message, args: Args) {
+	public async messageRun(message: Message, args: Args) {
 		const { client } = this.container;
 		const { value: caseId } = await args.pickResult("string");
 		const { value: accepted } = await args.pickResult("string");

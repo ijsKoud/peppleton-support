@@ -11,7 +11,7 @@ import { Args } from "@sapphire/framework";
 	usage: "<user> <ticket/suggestion/report>",
 })
 export default class SupportwhitelistCommand extends Command {
-	public async run(message: Message, args: Args) {
+	public async messageRun(message: Message, args: Args) {
 		const { client } = this.container;
 		const { value: user } = await args.pickResult("user");
 		const { value: type } = await args.pickResult("string");

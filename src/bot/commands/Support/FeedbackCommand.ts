@@ -11,7 +11,7 @@ import { Args } from "@sapphire/framework";
 	usage: "[id]",
 })
 export default class FeedbackCommand extends Command {
-	public async run(message: Message, args: Args) {
+	public async messageRun(message: Message, args: Args) {
 		const { client } = this.container;
 		const { value: id } = await args.pickResult("string");
 

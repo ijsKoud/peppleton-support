@@ -9,7 +9,7 @@ import ms from "ms";
 	description: "Ping! Pong! 🏓",
 })
 export default class PingCommand extends Command {
-	public async run(message: Message): Promise<void> {
+	public async messageRun(message: Message): Promise<void> {
 		const msg = await message.reply(">>> 🏓 | Pinging...");
 
 		await msg.edit({
