@@ -162,7 +162,7 @@ export class Transcript {
 		const avatarDiv = this.getAvatar(
 			document,
 			message.system
-				? "https://cdn.daangamesdg.wtf/discord/wumpus.png"
+				? "https://cdn.daangamesdg.xyz/discord/wumpus.png"
 				: message.author.displayAvatarURL({ dynamic: true, size: 128 })
 		);
 		groupDiv.appendChild(avatarDiv);
