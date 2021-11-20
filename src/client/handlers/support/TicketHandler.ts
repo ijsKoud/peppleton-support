@@ -68,7 +68,13 @@ export default class TicketHandler {
 						setTimeout(() => this.tickets.delete(ticket!.caseId), 5e3);
 					}
 
-					if (ticket.status !== "open" || ticket.claimerId !== message.author.id) return;
+					if (
+						ticket.status !== "open" ||
+						(ticket.claimerId !== message.author.id &&
+							!this.client.isOwner(message.author.id) &&
+							!message.member?.permissions.has("VIEW_AUDIT_LOG", true))
+					)
+						return;
 					const [cmd, ...args] = (message.content ?? "").trim().split(/ +/g);
 
 					if (cmd === `${process.env.PREFIX}close`) return this.close(ticket);
