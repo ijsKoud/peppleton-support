@@ -8,7 +8,7 @@
 	"private": false,
 	"dependencies": {
 		"@daangamesdg/logger": "^1.1.0",
-		"@prisma/client": "^3.5.0",
+		"@prisma/client": "^3.6.0",
 		"@sapphire/decorators": "^3.1.4",
 		"@sapphire/framework": "^2.2.0",
 		"@sapphire/plugin-subcommands": "^2.1.0",
@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"eslint": "^8.3.0",
-		"prisma": "^3.5.0",
+		"prisma": "^3.6.0",
 		"@types/body-parser": "^1.19.2",
 		"@types/cookie-parser": "^1.4.2",
 		"@types/cors": "^2.8.12",
