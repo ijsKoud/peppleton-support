@@ -4,8 +4,7 @@ import { Message } from "discord.js";
 import { Args } from "@sapphire/framework";
 
 @ApplyOptions<Command.Options>({
-	name: "feeback",
-	aliases: ["feeback"],
+	name: "feedback",
 	description: "Changes the feedback message id",
 	preconditions: ["ManagerOnly", "GuildOnly"],
 	usage: "[id]",
