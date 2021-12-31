@@ -1,11 +1,11 @@
 <div align="center">
-    <img src="https://daangamesdg.xyz/assets/svg/logo.svg" width="100px" />
-    <h1>bot-template</h1>
+    <img src="https://cdn.discordapp.com/attachments/767016711164919809/923616410406617129/Logo_-_Orange_on_Blue.png" width="100px" />
+    <h1>Peppleton Railways</h1>
   
-  <p>Just like an uncoloured drawing. For bots.</p>
+  <p>Ticket/activity/reaction role/ping bot of Peppleton Railways</p>
   
   <p align="center">
-    <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg" />
+    <img alt="Version" src="https://img.shields.io/badge/version-4.1.0-blue.svg" />
     <a href="/LICENSE" target="_blank">
       <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
     </a>
@@ -17,16 +17,6 @@
 </div>
 
 ---
-
-## Information
-
-**Information here**
-
-**DO NOT INSTALL OLDER VERSIONS**, please check [the security policy](/SECURITY.md) for all the supported versions. If you still want to use an older version, use it at your own risk. **I am in no way responsible for any damage done to the bot, you or your pc/hardware used to run the bot**. I will also not provide any support for deprecated versions.
-
-## Install
-
-This project is WIP, please come back later for a guide on how to host this bot yourself.
 
 ## Author
 
