@@ -1,9 +1,9 @@
 {
-	"name": "bot-template",
-	"version": "1.0.0",
-	"description": "Bot template for Discord bot projects made by DaanGamesDG",
+	"name": "peppleton-support",
+	"version": "4.1.0",
+	"description": "Ticket/activity/reaction role/ping bot of Peppleton Railways",
 	"main": "dist/src",
-	"repository": "https://github.com/DaanGamesDG/bot-template",
+	"repository": "https://github.com/DaanGamesDG/peppleton-support",
 	"author": "DaanGamesDG <daan@daangamesdg.xyz>",
 	"license": "MIT",
 	"devDependencies": {
