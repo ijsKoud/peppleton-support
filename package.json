@@ -7,17 +7,17 @@
 	"author": "DaanGamesDG <daan@daangamesdg.xyz>",
 	"license": "MIT",
 	"devDependencies": {
-		"@commitlint/cli": "^16.0.2",
+		"@commitlint/cli": "^16.1.0",
 		"@commitlint/config-angular": "^16.0.0",
-		"@sapphire/eslint-config": "^4.0.10",
-		"@sapphire/prettier-config": "^1.2.8",
-		"@sapphire/ts-config": "^3.1.7",
+		"@sapphire/eslint-config": "^4.0.11",
+		"@sapphire/prettier-config": "^1.2.9",
+		"@sapphire/ts-config": "^3.1.8",
 		"@types/ms": "^0.7.31",
-		"@types/node": "^16.11.20",
+		"@types/node": "^16.11.21",
 		"cross-env": "^7.0.3",
 		"eslint": "8.6.0",
 		"husky": "^7.0.4",
-		"lint-staged": "^12.1.7",
+		"lint-staged": "^12.3.1",
 		"prisma": "^3.8.1"
 	},
 	"dependencies": {
