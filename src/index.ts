@@ -9,6 +9,7 @@ new Client({
 		"DIRECT_MESSAGES",
 		"GUILD_MESSAGE_REACTIONS",
 		"GUILD_VOICE_STATES",
+		"GUILD_MEMBERS",
 	],
 	partials: ["GUILD_MEMBER", "MESSAGE", "REACTION", "CHANNEL"],
 	owners: process.env.OWNERS?.split(" ") ?? [],
