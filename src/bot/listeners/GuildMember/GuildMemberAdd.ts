@@ -10,6 +10,7 @@ export default class extends Listener {
 		)) as TextChannel | null;
 		if (!channel) return;
 
+		if (member.guild.id !== process.env.GUILD) return;
 		await channel.send(`Please welcome ${member} to the server 👋`).catch(() => void 0);
 	}
 }
