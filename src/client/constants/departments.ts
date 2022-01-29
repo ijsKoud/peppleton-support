@@ -1,5 +1,15 @@
 import { iDepartment } from "../interfaces";
 
+export const category = "754266502638600233";
+export const transcript = "793203715154378752";
+export const suggestions = "788811272899919872";
+
+export const supervisor = "742790430034362440";
+export const manager = "777976351201820673";
+export const BoD = "937016913664561182";
+export const botDev = "773626906800422933";
+export const admin = "881535202051096586";
+
 // roleIds: ["department_sv", "MANAGER", "BoD"];
 export const tickets: iDepartment[] = [
 	{
@@ -7,7 +17,7 @@ export const tickets: iDepartment[] = [
 		guild: {
 			reports: "798639223817109525",
 			tickets: "780500364448235530",
-			roleIds: ["770360459114315806", "777976351201820673", "742790053998362768"],
+			roleIds: [supervisor, "777976379395538960", BoD],
 		},
 		emojis: {
 			main: "793907766476668938",
@@ -19,7 +29,7 @@ export const tickets: iDepartment[] = [
 		guild: {
 			reports: "798639351012655124",
 			tickets: "780500364448235530",
-			roleIds: ["770360455763198032", "767073132682149889", "742790053998362768"],
+			roleIds: [supervisor, "767073132682149889", BoD],
 		},
 		emojis: {
 			main: "793907746390933534",
@@ -31,25 +41,25 @@ export const tickets: iDepartment[] = [
 		guild: {
 			reports: "798639473373085758",
 			tickets: "780500364448235530",
-			roleIds: ["770360452395171872", "777976379395538960", "742790053998362768"],
+			roleIds: [supervisor, "777976379395538960", BoD],
 		},
 		emojis: {
 			main: "793907789349126214",
 			fallback: "3️⃣",
 		},
 	},
-	{
-		name: "Signaller Department",
-		guild: {
-			reports: "807944776204812300",
-			tickets: "780500364448235530",
-			roleIds: ["807768040086437897", "807759039298928661", "742790053998362768"],
-		},
-		emojis: {
-			main: "818560264990752818",
-			fallback: "4️⃣",
-		},
-	},
+	// {
+	// 	name: "Signaller Department",
+	// 	guild: {
+	// 		reports: "807944776204812300",
+	// 		tickets: "780500364448235530",
+	// 		roleIds: [supervisor, "767073132682149889",BoD],
+	// 	},
+	// 	emojis: {
+	// 		main: "818560264990752818",
+	// 		fallback: "4️⃣",
+	// 	},
+	// },
 	{
 		name: "Any Department",
 		guild: {
@@ -57,18 +67,12 @@ export const tickets: iDepartment[] = [
 			tickets: "780500364448235530",
 			// tickets: "842506864964927500",
 			// reports: "842506864964927500",
-			roleIds: [
-				"777615536997531669",
-				"735204683475583008",
-				"817438200896159775",
-				"792930500292378625",
-				"743051369551757332",
-				"742790053998362768",
-			],
+			roleIds: [supervisor, manager, BoD],
 		},
 		emojis: {
 			main: "818564584679538708",
-			fallback: "5️⃣",
+			// fallback: "5️⃣",
+			fallback: "4️⃣",
 		},
 	},
 ];
@@ -90,13 +94,3 @@ export const transfer = [
 		channelId: "",
 	},
 ];
-
-export const category = "754266502638600233";
-export const transcript = "793203715154378752";
-export const suggestions = "788811272899919872";
-
-export const supervisor = "742790430034362440";
-export const manager = "742791627495571596";
-export const BoD = "742790053998362768";
-export const botDev = "773626906800422933";
-export const admin = "881535202051096586";
