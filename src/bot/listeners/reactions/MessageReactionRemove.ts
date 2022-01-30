@@ -24,7 +24,7 @@ export default class MessageReactionRemoveListener extends Listener {
 			if (!messageIds.includes(message.id)) return;
 
 			const reactionRole = client.constants.reactionRoles.roles.find(
-				({ reactionId }) => reactionId === (reaction.emoji.name || reaction.emoji.id)
+				({ reactionId }) => reactionId === (reaction.emoji.id ?? reaction.emoji.name ?? "")
 			);
 			if (!reactionRole) return;
 
@@ -36,7 +36,7 @@ export default class MessageReactionRemoveListener extends Listener {
 
 			await member.roles.remove(role);
 			await member
-				.send(`>>> ${reactionRole.reactionId} | I took away the **${role.name}** role!`)
+				.send(`>>> ${reactionRole.emoji} | I took away the **${role.name}** role!`)
 				.catch(() => void 0);
 		} catch (e) {
 			this.logger.error(

@@ -52,7 +52,7 @@ export default class MessageReactionAddListener extends Listener {
 
 		await member.roles.add(role);
 		await member
-			.send(`>>> ${reactionRole.reactionId} | I just gave you the **${role.name}** role!`)
+			.send(`>>> ${reactionRole.emoji} | I just gave you the **${role.name}** role!`)
 			.catch(() => void 0);
 	}
 
@@ -100,7 +100,7 @@ export default class MessageReactionAddListener extends Listener {
 						state?.passed
 				  }** this application session, here is your feedback: \`\`\`${
 						(data.feedback as string).length > 850
-							? (data.feedback as string).substr(0, 850 - 3) + "..."
+							? (data.feedback as string).substring(0, 850 - 3) + "..."
 							: (data.feedback as string)
 				  }\`\`\` ❓ | Questions about the feedback? Mention me to create a ticket.`
 				: ">>> 👤 | Sorry I didn't find your user id in the database, if you think I am wrong, please open a ticket.";
