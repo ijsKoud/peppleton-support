@@ -21,7 +21,11 @@ export default class MessageReactionAddListener extends Listener {
 			if (!reaction.message.guild) return;
 
 			if (client.constants.reactionRoles.channel === reaction.message.channel.id)
-				return this.reactionRole(reaction.emoji.name ?? "", reaction.message.guild, user);
+				return this.reactionRole(
+					reaction.emoji.id ?? reaction.emoji.name ?? "",
+					reaction.message.guild,
+					user
+				);
 
 			const feedback = await client.prisma.feedback.findFirst({
 				where: { guildId: reaction.message.guild.id },
