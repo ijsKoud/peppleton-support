@@ -49,7 +49,7 @@ export default class Utils {
 	}
 
 	public embed(options?: MessageEmbedOptions | MessageEmbed): MessageEmbed {
-		return new MessageEmbed(options).setColor(`#${process.env.COLOUR}`);
+		return new MessageEmbed(options).setColor("#061B2B");
 	}
 
 	public capitalize(str: string): string {
