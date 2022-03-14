@@ -649,7 +649,7 @@ export default class TicketHandler {
 		await channel.send({ embeds: [embed], files: attachments, components });
 
 		await msg.edit(
-			`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket registered under the \`${caseId}\` id. If you don't receive an answer within **24 hours**, please contact a **${this.client.constants.emojis.supervisor} supervisor+**.`
+			`>>> ${emoji} | **Ticket Creation - ${department.name}**:\nTicket registered under the \`${caseId}\` id. If you don't receive an answer within **24 hours**, please contact **${this.client.constants.emojis.supervisor} one of our staff members**.`
 		);
 
 		return {
