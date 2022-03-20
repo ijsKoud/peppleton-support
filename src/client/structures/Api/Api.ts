@@ -20,7 +20,7 @@ export class Api {
 		this.server.use(
 			cors({
 				credentials: true,
-				origin: ["http://localhost:3000", "https://share.peppletonrly.cf"],
+				origin: ["http://localhost:3000", "https://share.peppletonrly.com"],
 			}),
 			json(),
 			cookieParser(),
