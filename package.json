@@ -46,7 +46,7 @@
 		"@types/jsdom": "^16.2.14",
 		"@types/ms": "^0.7.31",
 		"@types/node": "^16.11.25",
-		"@types/twemoji": "^12.1.2",
+		"@types/twemoji": "^13.1.1",
 		"@typescript-eslint/eslint-plugin": "^5.12.0",
 		"@typescript-eslint/parser": "^5.12.0",
 		"eslint": "^8.9.0",
